@@ -433,7 +433,7 @@ function PropertyProfile() {
       <div className="property-heading">
         <div>
           <h1 className="page-title">Property Search</h1>
-          <p className="page-subtitle">Search an address to view map and Risk Summary.</p>
+          <p className="page-subtitle">Search an address to view map and Risk Summary results.</p>
         </div>
       </div>
 
@@ -549,9 +549,6 @@ function PropertyProfile() {
             <div className="property-empty-state">
               <div className="property-sidebar-section">
                 <p className="property-sidebar-kicker">Risk Summary</p>
-                <p className="property-sidebar-copy">
-                  This area fills in after you search a home address.
-                </p>
               </div>
 
               <div className="property-detail-list">
