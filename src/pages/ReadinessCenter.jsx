@@ -123,21 +123,22 @@ function ReadinessCenter() {
 
   return (
     <div className="page">
+      <h1 className="page-title readiness-page-title">Readiness Center</h1>
+
       {activeHome ? (
         <div className="active-home-card card">
           <div className="active-home-copy">
-            <span className="active-home-kicker">Readiness plan</span>
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
             <span className="active-home-note">
-              Use these checklists for proactive clarity around home risk and recovery, and to get this home better prepared before a loss.
+              Use the Property Readiness Checklists to proactively identify risks and streamline recovery to stay ahead of potential losses before they happen.
             </span>
           </div>
         </div>
       ) : null}
 
-      <div className="section-header">
-        <h1 className="page-title">Readiness Center</h1>
+      <div className="section-header readiness-checklists-header">
+        <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
         <button className="btn-primary">+ Custom</button>
       </div>
 

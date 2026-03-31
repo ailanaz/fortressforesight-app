@@ -7,6 +7,14 @@
   margin-bottom: 12px;
 }
 
+.readiness-page-title {
+  margin-bottom: 16px;
+}
+
+.readiness-checklists-label {
+  margin-bottom: 0;
+}
+
 .checklist-card {
   margin-bottom: 10px;
 }
