@@ -404,6 +404,7 @@ function ReadinessCenter() {
   const { activeHome } = useActiveHome()
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
+  const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
 
   return (
@@ -424,6 +425,17 @@ function ReadinessCenter() {
 
       <div className="page-utility-bar">
         <div className="page-calendar-actions">
+          <div className="page-event-field">
+            <input
+              className="page-input page-input-wide"
+              type="text"
+              value={calendarTitle}
+              onChange={(event) => setCalendarTitle(event.target.value)}
+              placeholder="Add calendar event"
+              aria-label="Calendar event"
+            />
+            <span className="page-paid-badge">Paid</span>
+          </div>
           <input
             className="page-input"
             type="date"
@@ -436,7 +448,7 @@ function ReadinessCenter() {
             type="button"
             onClick={() =>
               downloadCalendarInvite({
-                title: homeTitle ? `Property Readiness Review - ${homeTitle}` : 'Property Readiness Review',
+                title: calendarTitle.trim() || (homeTitle ? `Property Readiness Review - ${homeTitle}` : 'Property Readiness Review'),
                 date: calendarDate,
                 details: 'Review your property readiness checklists in FortressForesight.',
               })

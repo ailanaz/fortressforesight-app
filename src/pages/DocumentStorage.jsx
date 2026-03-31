@@ -35,6 +35,7 @@ function DocumentStorage() {
   const { activeHome } = useActiveHome()
   const [filter, setFilter] = useState('All')
   const [docs, setDocs] = useState(SAMPLE_DOCS)
+  const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const fileInputRef = useRef(null)
 
@@ -91,7 +92,7 @@ function DocumentStorage() {
   }
 
   const handleSaveToCalendar = () => {
-    const title = homeTitle ? `Document Reminder - ${homeTitle}` : 'Document Reminder'
+    const title = calendarTitle.trim() || (homeTitle ? `Document Reminder - ${homeTitle}` : 'Document Reminder')
     const details = homeTitle ? `Document reminder for ${homeTitle} in FortressForesight.` : 'Document reminder in FortressForesight.'
 
     downloadCalendarInvite({ title, date: calendarDate, details })
@@ -124,6 +125,17 @@ function DocumentStorage() {
 
       <div className="page-utility-bar">
         <div className="page-calendar-actions">
+          <div className="page-event-field">
+            <input
+              className="page-input page-input-wide"
+              type="text"
+              value={calendarTitle}
+              onChange={(event) => setCalendarTitle(event.target.value)}
+              placeholder="Add calendar event"
+              aria-label="Calendar event"
+            />
+            <span className="page-paid-badge">Paid</span>
+          </div>
           <input
             className="page-input"
             type="date"

@@ -76,6 +76,10 @@
   flex-wrap: wrap;
 }
 
+.page-event-field {
+  position: relative;
+}
+
 .page-input {
   min-width: 0;
   min-height: 42px;
@@ -89,6 +93,20 @@
 
 .page-input-wide {
   width: 220px;
+}
+
+.page-paid-badge {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-yellow);
+  color: var(--color-black);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .active-home-card {
@@ -153,6 +171,10 @@
   }
 
   .page-input-wide {
+    width: 100%;
+  }
+
+  .page-event-field {
     width: 100%;
   }
 }

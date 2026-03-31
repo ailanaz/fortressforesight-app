@@ -10,12 +10,13 @@ const TABS = ['Damage Log', 'Expenses', 'Timeline', 'Claim Status']
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
   const [activeTab, setActiveTab] = useState('Damage Log')
+  const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate(7))
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
 
   const handleSaveToCalendar = () => {
-    const title = homeTitle ? `Recovery Event - ${homeTitle}` : 'Recovery Event'
+    const title = calendarTitle.trim() || (homeTitle ? `Recovery Event - ${homeTitle}` : 'Recovery Event')
     const details = homeTitle ? `Recovery event for ${homeTitle} in FortressForesight.` : 'Recovery event in FortressForesight.'
 
     downloadCalendarInvite({ title, date: calendarDate, details })
@@ -48,6 +49,17 @@ function RecoveryTracker() {
 
       <div className="page-utility-bar recovery-utility-bar">
         <div className="page-calendar-actions">
+          <div className="page-event-field">
+            <input
+              className="page-input page-input-wide"
+              type="text"
+              value={calendarTitle}
+              onChange={(event) => setCalendarTitle(event.target.value)}
+              placeholder="Add calendar event"
+              aria-label="Calendar event"
+            />
+            <span className="page-paid-badge">Paid</span>
+          </div>
           <input
             className="page-input"
             type="date"
