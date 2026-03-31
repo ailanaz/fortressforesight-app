@@ -3,7 +3,7 @@
 Protect what protects you.
 
 FortressForesight is a home readiness, records, and recovery support app for
-pre-homebuyers, homebuyers, and homeowners.
+homebuyers and homeowners.
 
 ## Tech Stack
 
