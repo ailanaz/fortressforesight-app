@@ -20,6 +20,82 @@ const RISK_LEVELS = {
   high: { label: 'High Risk', color: '#ff6675', bg: 'rgba(255, 102, 117, 0.18)' },
 }
 
+const STATE_ALIASES = {
+  ALABAMA: 'AL',
+  ALASKA: 'AK',
+  ARIZONA: 'AZ',
+  ARKANSAS: 'AR',
+  CALIFORNIA: 'CA',
+  COLORADO: 'CO',
+  CONNECTICUT: 'CT',
+  DELAWARE: 'DE',
+  FLORIDA: 'FL',
+  GEORGIA: 'GA',
+  HAWAII: 'HI',
+  IDAHO: 'ID',
+  ILLINOIS: 'IL',
+  INDIANA: 'IN',
+  IOWA: 'IA',
+  KANSAS: 'KS',
+  KENTUCKY: 'KY',
+  LOUISIANA: 'LA',
+  MAINE: 'ME',
+  MARYLAND: 'MD',
+  MASSACHUSETTS: 'MA',
+  MICHIGAN: 'MI',
+  MINNESOTA: 'MN',
+  MISSISSIPPI: 'MS',
+  MISSOURI: 'MO',
+  MONTANA: 'MT',
+  NEBRASKA: 'NE',
+  NEVADA: 'NV',
+  'NEW HAMPSHIRE': 'NH',
+  'NEW JERSEY': 'NJ',
+  'NEW MEXICO': 'NM',
+  'NEW YORK': 'NY',
+  'NORTH CAROLINA': 'NC',
+  'NORTH DAKOTA': 'ND',
+  OHIO: 'OH',
+  OKLAHOMA: 'OK',
+  OREGON: 'OR',
+  PENNSYLVANIA: 'PA',
+  RHODEISLAND: 'RI',
+  'RHODE ISLAND': 'RI',
+  'SOUTH CAROLINA': 'SC',
+  'SOUTH DAKOTA': 'SD',
+  TENNESSEE: 'TN',
+  TEXAS: 'TX',
+  UTAH: 'UT',
+  VERMONT: 'VT',
+  VIRGINIA: 'VA',
+  WASHINGTON: 'WA',
+  'WEST VIRGINIA': 'WV',
+  WISCONSIN: 'WI',
+  WYOMING: 'WY',
+  'DISTRICT OF COLUMBIA': 'DC',
+  DC: 'DC',
+}
+
+const FLOOD_PRIORITY_STATES = new Set([
+  'AL', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'LA', 'MA', 'MD', 'MS', 'NC', 'NJ',
+  'NY', 'RI', 'SC', 'TX', 'VA',
+])
+const FLOOD_REVIEW_STATES = new Set([
+  'AR', 'CA', 'IA', 'IL', 'KY', 'MI', 'MN', 'MO', 'OH', 'OR', 'PA', 'TN', 'WA', 'WI', 'WV',
+])
+const STORM_PRIORITY_STATES = new Set([
+  'AL', 'AR', 'FL', 'GA', 'IA', 'KS', 'LA', 'MN', 'MO', 'MS', 'NC', 'NE', 'OK', 'SC', 'SD', 'TX',
+])
+const STORM_REVIEW_STATES = new Set([
+  'CO', 'IL', 'IN', 'KY', 'ND', 'NM', 'OH', 'TN', 'VA', 'WI', 'WY',
+])
+const WILDFIRE_PRIORITY_STATES = new Set([
+  'AZ', 'CA', 'CO', 'ID', 'MT', 'NM', 'NV', 'OR', 'UT', 'WA', 'WY',
+])
+const WILDFIRE_REVIEW_STATES = new Set([
+  'KS', 'NE', 'OK', 'TX',
+])
+
 function hashString(input) {
   let hash = 0
 
@@ -52,6 +128,27 @@ function formatCoordinate(value) {
   return Number(value).toFixed(5)
 }
 
+function normalizeState(value) {
+  if (!value) {
+    return ''
+  }
+
+  const cleaned = String(value).trim().toUpperCase()
+  return STATE_ALIASES[cleaned] || cleaned
+}
+
+function inferLevel(stateCode, prioritySet, reviewSet) {
+  if (prioritySet.has(stateCode)) {
+    return 'high'
+  }
+
+  if (reviewSet.has(stateCode)) {
+    return 'moderate'
+  }
+
+  return 'low'
+}
+
 function rankGeocodeResult(result) {
   const address = result.address ?? {}
   let score = Number(result.importance ?? 0)
@@ -76,11 +173,17 @@ function rankGeocodeResult(result) {
 }
 
 function createStarterProfile(result, query) {
+  const stateCode = normalizeState(result.address?.state)
   const seed = hashString(`${query}:${result.lat}:${result.lon}`)
-  const floodLevel = pickRiskLevel(seed)
-  const stormLevel = pickRiskLevel(seed, 1)
-  const wildfireLevel = pickRiskLevel(seed, 2)
-  const insuranceLevel = pickRiskLevel(seed, 3)
+  const floodLevel = inferLevel(stateCode, FLOOD_PRIORITY_STATES, FLOOD_REVIEW_STATES)
+  const stormLevel = inferLevel(stateCode, STORM_PRIORITY_STATES, STORM_REVIEW_STATES)
+  const wildfireLevel = inferLevel(stateCode, WILDFIRE_PRIORITY_STATES, WILDFIRE_REVIEW_STATES)
+  const insuranceLevel = deriveOverallLevel([
+    floodLevel,
+    stormLevel,
+    wildfireLevel,
+    pickRiskLevel(seed, 3),
+  ])
   const overallLevel = deriveOverallLevel([
     floodLevel,
     stormLevel,
@@ -94,36 +197,36 @@ function createStarterProfile(result, query) {
         title: 'Flood',
         level: floodLevel,
         detail: {
-          low: 'Outside the highest-risk flood bands in this starter view',
-          moderate: 'Review drainage and low-point water paths',
-          high: 'Treat flood coverage and elevation history as priority questions',
+          low: 'Drainage, gutters, and any prior water intrusion.',
+          moderate: 'Low-point pooling, crawlspace moisture, sump or grading work.',
+          high: 'Flood-zone status, flood policy options, and prior water-loss repairs.',
         }[floodLevel],
       },
       {
         title: 'Storm',
         level: stormLevel,
         detail: {
-          low: 'Typical seasonal storm exposure',
-          moderate: 'Wind and hail planning should be part of annual maintenance',
-          high: 'Roof age, openings, and deductible language deserve extra attention',
+          low: 'Roof age, window seals, and nearby tree exposure.',
+          moderate: 'Roof age, wind mitigation work, and hail history.',
+          high: 'Wind or hail deductible, roof age, opening protection, prior claims.',
         }[stormLevel],
       },
       {
         title: 'Wildfire',
         level: wildfireLevel,
         detail: {
-          low: 'No elevated wildfire signal in this starter profile',
-          moderate: 'Create defensible space and review ember-resistant upgrades',
-          high: 'Plan around defensible space and evacuation readiness',
+          low: 'Roof debris, gutters, and brush near the structure.',
+          moderate: 'Defensible space, vent screening, and roof material.',
+          high: 'Roof material, ember entry points, clearance, evacuation access.',
         }[wildfireLevel],
       },
       {
-        title: 'Insurance',
+        title: 'Coverage',
         level: insuranceLevel,
         detail: {
-          low: 'Standard review of dwelling and loss-of-use coverage',
-          moderate: 'Compare deductibles and peril-specific endorsements',
-          high: 'Policy wording and exclusions should be reviewed closely',
+          low: 'Declarations page, deductible, and carrier contacts.',
+          moderate: 'Replacement cost, loss-of-use, water backup, roof schedule.',
+          high: 'Wind or hail deductible, flood exclusion, replacement-cost language.',
         }[insuranceLevel],
       },
     ],
