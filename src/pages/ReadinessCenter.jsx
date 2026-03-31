@@ -499,7 +499,7 @@ function ReadinessCenter() {
             ))}
           </div>
           <div className="readiness-custom-actions">
-            <button className="btn-primary">+ Custom</button>
+            <button className="btn-outline">Add Custom List</button>
           </div>
         </section>
       </div>
