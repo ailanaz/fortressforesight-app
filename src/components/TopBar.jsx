@@ -5,8 +5,16 @@ function TopBar() {
   return (
     <header className="topbar">
       <div className="topbar-inner">
-        <Link className="topbar-logo-link" to="/property">
-          <span className="topbar-logo">FortressForesight</span>
+        <Link
+          className="topbar-logo-link"
+          to="/property"
+          aria-label="FortressForesight home"
+        >
+          <img
+            className="topbar-logo-image"
+            src="/branding/logos/fortressforesight-logo-horizontal-transparent.png"
+            alt="FortressForesight"
+          />
         </Link>
         <Link className="topbar-account" aria-label="Account" to="/login">
           <svg

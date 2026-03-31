@@ -7,9 +7,9 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/branding/logos/fortressforesight-logo-square-transparent.png",
+      "sizes": "500x500",
+      "type": "image/png",
       "purpose": "any"
     }
   ]

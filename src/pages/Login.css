@@ -15,16 +15,15 @@
   border-radius: 12px;
   padding: 32px 24px;
   width: 100%;
-  max-width: 400px;
+  max-width: 520px;
   box-shadow: var(--shadow-md);
 }
 
-.login-logo {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--color-yellow);
-  text-align: center;
-  margin-bottom: 6px;
+.login-logo-image {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  margin: 0 auto 10px;
 }
 
 .login-tagline {

@@ -16,7 +16,11 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="login-logo">FortressForesight</div>
+        <img
+          className="login-logo-image"
+          src="/branding/logos/fortressforesight-logo-horizontal-transparent.png"
+          alt="FortressForesight"
+        />
         <p className="login-tagline">
           Clarity before disaster. Structure during crisis. Confidence through recovery.
         </p>
