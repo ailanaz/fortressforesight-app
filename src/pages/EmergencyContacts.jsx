@@ -3,9 +3,9 @@ import './Page.css'
 import './EmergencyContacts.css'
 
 const DEFAULT_CONTACTS = [
-  { id: 1, name: '', phone: '', placeholder: 'Add contact' },
-  { id: 2, name: '', phone: '', placeholder: 'Add contact' },
-  { id: 3, name: '', phone: '', placeholder: 'Add contact' },
+  { id: 1, name: '', phone: '', placeholder: 'Contact' },
+  { id: 2, name: '', phone: '', placeholder: 'Contact' },
+  { id: 3, name: '', phone: '', placeholder: 'Contact' },
 ]
 
 function EmergencyContacts() {
@@ -32,7 +32,7 @@ function EmergencyContacts() {
               <input
                 className="contact-input"
                 type="text"
-                placeholder={contact.placeholder || 'Add contact'}
+                placeholder={contact.placeholder || 'Contact'}
                 value={contact.name}
                 onChange={(event) => updateContact(contact.id, 'name', event.target.value)}
               />
@@ -40,7 +40,7 @@ function EmergencyContacts() {
                 <input
                   className="contact-input phone"
                   type="tel"
-                  placeholder="Phone number"
+                  placeholder="Phone"
                   value={contact.phone}
                   onChange={(event) => updateContact(contact.id, 'phone', event.target.value)}
                 />
