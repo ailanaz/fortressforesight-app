@@ -12,29 +12,6 @@
   flex-wrap: wrap;
 }
 
-.property-status-group {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.property-status-chip {
-  border: 1px solid rgba(248, 194, 0, 0.35);
-  background: rgba(248, 194, 0, 0.1);
-  color: var(--color-yellow);
-  border-radius: 999px;
-  padding: 7px 12px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.property-status-chip-muted {
-  border-color: rgba(61, 100, 240, 0.35);
-  background: rgba(61, 100, 240, 0.1);
-  color: var(--color-blue);
-}
-
 .property-searchbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;

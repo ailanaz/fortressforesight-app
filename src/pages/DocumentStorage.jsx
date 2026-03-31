@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useActiveHome } from '../context/HomeContext'
+import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './Page.css'
 import './DocumentStorage.css'
 
@@ -11,13 +13,39 @@ const SAMPLE_DOCS = [
 ]
 
 function DocumentStorage() {
+  const { activeHome } = useActiveHome()
   const [filter, setFilter] = useState('All')
   const [docs] = useState(SAMPLE_DOCS)
 
   const filtered = filter === 'All' ? docs : docs.filter((doc) => doc.type === filter)
+  const homeTitle = getHomeTitle(activeHome)
+  const homeLocation = getHomeLocation(activeHome)
 
   return (
     <div className="page">
+      {activeHome ? (
+        <div className="active-home-card card">
+          <div className="active-home-copy">
+            <span className="active-home-kicker">Document vault</span>
+            <span className="active-home-title">{homeTitle}</span>
+            {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
+            <span className="active-home-note">
+              Organize policies, receipts, inspections, and warranties for the home you just searched.
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="active-home-card active-home-empty card">
+          <div className="active-home-copy">
+            <span className="active-home-kicker">Document vault</span>
+            <span className="active-home-title">Pick a home first</span>
+            <span className="active-home-note">
+              Search an address in Property Search and this vault will follow that home across the app.
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className="section-header">
         <h1 className="page-title">Documents</h1>
         <button className="btn-primary upload-btn">+ Upload</button>
@@ -66,7 +94,7 @@ function DocumentStorage() {
       </div>
 
       <div className="upload-area">
-        <p>Drag and drop files here, or</p>
+        <p>{activeHome ? `Add files for ${homeTitle}.` : 'Drag and drop files here, or'}</p>
         <div className="upload-buttons">
           <button className="btn-outline">Choose File</button>
           <button className="btn-outline">Take Photo</button>

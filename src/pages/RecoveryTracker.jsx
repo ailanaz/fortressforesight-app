@@ -1,14 +1,42 @@
 import { useState } from 'react'
+import { useActiveHome } from '../context/HomeContext'
+import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './Page.css'
 import './RecoveryTracker.css'
 
 const TABS = ['Damage Log', 'Expenses', 'Timeline', 'Claim Status']
 
 function RecoveryTracker() {
+  const { activeHome } = useActiveHome()
   const [activeTab, setActiveTab] = useState('Damage Log')
+  const homeTitle = getHomeTitle(activeHome)
+  const homeLocation = getHomeLocation(activeHome)
 
   return (
     <div className="page">
+      {activeHome ? (
+        <div className="active-home-card card">
+          <div className="active-home-copy">
+            <span className="active-home-kicker">Recovery workspace</span>
+            <span className="active-home-title">{homeTitle}</span>
+            {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
+            <span className="active-home-note">
+              Damage logs, receipts, and claim milestones now stay centered on the home you searched.
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="active-home-card active-home-empty card">
+          <div className="active-home-copy">
+            <span className="active-home-kicker">Recovery workspace</span>
+            <span className="active-home-title">Add a home to start</span>
+            <span className="active-home-note">
+              Search an address first so recovery details stay tied to one property instead of a generic claim shell.
+            </span>
+          </div>
+        </div>
+      )}
+
       <h1 className="page-title">Recovery Tracker</h1>
       <p className="page-subtitle">
         Document damage, log expenses, and track your claim from start to finish.

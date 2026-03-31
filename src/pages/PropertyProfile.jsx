@@ -6,6 +6,7 @@ import {
   TileLayer,
   useMap,
 } from 'react-leaflet'
+import { useActiveHome } from '../context/HomeContext'
 import './Page.css'
 import './PropertyProfile.css'
 
@@ -188,10 +189,11 @@ function MapViewportController({ center, zoom }) {
 }
 
 function PropertyProfile() {
-  const [query, setQuery] = useState('')
+  const { activeHome, saveActiveHome, clearActiveHome } = useActiveHome()
+  const [query, setQuery] = useState(activeHome?.query || '')
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState('')
-  const [property, setProperty] = useState(null)
+  const [property, setProperty] = useState(activeHome)
   const [isMapReady, setIsMapReady] = useState(false)
   const requestRef = useRef(null)
 
@@ -204,6 +206,13 @@ function PropertyProfile() {
       }
     }
   }, [])
+
+  useEffect(() => {
+    setProperty(activeHome ?? null)
+    setQuery((currentValue) =>
+      currentValue || activeHome?.query || '',
+    )
+  }, [activeHome])
 
   const activeCenter = property
     ? [property.lat, property.lon]
@@ -257,12 +266,14 @@ function PropertyProfile() {
     try {
       const result = await geocodeAddress(trimmedQuery, controller.signal)
       const starterProfile = createStarterProfile(result, trimmedQuery)
-
-      setProperty({
+      const nextProperty = {
         ...result,
         ...starterProfile,
         query: trimmedQuery,
-      })
+      }
+
+      setProperty(nextProperty)
+      saveActiveHome(nextProperty)
       setStatus('success')
     } catch (lookupError) {
       if (lookupError.name === 'AbortError') {
@@ -281,7 +292,7 @@ function PropertyProfile() {
 
   const resetSearch = () => {
     setQuery('')
-    setProperty(null)
+    setProperty(activeHome)
     setStatus('idle')
     setError('')
   }
@@ -292,17 +303,8 @@ function PropertyProfile() {
         <div>
           <h1 className="page-title">Property Search</h1>
           <p className="page-subtitle">
-            Search one address at a time, zoom into the property, and review a
-            starter risk profile in the side panel.
+            Search an address to view the map and summary.
           </p>
-        </div>
-        <div className="property-status-group">
-          <span className="property-status-chip">
-            Address search only
-          </span>
-          <span className="property-status-chip property-status-chip-muted">
-            Live zoom map
-          </span>
         </div>
       </div>
 
@@ -345,8 +347,8 @@ function PropertyProfile() {
             </div>
             <p className="property-map-note">
               {property
-                ? 'The map will pan and zoom into the matched property.'
-                : 'Search an address to animate into the property location.'}
+                ? 'Zoomed to the matched property.'
+                : 'Search an address to begin.'}
             </p>
           </div>
 
@@ -401,8 +403,7 @@ function PropertyProfile() {
                   <RiskBadge level={property.overallLevel} />
                 </div>
                 <p className="property-sidebar-copy">
-                  FEMA, NOAA, and insurance integrations are not wired yet, so
-                  this panel is a starter profile to shape the final workflow.
+                  Starter summary for the searched property.
                 </p>
               </div>
 
@@ -435,38 +436,30 @@ function PropertyProfile() {
               </div>
 
               <div className="property-actions">
-                <button className="btn-outline" type="button">
-                  Save Property
+                <button className="btn-outline" type="button" disabled>
+                  Current Home Active
                 </button>
                 <button className="btn-outline" type="button">
                   View Insurance Checklist
                 </button>
+                {activeHome ? (
+                  <button
+                    className="btn-outline"
+                    type="button"
+                    onClick={clearActiveHome}
+                  >
+                    Clear Current Home
+                  </button>
+                ) : null}
               </div>
             </>
           ) : (
             <div className="property-empty-state">
-              <p className="property-sidebar-kicker">Search workspace</p>
-              <h2 className="property-sidebar-title">One address, one clear view.</h2>
+              <p className="property-sidebar-kicker">Property summary</p>
+              <h2 className="property-sidebar-title">Search an address</h2>
               <p className="property-sidebar-copy">
-                Enter a property address above to drop a pin, zoom into the
-                location, and open a right-side summary built for home risk and
-                readiness.
+                The summary will appear here.
               </p>
-
-              <div className="property-empty-list">
-                <div className="property-empty-item">
-                  <span className="property-empty-dot" />
-                  <span>Smooth map zoom into the searched home</span>
-                </div>
-                <div className="property-empty-item">
-                  <span className="property-empty-dot" />
-                  <span>Right-panel property summary and starter risk signals</span>
-                </div>
-                <div className="property-empty-item">
-                  <span className="property-empty-dot" />
-                  <span>Future handoff into records, readiness, and recovery flows</span>
-                </div>
-              </div>
             </div>
           )}
         </aside>

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useActiveHome } from '../context/HomeContext'
+import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './Page.css'
 import './ReadinessCenter.css'
 
@@ -115,13 +117,32 @@ function Checklist({ checklist }) {
 }
 
 function ReadinessCenter() {
+  const { activeHome } = useActiveHome()
+  const homeTitle = getHomeTitle(activeHome)
+  const homeLocation = getHomeLocation(activeHome)
+
   return (
     <div className="page">
+      {activeHome ? (
+        <div className="active-home-card card">
+          <div className="active-home-copy">
+            <span className="active-home-kicker">Readiness plan</span>
+            <span className="active-home-title">{homeTitle}</span>
+            {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
+            <span className="active-home-note">
+              Use these checklists to reduce risk and get this specific home better prepared before a loss.
+            </span>
+          </div>
+        </div>
+      ) : null}
+
       <div className="section-header">
         <h1 className="page-title">Readiness Center</h1>
         <button className="btn-primary">+ Custom</button>
       </div>
-      <p className="page-subtitle">Tap a checklist to expand it and track your progress.</p>
+      <p className="page-subtitle">
+        Tap a checklist to expand it and track your progress.
+      </p>
 
       <h2 className="section-label">Premade Checklists</h2>
       {PREMADE_CHECKLISTS.map((checklist) => (

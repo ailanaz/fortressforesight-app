@@ -1,21 +1,38 @@
 import { Link } from 'react-router-dom'
+import { useActiveHome } from '../context/HomeContext'
+import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './TopBar.css'
 
 function TopBar() {
+  const { activeHome } = useActiveHome()
+  const homeTitle = getHomeTitle(activeHome)
+  const homeLocation = getHomeLocation(activeHome)
+
   return (
     <header className="topbar">
       <div className="topbar-inner">
-        <Link
-          className="topbar-logo-link"
-          to="/property"
-          aria-label="FortressForesight home"
-        >
-          <img
-            className="topbar-logo-image"
-            src="/branding/logos/fortressforesight-logo-horizontal-transparent.png"
-            alt="FortressForesight"
-          />
-        </Link>
+        <div className="topbar-brand-group">
+          <Link
+            className="topbar-logo-link"
+            to="/property"
+            aria-label="FortressForesight home"
+          >
+            <img
+              className="topbar-logo-image"
+              src="/branding/logos/fortressforesight-logo-horizontal-transparent.png"
+              alt="FortressForesight"
+            />
+          </Link>
+          {activeHome ? (
+            <div className="topbar-home-pill">
+              <span className="topbar-home-kicker">Current home</span>
+              <span className="topbar-home-title">{homeTitle}</span>
+              {homeLocation ? (
+                <span className="topbar-home-meta">{homeLocation}</span>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
         <Link className="topbar-account" aria-label="Account" to="/login">
           <svg
             width="24"

@@ -25,10 +25,54 @@
   align-items: center;
 }
 
+.topbar-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
 .topbar-logo-image {
   display: block;
   width: auto;
   height: 34px;
+}
+
+.topbar-home-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(61, 100, 240, 0.35);
+  background: rgba(12, 15, 25, 0.88);
+}
+
+.topbar-home-kicker {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+}
+
+.topbar-home-title,
+.topbar-home-meta {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-home-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.topbar-home-meta {
+  font-size: 12px;
+  color: var(--color-gray-500);
 }
 
 .topbar-account {
@@ -44,4 +88,14 @@
 
 .topbar-account:hover {
   background: var(--color-blue-light);
+}
+
+@media (max-width: 720px) {
+  .topbar-inner {
+    gap: 12px;
+  }
+
+  .topbar-home-pill {
+    display: none;
+  }
 }
