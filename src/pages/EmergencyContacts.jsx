@@ -3,9 +3,9 @@ import './Page.css'
 import './EmergencyContacts.css'
 
 const DEFAULT_CONTACTS = [
-  { id: 1, name: 'Insurance Agent', phone: '', category: 'Insurance', placeholder: 'Agent name and number' },
-  { id: 2, name: 'Primary Contractor', phone: '', category: 'Contractor', placeholder: 'Contractor name and number' },
-  { id: 3, name: 'Local Emergency Services', phone: '911', category: 'Emergency', placeholder: '' },
+  { id: 1, name: '', phone: '', placeholder: 'Add contact' },
+  { id: 2, name: '', phone: '', placeholder: 'Add contact' },
+  { id: 3, name: '', phone: '', placeholder: 'Add contact' },
 ]
 
 function EmergencyContacts() {
@@ -28,12 +28,11 @@ function EmergencyContacts() {
       <div className="contacts-list">
         {contacts.map((contact) => (
           <div key={contact.id} className="contact-card card">
-            <div className="contact-category">{contact.category}</div>
             <div className="contact-fields">
               <input
                 className="contact-input"
                 type="text"
-                placeholder={contact.placeholder || 'Name'}
+                placeholder={contact.placeholder || 'Add contact'}
                 value={contact.name}
                 onChange={(event) => updateContact(contact.id, 'name', event.target.value)}
               />
