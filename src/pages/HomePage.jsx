@@ -17,6 +17,7 @@ const RAIL_ITEMS = [
     label: 'Confidence',
     alt: 'Confidence through recovery',
     src: '/branding/home/confidence-through-recovery.png',
+    to: '/recovery',
   },
 ]
 
@@ -67,12 +68,21 @@ function HomePage() {
 
         <aside className="home-stage-side">
           {RAIL_ITEMS.map((item) => (
-            <article key={item.alt} className="home-side-card card">
-              <p className="home-side-label">{item.label}</p>
-              <div className="home-side-media">
-                <img className="home-side-image" src={item.src} alt={item.alt} />
-              </div>
-            </article>
+            item.to ? (
+              <Link key={item.alt} className="home-side-card home-side-card-link card" to={item.to}>
+                <p className="home-side-label">{item.label}</p>
+                <div className="home-side-media">
+                  <img className="home-side-image" src={item.src} alt={item.alt} />
+                </div>
+              </Link>
+            ) : (
+              <article key={item.alt} className="home-side-card card">
+                <p className="home-side-label">{item.label}</p>
+                <div className="home-side-media">
+                  <img className="home-side-image" src={item.src} alt={item.alt} />
+                </div>
+              </article>
+            )
           ))}
         </aside>
       </section>

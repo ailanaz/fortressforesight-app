@@ -123,6 +123,15 @@
   gap: 12px;
 }
 
+.home-side-card-link {
+  text-decoration: none;
+}
+
+.home-side-card-link:hover {
+  border-color: rgba(61, 100, 240, 0.3);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
+}
+
 .home-side-label {
   width: 100%;
   font-size: 11px;
