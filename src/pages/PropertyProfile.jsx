@@ -1,24 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  CircleMarker,
-  MapContainer,
-  Popup,
-  TileLayer,
-  useMap,
-} from 'react-leaflet'
 import { useActiveHome } from '../context/HomeContext'
 import './Page.css'
 import './PropertyProfile.css'
 
-const DEFAULT_CENTER = [39.8283, -98.5795]
-const DEFAULT_ZOOM = 4
-const PROPERTY_ZOOM = 17
+const GOOGLE_MAPS_EMBED_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+
 const EMPTY_DETAIL_ROWS = [
-  { label: 'Matched address', value: 'Will populate here' },
-  { label: 'County / State', value: 'Will populate here' },
-  { label: 'ZIP code', value: 'Will populate here' },
-  { label: 'Coordinates', value: 'Will populate here' },
+  { label: 'Address', value: '\u2014' },
+  { label: 'City / State', value: '\u2014' },
+  { label: 'ZIP code', value: '\u2014' },
+  { label: 'Coordinates', value: '\u2014' },
 ]
+
 const EMPTY_RISK_CARDS = ['Flood', 'Storm', 'Wildfire', 'Insurance']
 
 const RISK_LEVELS = {
@@ -95,71 +88,157 @@ function createStarterProfile(result, query) {
     insuranceLevel,
   ])
 
-  const floodDetails = {
-    low: 'Outside the highest-risk flood bands in this starter view',
-    moderate: 'Review drainage, foundation grading, and low-point water paths',
-    high: 'Treat flood coverage and elevation history as priority questions',
-  }
-
-  const stormDetails = {
-    low: 'Typical seasonal storm exposure',
-    moderate: 'Wind and hail planning should be part of annual maintenance',
-    high: 'Roof age, openings, and deductible language deserve extra attention',
-  }
-
-  const wildfireDetails = {
-    low: 'No elevated wildfire signal in this starter profile',
-    moderate: 'Create defensible space and review ember-resistant upgrades',
-    high: 'Plan around defensible space, vent protection, and evacuation readiness',
-  }
-
-  const insuranceDetails = {
-    low: 'Standard review of dwelling, personal property, and loss-of-use coverage',
-    moderate: 'Compare deductibles and confirm peril-specific endorsements',
-    high: 'Policy wording, exclusions, and specialty coverage should be reviewed closely',
-  }
-
-  const cards = [
-    {
-      title: 'Flood',
-      level: floodLevel,
-      detail: floodDetails[floodLevel],
-    },
-    {
-      title: 'Storm',
-      level: stormLevel,
-      detail: stormDetails[stormLevel],
-    },
-    {
-      title: 'Wildfire',
-      level: wildfireLevel,
-      detail: wildfireDetails[wildfireLevel],
-    },
-    {
-      title: 'Insurance',
-      level: insuranceLevel,
-      detail: insuranceDetails[insuranceLevel],
-    },
-  ]
-
-  const readinessChecklist = [
-    'Save a full home photo inventory before the next major weather event',
-    'Review deductibles, exclusions, and loss-of-use coverage now',
-    'Store your declarations page, inspection reports, and receipts in the vault',
-    'Set annual reminders for roof, gutter, drainage, and HVAC checks',
-  ]
-
   return {
-    cards,
+    cards: [
+      {
+        title: 'Flood',
+        level: floodLevel,
+        detail: {
+          low: 'Outside the highest-risk flood bands in this starter view',
+          moderate: 'Review drainage and low-point water paths',
+          high: 'Treat flood coverage and elevation history as priority questions',
+        }[floodLevel],
+      },
+      {
+        title: 'Storm',
+        level: stormLevel,
+        detail: {
+          low: 'Typical seasonal storm exposure',
+          moderate: 'Wind and hail planning should be part of annual maintenance',
+          high: 'Roof age, openings, and deductible language deserve extra attention',
+        }[stormLevel],
+      },
+      {
+        title: 'Wildfire',
+        level: wildfireLevel,
+        detail: {
+          low: 'No elevated wildfire signal in this starter profile',
+          moderate: 'Create defensible space and review ember-resistant upgrades',
+          high: 'Plan around defensible space and evacuation readiness',
+        }[wildfireLevel],
+      },
+      {
+        title: 'Insurance',
+        level: insuranceLevel,
+        detail: {
+          low: 'Standard review of dwelling and loss-of-use coverage',
+          moderate: 'Compare deductibles and peril-specific endorsements',
+          high: 'Policy wording and exclusions should be reviewed closely',
+        }[insuranceLevel],
+      },
+    ],
     overallLevel,
-    readinessChecklist,
   }
 }
 
-async function geocodeAddress(query, signal) {
+function createAbortError() {
+  const error = new Error('Request aborted.')
+  error.name = 'AbortError'
+  return error
+}
+
+function buildCensusRoad(components) {
+  return [
+    components.preDirection,
+    components.streetName,
+    components.suffixType,
+    components.suffixDirection,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function geocodeWithCensus(query, signal) {
+  return new Promise((resolve, reject) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      reject(new Error('Census geocoder unavailable.'))
+      return
+    }
+
+    if (signal?.aborted) {
+      reject(createAbortError())
+      return
+    }
+
+    const callbackName = `__ffCensus_${Date.now()}_${Math.floor(Math.random() * 10000)}`
+    const script = document.createElement('script')
+    const params = new URLSearchParams({
+      address: query,
+      benchmark: 'Public_AR_Current',
+      format: 'jsonp',
+      callback: callbackName,
+    })
+
+    let settled = false
+
+    const cleanup = () => {
+      delete window[callbackName]
+      script.remove()
+      signal?.removeEventListener('abort', handleAbort)
+    }
+
+    const fail = (error) => {
+      if (settled) {
+        return
+      }
+
+      settled = true
+      cleanup()
+      reject(error)
+    }
+
+    function handleAbort() {
+      fail(createAbortError())
+    }
+
+    window[callbackName] = (payload) => {
+      if (settled) {
+        return
+      }
+
+      const match = payload?.result?.addressMatches?.[0]
+
+      if (!match) {
+        fail(new Error('No Census address match found.'))
+        return
+      }
+
+      const coordinates = match.coordinates ?? {}
+      const components = match.addressComponents ?? {}
+      const road = buildCensusRoad(components)
+
+      settled = true
+      cleanup()
+      resolve({
+        lat: Number(coordinates.y),
+        lon: Number(coordinates.x),
+        displayName: match.matchedAddress,
+        address: {
+          road,
+          city: components.city || '',
+          state: components.state || '',
+          postcode: components.zip || '',
+        },
+        bounds: null,
+      })
+    }
+
+    script.onerror = () => {
+      fail(new Error('Census geocoder failed.'))
+    }
+
+    signal?.addEventListener('abort', handleAbort, { once: true })
+    script.src = `https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?${params.toString()}`
+    document.body.appendChild(script)
+  })
+}
+
+async function geocodeWithNominatim(query, signal) {
   const params = new URLSearchParams({
     format: 'jsonv2',
-    limit: '5',
+    limit: '3',
     addressdetails: '1',
     countrycodes: 'us',
     dedupe: '1',
@@ -188,23 +267,25 @@ async function geocodeAddress(query, signal) {
   }
 
   const match = [...results].sort((left, right) => rankGeocodeResult(right) - rankGeocodeResult(left))[0]
-  const [south, north, west, east] = (match.boundingbox ?? []).map(Number)
 
   return {
     lat: Number(match.lat),
     lon: Number(match.lon),
     displayName: match.display_name,
     address: match.address ?? {},
-    bounds:
-      Number.isFinite(south) &&
-      Number.isFinite(north) &&
-      Number.isFinite(west) &&
-      Number.isFinite(east)
-        ? [
-            [south, west],
-            [north, east],
-          ]
-        : null,
+    bounds: null,
+  }
+}
+
+async function geocodeAddress(query, signal) {
+  try {
+    return await geocodeWithCensus(query, signal)
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw error
+    }
+
+    return geocodeWithNominatim(query, signal)
   }
 }
 
@@ -218,27 +299,18 @@ function RiskBadge({ level }) {
   )
 }
 
-function MapViewportController({ bounds, center, zoom }) {
-  const map = useMap()
+function getGoogleEmbedSrc(property) {
+  if (!property) {
+    return ''
+  }
 
-  useEffect(() => {
-    if (bounds) {
-      map.flyToBounds(bounds, {
-        animate: true,
-        duration: 1.2,
-        padding: [28, 28],
-        maxZoom: PROPERTY_ZOOM,
-      })
-      return
-    }
+  const target = property.displayName || property.query
 
-    map.flyTo(center, zoom, {
-      animate: true,
-      duration: 1.2,
-    })
-  }, [bounds, center, zoom, map])
+  if (GOOGLE_MAPS_EMBED_KEY) {
+    return `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(GOOGLE_MAPS_EMBED_KEY)}&q=${encodeURIComponent(target)}&zoom=16`
+  }
 
-  return null
+  return `https://www.google.com/maps?output=embed&q=${encodeURIComponent(target)}`
 }
 
 function PropertyProfile() {
@@ -247,12 +319,9 @@ function PropertyProfile() {
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState('')
   const [property, setProperty] = useState(activeHome)
-  const [isMapReady, setIsMapReady] = useState(false)
   const requestRef = useRef(null)
 
   useEffect(() => {
-    setIsMapReady(true)
-
     return () => {
       if (requestRef.current) {
         requestRef.current.abort()
@@ -262,16 +331,8 @@ function PropertyProfile() {
 
   useEffect(() => {
     setProperty(activeHome ?? null)
-    setQuery((currentValue) =>
-      currentValue || activeHome?.query || '',
-    )
+    setQuery((currentValue) => currentValue || activeHome?.query || '')
   }, [activeHome])
-
-  const activeCenter = property
-    ? [property.lat, property.lon]
-    : DEFAULT_CENTER
-  const activeZoom = property ? PROPERTY_ZOOM : DEFAULT_ZOOM
-  const activeBounds = property?.bounds ?? null
 
   const detailRows = useMemo(() => {
     if (!property) {
@@ -279,11 +340,17 @@ function PropertyProfile() {
     }
 
     return [
-      { label: 'Matched address', value: property.displayName },
+      { label: 'Address', value: property.displayName },
       {
-        label: 'County / State',
+        label: 'City / State',
         value:
-          [property.address.county, property.address.state]
+          [
+            property.address.city ||
+              property.address.town ||
+              property.address.village ||
+              property.address.hamlet,
+            property.address.state,
+          ]
             .filter(Boolean)
             .join(', ') || 'Not available yet',
       },
@@ -297,6 +364,8 @@ function PropertyProfile() {
       },
     ]
   }, [property])
+
+  const googleEmbedSrc = getGoogleEmbedSrc(property)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -336,9 +405,7 @@ function PropertyProfile() {
 
       setProperty(null)
       setStatus('error')
-      setError(
-        'We could not place that address yet. Try a fuller street address with city and state.',
-      )
+      setError('We could not place that home yet. Try the street address with city and state.')
     } finally {
       requestRef.current = null
     }
@@ -346,7 +413,7 @@ function PropertyProfile() {
 
   const resetSearch = () => {
     setQuery('')
-    setProperty(activeHome)
+    setProperty(activeHome ?? null)
     setStatus('idle')
     setError('')
   }
@@ -356,9 +423,7 @@ function PropertyProfile() {
       <div className="property-heading">
         <div>
           <h1 className="page-title">Property Search</h1>
-          <p className="page-subtitle">
-            Search an address to view the map and summary.
-          </p>
+          <p className="page-subtitle">Search an address to view the Risk Summary.</p>
         </div>
       </div>
 
@@ -370,14 +435,14 @@ function PropertyProfile() {
           id="property-address-search"
           className="property-search-input"
           type="text"
-          placeholder="Search a property address"
+          placeholder="Enter a home address"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
         <button className="btn-primary property-search-button" type="submit">
           {status === 'loading' ? 'Searching...' : 'Search Address'}
         </button>
-        {property && (
+        {property ? (
           <button
             className="btn-outline property-search-button"
             type="button"
@@ -385,63 +450,35 @@ function PropertyProfile() {
           >
             Reset
           </button>
-        )}
+        ) : null}
       </form>
 
-      {error && <p className="property-error">{error}</p>}
+      {error ? <p className="property-error">{error}</p> : null}
 
       <div className="property-workspace">
         <section className="property-map-card card">
           <div className="property-map-toolbar">
             <div>
-              <p className="property-map-kicker">Map View</p>
-              <h2 className="property-map-title">
-                {property ? property.query : 'United States overview'}
-              </h2>
+              <p className="property-map-kicker">Map</p>
+              <h2 className="property-map-title">{property ? property.query : 'Google Maps'}</h2>
             </div>
             <p className="property-map-note">
-              {property
-                ? 'Zoomed to the matched property.'
-                : 'Search an address to begin.'}
+              {property ? 'Visual location reference.' : 'Map preview appears after search.'}
             </p>
           </div>
 
           <div className="property-map-frame">
-            {isMapReady ? (
-                <MapContainer
-                  center={DEFAULT_CENTER}
-                  zoom={DEFAULT_ZOOM}
-                  scrollWheelZoom
-                  className="property-map"
-                >
-                  <TileLayer
-                    attribution='&copy; OpenStreetMap contributors'
-                    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    maxZoom={19}
-                    detectRetina
-                  />
-                <MapViewportController bounds={activeBounds} center={activeCenter} zoom={activeZoom} />
-                {property && (
-                  <CircleMarker
-                    center={[property.lat, property.lon]}
-                    radius={12}
-                    pathOptions={{
-                      color: '#f8c200',
-                      fillColor: '#3d64f0',
-                      fillOpacity: 0.88,
-                      weight: 3,
-                    }}
-                  >
-                    <Popup>
-                      <strong>{property.query}</strong>
-                      <br />
-                      {property.displayName}
-                    </Popup>
-                  </CircleMarker>
-                )}
-              </MapContainer>
+            {property ? (
+              <iframe
+                className="property-map-embed"
+                title={`Map for ${property.query}`}
+                src={googleEmbedSrc}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
             ) : (
-              <div className="property-map-placeholder">Loading map...</div>
+              <div className="property-map-placeholder">Search a home address to load the map.</div>
             )}
           </div>
         </section>
@@ -457,9 +494,6 @@ function PropertyProfile() {
                   </div>
                   <RiskBadge level={property.overallLevel} />
                 </div>
-                <p className="property-sidebar-copy">
-                  Starter view for the searched property.
-                </p>
               </div>
 
               <div className="property-detail-list">
@@ -481,21 +515,9 @@ function PropertyProfile() {
                 ))}
               </div>
 
-              <div className="property-sidebar-section">
-                <p className="property-sidebar-kicker">Next actions</p>
-                <ul className="property-checklist">
-                  {property.readinessChecklist.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-
               <div className="property-actions">
                 <button className="btn-outline" type="button" disabled>
                   Current Home Active
-                </button>
-                <button className="btn-outline" type="button">
-                  View Insurance Checklist
                 </button>
                 {activeHome ? (
                   <button
@@ -511,17 +533,9 @@ function PropertyProfile() {
           ) : (
             <div className="property-empty-state">
               <div className="property-sidebar-section">
-                <div className="property-sidebar-header">
-                  <div>
-                    <p className="property-sidebar-kicker">Risk Summary</p>
-                    <h2 className="property-sidebar-title">Awaiting address</h2>
-                  </div>
-                  <span className="risk-badge risk-badge-placeholder">
-                    Will populate here
-                  </span>
-                </div>
+                <p className="property-sidebar-kicker">Risk Summary</p>
                 <p className="property-sidebar-copy">
-                  Search an address to populate this panel.
+                  This area fills in after you search a home address.
                 </p>
               </div>
 
@@ -540,18 +554,9 @@ function PropertyProfile() {
                 {EMPTY_RISK_CARDS.map((title) => (
                   <article key={title} className="risk-card risk-card-placeholder">
                     <span className="risk-label">{title}</span>
-                    <span className="risk-badge risk-badge-placeholder">Pending</span>
-                    <span className="risk-detail">Will populate here.</span>
+                    <span className="risk-detail">\u2014</span>
                   </article>
                 ))}
-              </div>
-
-              <div className="property-sidebar-section">
-                <p className="property-sidebar-kicker">Next actions</p>
-                <ul className="property-checklist property-checklist-placeholder">
-                  <li>Search a property to populate this section.</li>
-                  <li>Review the summary and save the home.</li>
-                </ul>
               </div>
             </div>
           )}
