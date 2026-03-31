@@ -629,7 +629,7 @@ function PropertyProfile() {
                   />
                 ))}
                 <div className="summary-alert-row">
-                  <AlertTicker state={property?.address?.state || activeHome?.address?.state} />
+                  <AlertTicker />
                 </div>
                 {remainingSummaryCards.map((card) => (
                   <SummaryCard
@@ -651,7 +651,7 @@ function PropertyProfile() {
                   <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
                 <div className="summary-alert-row">
-                  <AlertTicker state={activeHome?.address?.state} />
+                  <AlertTicker />
                 </div>
                 {remainingSummaryCards.map((card) => (
                   <SummaryCard key={card.title} title={card.title} rows={card.rows} />

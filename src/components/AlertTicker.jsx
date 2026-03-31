@@ -1,64 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './AlertTicker.css'
-
-const STATE_CODES = {
-  ALABAMA: 'AL',
-  ALASKA: 'AK',
-  ARIZONA: 'AZ',
-  ARKANSAS: 'AR',
-  CALIFORNIA: 'CA',
-  COLORADO: 'CO',
-  CONNECTICUT: 'CT',
-  DELAWARE: 'DE',
-  'DISTRICT OF COLUMBIA': 'DC',
-  FLORIDA: 'FL',
-  GEORGIA: 'GA',
-  HAWAII: 'HI',
-  IDAHO: 'ID',
-  ILLINOIS: 'IL',
-  INDIANA: 'IN',
-  IOWA: 'IA',
-  KANSAS: 'KS',
-  KENTUCKY: 'KY',
-  LOUISIANA: 'LA',
-  MAINE: 'ME',
-  MARYLAND: 'MD',
-  MASSACHUSETTS: 'MA',
-  MICHIGAN: 'MI',
-  MINNESOTA: 'MN',
-  MISSISSIPPI: 'MS',
-  MISSOURI: 'MO',
-  MONTANA: 'MT',
-  NEBRASKA: 'NE',
-  NEVADA: 'NV',
-  'NEW HAMPSHIRE': 'NH',
-  'NEW JERSEY': 'NJ',
-  'NEW MEXICO': 'NM',
-  'NEW YORK': 'NY',
-  'NORTH CAROLINA': 'NC',
-  'NORTH DAKOTA': 'ND',
-  OHIO: 'OH',
-  OKLAHOMA: 'OK',
-  OREGON: 'OR',
-  PENNSYLVANIA: 'PA',
-  'RHODE ISLAND': 'RI',
-  'SOUTH CAROLINA': 'SC',
-  'SOUTH DAKOTA': 'SD',
-  TENNESSEE: 'TN',
-  TEXAS: 'TX',
-  UTAH: 'UT',
-  VERMONT: 'VT',
-  VIRGINIA: 'VA',
-  WASHINGTON: 'WA',
-  'WEST VIRGINIA': 'WV',
-  WISCONSIN: 'WI',
-  WYOMING: 'WY',
-  'PUERTO RICO': 'PR',
-  GUAM: 'GU',
-  'AMERICAN SAMOA': 'AS',
-  'NORTHERN MARIANA ISLANDS': 'MP',
-  'U.S. VIRGIN ISLANDS': 'VI',
-}
 
 const SEVERITY_ORDER = {
   Extreme: 4,
@@ -66,20 +7,6 @@ const SEVERITY_ORDER = {
   Moderate: 2,
   Minor: 1,
   Unknown: 0,
-}
-
-function getStateCode(value) {
-  if (!value) {
-    return ''
-  }
-
-  const trimmed = value.trim()
-
-  if (trimmed.length === 2) {
-    return trimmed.toUpperCase()
-  }
-
-  return STATE_CODES[trimmed.toUpperCase()] || ''
 }
 
 function formatSent(sent) {
@@ -126,8 +53,7 @@ function buildTickerText(alerts) {
   return buildTickerItems(alerts).join('   •   ')
 }
 
-function AlertTicker({ state }) {
-  const stateCode = useMemo(() => getStateCode(state), [state])
+function AlertTicker() {
   const [status, setStatus] = useState('loading')
   const [alerts, setAlerts] = useState([])
 
@@ -138,12 +64,9 @@ function AlertTicker({ state }) {
       setStatus('loading')
 
       try {
-        const endpoint = stateCode
-          ? `https://api.weather.gov/alerts/active?area=${encodeURIComponent(stateCode)}`
-          : 'https://api.weather.gov/alerts/active'
-
-        const response = await fetch(endpoint, {
+        const response = await fetch('https://api.weather.gov/alerts/active', {
           signal: controller.signal,
+          cache: 'no-store',
           headers: {
             Accept: 'application/geo+json',
           },
@@ -184,9 +107,9 @@ function AlertTicker({ state }) {
       controller.abort()
       window.clearInterval(intervalId)
     }
-  }, [stateCode])
+  }, [])
 
-  const heading = stateCode ? `${stateCode} Emergency Alerts` : 'National Emergency Alerts'
+  const heading = 'National Emergency Alerts'
 
   if (status === 'loading') {
     return (
