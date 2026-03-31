@@ -6,6 +6,7 @@ const DEFAULT_CONTACTS = [
   { id: 1, name: '', phone: '', placeholder: 'Contact' },
   { id: 2, name: '', phone: '', placeholder: 'Contact' },
   { id: 3, name: '', phone: '', placeholder: 'Contact' },
+  { id: 4, name: '', phone: '', placeholder: 'Contact' },
 ]
 
 function EmergencyContacts() {
@@ -20,10 +21,9 @@ function EmergencyContacts() {
   return (
     <div className="page">
       <div className="section-header">
-        <h1 className="page-title">Emergency Contacts</h1>
+        <h1 className="page-title">Contacts</h1>
         <button className="btn-primary">+ Add</button>
       </div>
-      <p className="page-subtitle">Store important numbers for quick access when it matters.</p>
 
       <div className="contacts-list">
         {contacts.map((contact) => (
