@@ -94,16 +94,19 @@
   font-size: 14px;
 }
 
-.upload-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 12px;
+.upload-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-gray-500);
 }
 
-.upload-buttons .btn-outline,
+.upload-single-btn,
 .upload-btn {
   cursor: pointer;
+}
+
+.upload-single-btn {
+  margin-top: 12px;
 }
 
 .empty-state {

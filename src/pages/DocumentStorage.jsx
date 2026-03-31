@@ -35,7 +35,6 @@ function DocumentStorage() {
   const [filter, setFilter] = useState('All')
   const [docs, setDocs] = useState(SAMPLE_DOCS)
   const fileInputRef = useRef(null)
-  const cameraInputRef = useRef(null)
 
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
   const docTypes = [...new Set([...BASE_DOC_TYPES, ...normalizedDocs.map((doc) => doc.type)])]
@@ -128,16 +127,8 @@ function DocumentStorage() {
         ref={fileInputRef}
         className="file-input-hidden"
         type="file"
-        accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept="image/*,.pdf,application/pdf"
         multiple
-        onChange={handleFileChange}
-      />
-      <input
-        ref={cameraInputRef}
-        className="file-input-hidden"
-        type="file"
-        accept="image/*"
-        capture="environment"
         onChange={handleFileChange}
       />
 
@@ -183,15 +174,11 @@ function DocumentStorage() {
       </div>
 
       <div className="upload-area">
-        <p>{activeHome ? `Add files for ${homeTitle}.` : 'Drag and drop files here, or'}</p>
-        <div className="upload-buttons">
-          <button className="btn-outline" onClick={() => fileInputRef.current?.click()}>
-            Choose File
-          </button>
-          <button className="btn-outline" onClick={() => cameraInputRef.current?.click()}>
-            Take Photo
-          </button>
-        </div>
+        <p>{activeHome ? `Add files for ${homeTitle}.` : 'Upload files for the selected home.'}</p>
+        <p className="upload-note">PDF, JPG, JPEG, PNG</p>
+        <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
+          Upload
+        </button>
       </div>
     </div>
   )
