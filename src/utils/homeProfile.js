@@ -4,13 +4,25 @@ export function getHomeTitle(home) {
   }
 
   const streetLine = home.address?.street_line
+  const completeStreet =
+    home.address?.house_number && home.address?.road
+      ? [home.address.house_number, home.address.road].filter(Boolean).join(' ')
+      : ''
   const street = [home.address?.house_number, home.address?.road]
     .filter(Boolean)
     .join(' ')
   const queryLine = home.query?.split(',')[0]?.trim()
   const displayLine = home.displayName?.split(',')[0]?.trim()
 
-  return streetLine || street || queryLine || displayLine || home.query || 'Saved home'
+  return (
+    streetLine ||
+    completeStreet ||
+    queryLine ||
+    displayLine ||
+    street ||
+    home.query ||
+    'Saved home'
+  )
 }
 
 export function getHomeLocation(home) {
