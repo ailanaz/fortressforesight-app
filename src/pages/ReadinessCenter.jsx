@@ -474,7 +474,9 @@ function ReadinessCenter() {
               <h3 className="section-label readiness-group-label">{section.label}</h3>
               {section.id === 'disasters' ? (
                 <p className="readiness-group-note">
-                  These cover the most common situations. Create a Custom Checklist for property and area specific needs.
+                  These cover the most common situations.
+                  <br />
+                  Create a Custom Checklist for property and area specific needs.
                 </p>
               ) : null}
               <div className="readiness-group-content">
