@@ -87,7 +87,7 @@
 
 .home-stage-copy {
   max-width: 720px;
-  transform: translateY(5%);
+  margin-top: 5%;
 }
 
 .home-stage-section-label {
@@ -129,7 +129,7 @@
   gap: 12px;
   align-items: center;
   margin-top: 26px;
-  transform: translateY(-2.5%);
+  margin-bottom: 2.5%;
 }
 
 .home-search-input {
@@ -240,7 +240,8 @@
 
   .home-stage-copy,
   .home-search-form {
-    transform: none;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
   .home-subtitle {
