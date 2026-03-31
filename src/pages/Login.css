@@ -41,14 +41,14 @@
 
 .login-tagline {
   font-size: 13px;
-  color: var(--color-gray-500);
+  color: var(--color-gray-700);
   text-align: center;
   margin-bottom: 24px;
 }
 
 .login-description {
   font-size: 13px;
-  color: var(--color-gray-700);
+  color: var(--color-gray-500);
   text-align: left;
   line-height: 1.6;
   margin: -8px auto 24px;
