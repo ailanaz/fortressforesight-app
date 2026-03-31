@@ -135,6 +135,12 @@
   margin-bottom: 2.5%;
 }
 
+@media (min-width: 981px) {
+  .home-search-form {
+    transform: translateY(-7.5%);
+  }
+}
+
 .home-search-input {
   min-width: 0;
   width: 100%;
