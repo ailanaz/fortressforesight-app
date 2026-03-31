@@ -309,7 +309,7 @@ function ReadinessCenter() {
               <h3 className="section-label readiness-group-label">{section.label}</h3>
               {section.id === 'disasters' ? (
                 <p className="readiness-group-note">
-                  These cover the most common situations. Use a custom list for home- and area-specific needs.
+                  These cover the most common situations. Create a Custom Checklist for property and area specific needs.
                 </p>
               ) : null}
               <div className="readiness-group-content">
@@ -324,7 +324,7 @@ function ReadinessCenter() {
         <section className="readiness-group-card readiness-custom-card card">
           <h3 className="section-label readiness-group-label">Custom</h3>
           <p className="readiness-group-note">
-            Create lists for this home, your area, and your own routines.
+            Create custom checklists.
           </p>
           <div className="readiness-custom-content">
             <div className="readiness-custom-block">
