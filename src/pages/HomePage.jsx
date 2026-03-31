@@ -13,6 +13,7 @@ const RAIL_ITEMS = [
     label: 'Structure',
     alt: 'Structure during crisis',
     src: '/branding/home/structure-during-crisis.png',
+    to: '/documents',
   },
   {
     label: 'Confidence',
