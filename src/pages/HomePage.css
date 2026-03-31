@@ -99,7 +99,7 @@
 
 .home-title {
   max-width: 620px;
-  margin-top: calc(10px + 5%);
+  margin-top: calc(6px + 4%);
   font-size: clamp(46px, 7vw, 84px);
   line-height: 0.94;
   letter-spacing: -0.04em;
