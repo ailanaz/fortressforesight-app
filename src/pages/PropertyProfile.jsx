@@ -811,21 +811,6 @@ function PropertyProfile() {
                   />
                 ))}
               </div>
-
-              <div className="property-actions">
-                <button className="btn-outline" type="button" disabled>
-                  Saved Address
-                </button>
-                {activeHome ? (
-                  <button
-                    className="btn-outline"
-                    type="button"
-                    onClick={clearActiveHome}
-                  >
-                    Clear Address
-                  </button>
-                ) : null}
-              </div>
             </>
           ) : (
             <div className="property-empty-state">
