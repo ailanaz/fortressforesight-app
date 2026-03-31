@@ -235,15 +235,14 @@
 
   .home-title {
     font-size: clamp(38px, 12vw, 58px);
+    margin-top: 10px;
+    line-height: 1.02;
+    padding-top: 2px;
   }
 
   .home-stage-copy,
   .home-search-form {
     margin-bottom: 0;
-  }
-
-  .home-title {
-    margin-top: 10px;
   }
 
   .home-subtitle {
