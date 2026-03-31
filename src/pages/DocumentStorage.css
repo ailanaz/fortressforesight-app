@@ -2,6 +2,10 @@
   margin-bottom: 16px;
 }
 
+.file-input-hidden {
+  display: none;
+}
+
 .upload-btn {
   white-space: nowrap;
 }
@@ -77,6 +81,7 @@
   color: var(--color-yellow);
   padding: 4px;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .upload-area {
@@ -94,6 +99,11 @@
   gap: 10px;
   justify-content: center;
   margin-top: 12px;
+}
+
+.upload-buttons .btn-outline,
+.upload-btn {
+  cursor: pointer;
 }
 
 .empty-state {

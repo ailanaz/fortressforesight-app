@@ -12,7 +12,39 @@
 }
 
 .readiness-checklists-label {
+  margin-bottom: 0;
+}
+
+.readiness-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 12px;
+}
+
+.readiness-calendar-actions {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+}
+
+.readiness-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-gray-500);
+}
+
+.readiness-date-field input {
+  min-width: 0;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--color-gray-900);
+  font: inherit;
 }
 
 .readiness-grid {
@@ -148,6 +180,12 @@
 }
 
 @media (max-width: 980px) {
+  .readiness-toolbar,
+  .readiness-calendar-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .readiness-grid {
     grid-template-columns: 1fr;
   }
