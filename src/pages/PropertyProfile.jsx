@@ -14,7 +14,7 @@ const EMPTY_DETAIL_ROWS = [
 
 const EMPTY_SUMMARY_CARDS = [
   {
-    title: 'Property Context',
+    title: 'Property',
     rows: EMPTY_DETAIL_ROWS,
   },
   {
@@ -198,7 +198,7 @@ function createStarterProfile(result) {
   return {
     summaryCards: [
       {
-        title: 'Property Context',
+        title: 'Property',
         rows: [
           { label: 'Address', value: result.displayName },
           {
