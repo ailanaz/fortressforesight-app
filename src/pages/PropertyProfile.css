@@ -4,7 +4,8 @@
   margin-bottom: 12px;
   padding: 4px;
   border-radius: 999px;
-  background: var(--color-gray-100);
+  background: var(--color-surface);
+  border: 1px solid var(--color-gray-200);
 }
 
 .lookup-toggle-button {
@@ -19,9 +20,9 @@
 }
 
 .lookup-toggle-button.active {
-  background: #fff;
-  color: var(--color-navy);
-  box-shadow: var(--shadow);
+  background: var(--color-blue);
+  color: #fff;
+  box-shadow: none;
 }
 
 .address-form {
@@ -34,11 +35,13 @@
 .address-input {
   flex: 1;
   min-width: 200px;
+  background: var(--color-surface-elevated);
   border: 1.5px solid var(--color-gray-200);
   border-radius: var(--radius);
   padding: 10px 14px;
   font-size: 14px;
   font-family: inherit;
+  color: var(--color-gray-900);
   outline: none;
   transition: border-color 0.15s;
 }
@@ -48,7 +51,8 @@
 }
 
 .risk-scorecard {
-  background: #fff;
+  background: var(--color-surface);
+  border: 1px solid var(--color-gray-200);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   padding: 20px;
@@ -62,10 +66,11 @@
 
 .scorecard-note {
   font-size: 12px;
-  color: var(--color-gray-500);
+  color: var(--color-gray-700);
   margin-bottom: 16px;
   padding: 8px 10px;
-  background: var(--color-gray-100);
+  background: var(--color-blue-light);
+  border: 1px solid rgba(61, 100, 240, 0.26);
   border-radius: 4px;
 }
 
@@ -77,7 +82,7 @@
 }
 
 .risk-card {
-  background: var(--color-gray-50);
+  background: var(--color-surface-elevated);
   border-radius: var(--radius);
   border: 1px solid var(--color-gray-200);
   padding: 14px;
@@ -89,7 +94,7 @@
 .risk-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-gray-700);
+  color: var(--color-yellow);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }

@@ -3,7 +3,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
+  background: var(--color-surface);
   border-top: 1px solid var(--color-gray-200);
   display: flex;
   justify-content: space-around;
@@ -33,5 +33,5 @@
 }
 
 .bottom-nav-item.active {
-  color: var(--color-navy);
+  color: var(--color-yellow);
 }

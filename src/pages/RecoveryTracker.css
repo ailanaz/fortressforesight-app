@@ -8,8 +8,8 @@
 }
 
 .recovery-tab {
-  background: var(--color-gray-100);
-  border: none;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-gray-200);
   border-radius: 99px;
   padding: 7px 14px;
   font-size: 13px;
@@ -20,7 +20,7 @@
 }
 
 .recovery-tab.active {
-  background: var(--color-navy);
+  background: var(--color-blue);
   color: #fff;
 }
 
@@ -41,15 +41,15 @@
 }
 
 .adjuster-guide {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: var(--color-blue-light);
+  border: 1px solid rgba(61, 100, 240, 0.35);
 }
 
 .guide-title {
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: var(--color-navy);
+  color: var(--color-yellow);
 }
 
 .guide-list {
@@ -87,7 +87,7 @@
 }
 
 .claim-step.done {
-  color: var(--color-green);
+  color: var(--color-yellow);
 }
 
 .step-dot {
@@ -99,6 +99,6 @@
 }
 
 .claim-step.done .step-dot {
-  background: var(--color-green);
-  border-color: var(--color-green);
+  background: var(--color-yellow);
+  border-color: var(--color-yellow);
 }

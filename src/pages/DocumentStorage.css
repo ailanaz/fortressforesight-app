@@ -12,8 +12,8 @@
 }
 
 .filter-tab {
-  background: var(--color-gray-100);
-  border: none;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-gray-200);
   border-radius: 99px;
   padding: 6px 14px;
   font-size: 13px;
@@ -24,7 +24,7 @@
 }
 
 .filter-tab.active {
-  background: var(--color-navy);
+  background: var(--color-blue);
   color: #fff;
 }
 
@@ -70,14 +70,14 @@
 .doc-action {
   background: none;
   border: none;
-  color: var(--color-gray-500);
+  color: var(--color-yellow);
   padding: 4px;
   flex-shrink: 0;
 }
 
 .upload-area {
-  background: var(--color-gray-100);
-  border: 2px dashed var(--color-gray-200);
+  background: var(--color-surface-elevated);
+  border: 2px dashed rgba(61, 100, 240, 0.55);
   border-radius: var(--radius);
   padding: 32px 16px;
   text-align: center;

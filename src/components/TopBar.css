@@ -4,6 +4,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid var(--color-gray-200);
   box-shadow: var(--shadow);
 }
 
@@ -26,12 +27,13 @@
   font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.3px;
+  color: var(--color-yellow);
 }
 
 .topbar-account {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--color-blue);
   display: flex;
   align-items: center;
   padding: 4px;
@@ -40,5 +42,5 @@
 }
 
 .topbar-account:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-blue-light);
 }

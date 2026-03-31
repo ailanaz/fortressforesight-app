@@ -3,9 +3,9 @@ import './Page.css'
 import './PropertyProfile.css'
 
 const RISK_LEVELS = {
-  low: { label: 'Low Risk', color: '#16a34a', bg: '#dcfce7' },
-  moderate: { label: 'Moderate Risk', color: '#ca8a04', bg: '#fef9c3' },
-  high: { label: 'High Risk', color: '#dc2626', bg: '#fee2e2' },
+  low: { label: 'Low Risk', color: '#3d64f0', bg: 'rgba(61, 100, 240, 0.18)' },
+  moderate: { label: 'Moderate Risk', color: '#f8c200', bg: 'rgba(248, 194, 0, 0.18)' },
+  high: { label: 'High Risk', color: '#ff6675', bg: 'rgba(255, 102, 117, 0.18)' },
 }
 
 function RiskBadge({ level }) {

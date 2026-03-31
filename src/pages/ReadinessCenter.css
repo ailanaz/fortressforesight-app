@@ -3,7 +3,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-gray-500);
+  color: var(--color-yellow);
   margin-bottom: 12px;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .checklist-item:hover {
-  background: var(--color-gray-50);
+  background: var(--color-blue-light);
 }
 
 .checklist-checkbox {
@@ -77,9 +77,9 @@
 }
 
 .checklist-item.done .checklist-checkbox {
-  background: var(--color-green);
-  border-color: var(--color-green);
-  color: #fff;
+  background: var(--color-yellow);
+  border-color: var(--color-yellow);
+  color: var(--color-black);
 }
 
 .checklist-text {

@@ -15,7 +15,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-blue);
+  color: var(--color-yellow);
 }
 
 .contact-fields {
@@ -25,12 +25,14 @@
 }
 
 .contact-input {
+  background: var(--color-surface-elevated);
   border: 1.5px solid var(--color-gray-200);
   border-radius: var(--radius);
   padding: 9px 12px;
   font-size: 14px;
   font-family: inherit;
   outline: none;
+  color: var(--color-gray-900);
   width: 100%;
   transition: border-color 0.15s;
 }
@@ -53,8 +55,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: var(--color-green);
-  color: #fff;
+  background: var(--color-yellow);
+  color: var(--color-black);
   border-radius: var(--radius);
   padding: 9px 14px;
   font-size: 13px;
