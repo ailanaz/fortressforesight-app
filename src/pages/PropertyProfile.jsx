@@ -470,11 +470,11 @@ function PropertyProfile() {
           <div className="property-map-toolbar">
             <div>
               <p className="property-map-kicker">Map</p>
-              <h2 className="property-map-title">{property ? property.query : 'Google Maps'}</h2>
+              <h2 className="property-map-title">{property ? property.query : 'Map'}</h2>
             </div>
-            <p className="property-map-note">
-              {property ? 'Visual location reference.' : 'Map preview appears after search.'}
-            </p>
+            {property ? (
+              <p className="property-map-note">Visual location reference.</p>
+            ) : null}
           </div>
 
           <div className="property-map-frame">
