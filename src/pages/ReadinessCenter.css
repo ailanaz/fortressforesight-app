@@ -53,6 +53,9 @@
 
 .readiness-custom-content {
   margin-top: 4px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .readiness-custom-actions {
@@ -157,6 +160,11 @@
 
   .readiness-group-content {
     max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .readiness-custom-content {
     overflow: visible;
     padding-right: 0;
   }
