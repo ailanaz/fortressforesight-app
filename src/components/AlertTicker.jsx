@@ -122,6 +122,10 @@ function buildTickerItems(alerts) {
   ]).filter(Boolean)
 }
 
+function buildTickerText(alerts) {
+  return buildTickerItems(alerts).join('   •   ')
+}
+
 function AlertTicker({ state }) {
   const stateCode = useMemo(() => getStateCode(state), [state])
   const [status, setStatus] = useState('loading')
@@ -211,25 +215,17 @@ function AlertTicker({ state }) {
     )
   }
 
-  const tickerItems = buildTickerItems(alerts)
+  const tickerText = buildTickerText(alerts)
 
   return (
     <section className="alert-ticker card" aria-live="polite">
       <span className="alert-ticker-label">{heading}</span>
       <div className="alert-ticker-track">
         <div className="alert-ticker-marquee">
-          {tickerItems.map((item, index) => (
-            <span key={`a-${index}`} className="alert-ticker-item">
-              {item}
-            </span>
-          ))}
+          <span className="alert-ticker-line">{tickerText}</span>
         </div>
         <div className="alert-ticker-marquee" aria-hidden="true">
-          {tickerItems.map((item, index) => (
-            <span key={`b-${index}`} className="alert-ticker-item">
-              {item}
-            </span>
-          ))}
+          <span className="alert-ticker-line">{tickerText}</span>
         </div>
       </div>
     </section>
