@@ -39,14 +39,14 @@
 .alert-ticker-line {
   flex-shrink: 0;
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-gray-900);
   white-space: nowrap;
   padding-right: 32px;
 }
 
 .alert-ticker-static {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-gray-900);
 }
 
