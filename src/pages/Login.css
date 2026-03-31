@@ -143,6 +143,12 @@
 
 @media (max-width: 520px) {
   .login-actions {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .login-actions-single {
+    justify-content: center;
   }
 }
