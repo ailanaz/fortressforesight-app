@@ -106,6 +106,10 @@
   color: var(--color-yellow);
 }
 
+.home-title-word + .home-title-word {
+  margin-left: 0.08em;
+}
+
 .home-subtitle {
   max-width: 620px;
   margin-top: 18px;
@@ -245,8 +249,16 @@
   .home-title {
     font-size: clamp(38px, 12vw, 58px);
     margin-top: 10px;
-    line-height: 1.02;
+    line-height: 0.98;
     padding-top: 2px;
+  }
+
+  .home-title-word {
+    display: block;
+  }
+
+  .home-title-word + .home-title-word {
+    margin-left: 0;
   }
 
   .home-stage-copy,

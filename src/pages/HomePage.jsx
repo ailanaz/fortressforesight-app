@@ -69,7 +69,10 @@ function HomePage() {
           <article className="home-stage-main card">
             <div className="home-stage-copy">
               <p className="home-stage-section-label">Start Here</p>
-              <h1 className="home-title">FortressForesight</h1>
+              <h1 className="home-title">
+                <span className="home-title-word">Fortress</span>
+                <span className="home-title-word">Foresight</span>
+              </h1>
               <p className="home-subtitle">
                 Clarity before disaster. Structure during crisis. Confidence through recovery.
               </p>
