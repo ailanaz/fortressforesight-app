@@ -4,13 +4,16 @@ import './HomePage.css'
 
 const RAIL_ITEMS = [
   {
-    line: 'Clarity before disaster.',
+    alt: 'Clarity before disaster',
+    src: '/branding/home/clarity-before-disaster.png',
   },
   {
-    line: 'Structure during crisis.',
+    alt: 'Structure during crisis',
+    src: '/branding/home/structure-during-crisis.png',
   },
   {
-    line: 'Confidence through recovery.',
+    alt: 'Confidence through recovery',
+    src: '/branding/home/confidence-through-recovery.png',
   },
 ]
 
@@ -74,10 +77,9 @@ function HomePage() {
         </article>
 
         <aside className="home-stage-side">
-          {RAIL_ITEMS.map((item, index) => (
-            <article key={item.line} className="home-side-card card">
-              <p className="home-side-label">{String(index + 1).padStart(2, '0')}</p>
-              <p className="home-side-text">{item.line}</p>
+          {RAIL_ITEMS.map((item) => (
+            <article key={item.alt} className="home-side-card card">
+              <img className="home-side-image" src={item.src} alt={item.alt} />
             </article>
           ))}
         </aside>
