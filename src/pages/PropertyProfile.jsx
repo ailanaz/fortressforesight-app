@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useActiveHome } from '../context/HomeContext'
+import AlertTicker from '../components/AlertTicker'
 import './Page.css'
 import './PropertyProfile.css'
 
@@ -587,6 +588,8 @@ function PropertyProfile() {
       </form>
 
       {error ? <p className="property-error">{error}</p> : null}
+
+      <AlertTicker state={property?.address?.state || activeHome?.address?.state} />
 
       <div className="property-workspace">
         <section className="property-summary card">
