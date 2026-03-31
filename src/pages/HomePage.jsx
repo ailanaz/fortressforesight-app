@@ -7,19 +7,19 @@ const RAIL_ITEMS = [
   {
     label: 'Clarity',
     alt: 'Clarity before disaster',
-    src: '/branding/home/clarity-before-disaster.png',
+    src: '/branding/home/clarity-before-disaster.png?v=20260331-1',
     to: '/readiness',
   },
   {
     label: 'Structure',
     alt: 'Structure during crisis',
-    src: '/branding/home/structure-during-crisis.png',
+    src: '/branding/home/structure-during-crisis.png?v=20260331-1',
     to: '/documents',
   },
   {
     label: 'Confidence',
     alt: 'Confidence through recovery',
-    src: '/branding/home/confidence-through-recovery.png',
+    src: '/branding/home/confidence-through-recovery.png?v=20260331-1',
     to: '/recovery',
   },
 ]
