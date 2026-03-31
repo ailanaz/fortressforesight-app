@@ -1,11 +1,11 @@
 .topbar {
-  background: var(--color-navy);
+  background: transparent;
   color: #fff;
   position: sticky;
   top: 0;
   z-index: 1200;
-  border-bottom: 1px solid var(--color-gray-200);
-  box-shadow: var(--shadow);
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .topbar-inner {
