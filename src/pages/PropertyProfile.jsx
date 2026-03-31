@@ -433,7 +433,7 @@ function PropertyProfile() {
       <div className="property-heading">
         <div>
           <h1 className="page-title">Property Search</h1>
-          <p className="page-subtitle">Search an address to view the Risk Summary.</p>
+          <p className="page-subtitle">Search an address to view map and Risk Summary.</p>
         </div>
       </div>
 
