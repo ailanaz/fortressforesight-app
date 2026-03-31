@@ -106,6 +106,7 @@
 
 .property-map-frame {
   position: relative;
+  isolation: isolate;
   height: 560px;
   background: #dfe6ef;
 }
@@ -117,9 +118,10 @@
 }
 
 .property-map-embed {
+  position: absolute;
+  inset: 0;
   display: block;
   border: 0;
-  position: relative;
   z-index: 1;
 }
 
@@ -134,16 +136,19 @@
   position: absolute;
   left: 14px;
   bottom: 10px;
+  display: inline-flex;
+  align-items: center;
   font-size: 11px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.82);
-  background: rgba(0, 0, 0, 0.42);
+  background: rgba(0, 0, 0, 0.58);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  padding: 4px 8px;
+  padding: 5px 9px;
   border-radius: 999px;
   pointer-events: none;
-  backdrop-filter: blur(4px);
-  z-index: 2;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 3;
 }
 
 .property-sidebar {
