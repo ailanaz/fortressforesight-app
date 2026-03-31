@@ -64,3 +64,23 @@
   white-space: nowrap;
   text-decoration: none;
 }
+
+@media (max-width: 680px) {
+  .contacts-list {
+    gap: 8px;
+  }
+
+  .contact-card {
+    margin-bottom: 0;
+  }
+
+  .contact-phone-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .call-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
