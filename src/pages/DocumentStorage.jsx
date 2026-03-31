@@ -23,10 +23,11 @@ function DocumentStorage() {
 
   return (
     <div className="page">
+      <h1 className="page-title document-vault-title">Document Vault</h1>
+
       {activeHome ? (
         <div className="active-home-card card">
           <div className="active-home-copy">
-            <span className="active-home-kicker">Document vault</span>
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
             <span className="active-home-note">
@@ -37,7 +38,6 @@ function DocumentStorage() {
       ) : (
         <div className="active-home-card active-home-empty card">
           <div className="active-home-copy">
-            <span className="active-home-kicker">Document vault</span>
             <span className="active-home-title">Pick a home first</span>
             <span className="active-home-note">
               Search an address in Property Search and this vault will follow that home across the app.
