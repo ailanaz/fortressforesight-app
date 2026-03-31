@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
 
 function Login() {
@@ -17,6 +17,9 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
+        <Link className="login-back-link" to="/property">
+          Back to Home
+        </Link>
         <img
           className="login-logo-image"
           src="/branding/logos/fortressforesight-logo-horizontal-transparent.png"

@@ -19,6 +19,19 @@
   box-shadow: var(--shadow-md);
 }
 
+.login-back-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-blue);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.login-back-link:hover {
+  color: #7f9cff;
+}
+
 .login-logo-image {
   display: block;
   width: min(100%, 360px);
