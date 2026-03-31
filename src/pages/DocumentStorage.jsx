@@ -151,7 +151,7 @@ function DocumentStorage() {
         </div>
       </div>
 
-      <h1 className="page-title">Documents</h1>
+      <h2 className="section-label">Documents</h2>
       <input
         ref={fileInputRef}
         className="file-input-hidden"
