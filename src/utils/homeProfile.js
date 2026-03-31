@@ -15,12 +15,12 @@ export function getHomeTitle(home) {
   const displayLine = home.displayName?.split(',')[0]?.trim()
 
   return (
+    queryLine ||
+    home.query ||
     streetLine ||
     completeStreet ||
-    queryLine ||
     displayLine ||
     street ||
-    home.query ||
     'Saved home'
   )
 }
