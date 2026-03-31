@@ -11,43 +11,61 @@
 }
 
 .home-stage-main,
+.home-stage-panel,
 .home-side-card {
   margin-bottom: 0;
 }
 
-.home-stage-main {
+.home-stage-main-stack {
   order: 2;
+  display: grid;
+  grid-template-rows: minmax(0, 1.15fr) minmax(180px, 0.85fr);
+  gap: 16px;
 }
 
 .home-stage-side {
   order: 1;
 }
 
-.home-stage-main {
+.home-stage-main,
+.home-stage-panel {
   position: relative;
   overflow: hidden;
-  min-height: 520px;
   padding: 30px;
+  border: 1px solid rgba(61, 100, 240, 0.34);
+  box-shadow: var(--shadow-md);
+}
+
+.home-stage-main {
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid rgba(61, 100, 240, 0.34);
   background:
     linear-gradient(135deg, rgba(61, 100, 240, 0.18), transparent 42%),
     radial-gradient(circle at 82% 18%, rgba(248, 194, 0, 0.14), transparent 24%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 46%),
     var(--color-surface);
-  box-shadow: var(--shadow-md);
+}
+
+.home-stage-panel {
+  min-height: 0;
+  background:
+    linear-gradient(135deg, rgba(61, 100, 240, 0.08), transparent 44%),
+    linear-gradient(180deg, rgba(248, 194, 0, 0.04), transparent 70%),
+    var(--color-surface);
 }
 
 .home-stage-main::before,
-.home-stage-main::after {
+.home-stage-main::after,
+.home-stage-panel::before {
   content: '';
   position: absolute;
   pointer-events: none;
 }
 
-.home-stage-main::before {
+.home-stage-main::before,
+.home-stage-panel::before {
   inset: 18px;
   border: 1px solid rgba(61, 100, 240, 0.12);
 }
@@ -71,8 +89,17 @@
   max-width: 720px;
 }
 
+.home-stage-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+}
+
 .home-title {
   max-width: 620px;
+  margin-top: 10px;
   font-size: clamp(46px, 7vw, 84px);
   line-height: 0.94;
   letter-spacing: -0.04em;
@@ -160,13 +187,13 @@
     grid-template-columns: 1fr;
   }
 
-  .home-stage-main,
+  .home-stage-main-stack,
   .home-stage-side {
     order: initial;
   }
 
-  .home-stage-main {
-    min-height: 460px;
+  .home-stage-main-stack {
+    grid-template-rows: minmax(0, 1fr) minmax(160px, 0.75fr);
   }
 
   .home-side-card {
@@ -176,6 +203,7 @@
 
 @media (max-width: 640px) {
   .home-stage-main,
+  .home-stage-panel,
   .home-side-card {
     padding: 20px 18px;
   }

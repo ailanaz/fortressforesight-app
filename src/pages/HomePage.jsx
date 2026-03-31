@@ -25,26 +25,6 @@ function HomePage() {
   return (
     <div className="page home-page">
       <section className="home-stage">
-        <article className="home-stage-main card">
-          <div className="home-stage-copy">
-            <h1 className="home-title">FortressForesight</h1>
-            <p className="home-subtitle">
-              Clarity before disaster. Structure during crisis. Confidence through recovery.
-            </p>
-            <p className="home-description">
-              FortressForesight helps protect the property that protects you by combining
-              pre-purchase and homeownership risk awareness, secure home recordkeeping,
-              disaster preparation, and guided recovery support in one place.
-            </p>
-          </div>
-
-          <div className="home-actions">
-            <Link className="btn-primary" to="/search">
-              Search Address
-            </Link>
-          </div>
-        </article>
-
         <aside className="home-stage-side">
           {RAIL_ITEMS.map((item) => (
             item.to ? (
@@ -64,6 +44,31 @@ function HomePage() {
             )
           ))}
         </aside>
+
+        <div className="home-stage-main-stack">
+          <article className="home-stage-main card">
+            <div className="home-stage-copy">
+              <p className="home-stage-section-label">Property Search</p>
+              <h1 className="home-title">FortressForesight</h1>
+              <p className="home-subtitle">
+                Clarity before disaster. Structure during crisis. Confidence through recovery.
+              </p>
+              <p className="home-description">
+                FortressForesight helps protect the property that protects you by combining
+                pre-purchase and homeownership risk awareness, secure home recordkeeping,
+                disaster preparation, and guided recovery support in one place.
+              </p>
+            </div>
+
+            <div className="home-actions">
+              <Link className="btn-primary" to="/search">
+                Search Address
+              </Link>
+            </div>
+          </article>
+
+          <article className="home-stage-panel card" aria-hidden="true" />
+        </div>
       </section>
     </div>
   )
