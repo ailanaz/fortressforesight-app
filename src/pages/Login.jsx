@@ -28,9 +28,6 @@ function Login() {
         <p className="login-tagline">
           Clarity before disaster. Structure during crisis. Confidence through recovery.
         </p>
-        <p className="login-description">
-          Protect the home that protects you.
-        </p>
 
         <div className="login-tabs">
           <button
