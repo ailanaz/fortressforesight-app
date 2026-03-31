@@ -5,8 +5,8 @@ import './Page.css'
 import './ReadinessCenter.css'
 
 const CHECKLIST_SECTIONS = [
-  { id: 'homebuyers', label: 'For Homebuyers' },
-  { id: 'homeowners', label: 'For Homeowners' },
+  { id: 'homebuyers', label: 'Homebuying Checklists' },
+  { id: 'homeowners', label: 'Homeowner Checklists' },
   { id: 'disasters', label: 'Disaster Preparedness' },
 ]
 
@@ -294,32 +294,43 @@ function ReadinessCenter() {
         </div>
       ) : null}
 
-      <div className="section-header readiness-checklists-header">
-        <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
-        <button className="btn-primary">+ Custom</button>
+      <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
+
+      <div className="readiness-grid">
+        {CHECKLIST_SECTIONS.map((section) => {
+          const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section.id)
+
+          if (!sectionChecklists.length) {
+            return null
+          }
+
+          return (
+            <section key={section.id} className="readiness-group-card card">
+              <h3 className="section-label readiness-group-label">{section.label}</h3>
+              {section.id === 'disasters' ? (
+                <p className="readiness-group-note">
+                  These cover the most common situations. Use a custom list for home- and area-specific needs.
+                </p>
+              ) : null}
+              <div className="readiness-group-content">
+                {sectionChecklists.map((checklist) => (
+                  <Checklist key={checklist.id} checklist={checklist} />
+                ))}
+              </div>
+            </section>
+          )
+        })}
+
+        <section className="readiness-group-card readiness-custom-card card">
+          <h3 className="section-label readiness-group-label">Custom</h3>
+          <p className="readiness-group-note">
+            Create lists for this home, your area, and your own routines.
+          </p>
+          <div className="readiness-custom-actions">
+            <button className="btn-primary">+ Custom</button>
+          </div>
+        </section>
       </div>
-
-      {CHECKLIST_SECTIONS.map((section) => {
-        const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section.id)
-
-        if (!sectionChecklists.length) {
-          return null
-        }
-
-        return (
-          <section key={section.id} className="readiness-group">
-            <h3 className="section-label readiness-group-label">{section.label}</h3>
-            {section.id === 'disasters' ? (
-              <p className="readiness-group-note">
-                These cover the most common situations. Use a custom list for home- and area-specific needs.
-              </p>
-            ) : null}
-            {sectionChecklists.map((checklist) => (
-              <Checklist key={checklist.id} checklist={checklist} />
-            ))}
-          </section>
-        )
-      })}
     </div>
   )
 }

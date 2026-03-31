@@ -12,11 +12,20 @@
 }
 
 .readiness-checklists-label {
-  margin-bottom: 0;
+  margin-bottom: 12px;
 }
 
-.readiness-group + .readiness-group {
-  margin-top: 18px;
+.readiness-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.readiness-group-card {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .readiness-group-label {
@@ -28,6 +37,21 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--color-gray-500);
+}
+
+.readiness-group-content {
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.readiness-custom-card {
+  justify-content: space-between;
+}
+
+.readiness-custom-actions {
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 .checklist-card {
@@ -112,4 +136,16 @@
 .checklist-item.done .checklist-text {
   text-decoration: line-through;
   color: var(--color-gray-500);
+}
+
+@media (max-width: 980px) {
+  .readiness-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .readiness-group-content {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
 }
