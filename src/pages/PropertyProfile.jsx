@@ -254,17 +254,8 @@ function createStarterProfile(result) {
   const waterLevel = mergeLevels(floodLevel, wetlandsLevel)
   const responseLevel = mergeLevels(stormLevel, wildfireLevel)
   const claimsLevel = mergeLevels(floodLevel, stormLevel, wildfireLevel)
-  const county = result.address?.county || 'County pending'
-  const municipality = getMunicipality(result.address) || 'Municipality pending'
 
   return {
-    watchItems: [
-      `${municipality} • ${county}`,
-      `Soil ${RISK_LEVELS[soilGeologyLevel].label}`,
-      `Water ${RISK_LEVELS[waterLevel].label}`,
-      `Wildfire ${RISK_LEVELS[wildfireLevel].label}`,
-      `Weather / local alert feed can sit here later`,
-    ],
     summaryCards: [
       {
         title: 'Property',
@@ -787,17 +778,6 @@ function PropertyProfile() {
                     <p className="property-sidebar-kicker">Risk Summary</p>
                     <h2 className="property-sidebar-title">{property.query}</h2>
                   </div>
-                </div>
-              </div>
-
-              <div className="summary-ticker" aria-label="Area Watch">
-                <span className="summary-ticker-label">Area Watch</span>
-                <div className="summary-ticker-track">
-                  {property.watchItems.map((item) => (
-                    <span key={item} className="summary-ticker-item">
-                      {item}
-                    </span>
-                  ))}
                 </div>
               </div>
 
