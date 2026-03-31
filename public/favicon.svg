@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title>FortressForesight</title>
+  <rect width="128" height="128" rx="28" fill="#10273a" />
+  <path d="M64 18 98 31v28c0 24-13 39-34 51C43 98 30 83 30 59V31z" fill="#f0e6d8" />
+  <path d="M64 28 89 38v21c0 18-9 29-25 39-16-10-25-21-25-39V38z" fill="#10273a" />
+  <path d="M49 72V49.5L64 39l15 10.5V72h-8V53.7L64 49l-7 4.7V72z" fill="#c96d4d" />
+  <path d="M58 72V58h12v14z" fill="#f0e6d8" />
+</svg>

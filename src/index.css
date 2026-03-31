@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: var(--font-body);
+  --font-body: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --ink: #10273a;
+  --muted: #52626f;
+  --sand: #f7f1e8;
+  --clay: #c96d4d;
+  --mist: #dfe8eb;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(223, 232, 235, 0.92), transparent 42%),
+    linear-gradient(180deg, #fcfaf6 0%, #f7f1e8 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+}
+
+p {
+  line-height: 1.6;
+}
