@@ -151,7 +151,7 @@ const PREMADE_CHECKLISTS = [
     id: 'storm-preparedness',
     section: 'disasters',
     title: 'Storm Preparedness',
-    description: 'Checklist for one of the most common home-loss events. Add local storm tasks for your area.',
+    description: 'One of the most common home-loss events. Use this checklist to reduce storm-related damage.',
     items: [
       'Secure outdoor furniture and loose items',
       'Inspect roof, flashing, and gutters',
@@ -163,7 +163,7 @@ const PREMADE_CHECKLISTS = [
     id: 'hail-preparedness',
     section: 'disasters',
     title: 'Hail Preparedness',
-    description: 'Checklist for a common source of roof and exterior damage. Add tasks for your roof, siding, and vehicles.',
+    description: 'A common source of roof and exterior damage. Use this checklist to reduce hail-related loss.',
     items: [
       'Inspect roof covering and skylight vulnerability',
       'Set up covered parking or vehicle protection',
@@ -175,7 +175,7 @@ const PREMADE_CHECKLISTS = [
     id: 'flood-preparedness',
     section: 'disasters',
     title: 'Flood Preparedness',
-    description: 'Checklist for one of the most common and costly risks. Add tasks for your flood zone and drainage conditions.',
+    description: 'One of the most common and costly risks. Use this checklist to reduce flood-related damage.',
     items: [
       'Check flood zone and drainage around the home',
       'Identify low-entry points, vents, and basement exposure',
@@ -187,7 +187,7 @@ const PREMADE_CHECKLISTS = [
     id: 'wildfire-preparedness',
     section: 'disasters',
     title: 'Wildfire Preparedness',
-    description: 'Checklist for a common threat in many regions. Add tasks for vegetation, ember exposure, and evacuation needs.',
+    description: 'A common threat in many regions. Use this checklist to reduce vegetation and ember-related exposure.',
     items: [
       'Clear defensible space around the home',
       'Trim overhanging branches and clear debris',
@@ -199,9 +199,9 @@ const PREMADE_CHECKLISTS = [
     id: 'earthquake-preparedness',
     section: 'disasters',
     title: 'Earthquake Preparedness',
-    description: 'Checklist for homes in seismic areas. Add region-specific tasks if your area has earthquake exposure.',
+    description: 'Important for homes in seismic areas. Use this checklist to reduce movement-related damage.',
     items: [
-      'Assess retrofitting needs for older structures',
+      'Check whether older structural elements need retrofitting',
       'Secure water heaters, shelves, and heavy furniture',
       'Identify gas and water shutoff locations',
       'Store emergency shoes, lights, and supplies nearby',
