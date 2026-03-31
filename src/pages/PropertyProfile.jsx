@@ -469,7 +469,6 @@ function PropertyProfile() {
         <section className="property-map-card card">
           <div className="property-map-toolbar">
             <div>
-              <p className="property-map-kicker">Map</p>
               <h2 className="property-map-title">{property ? property.query : 'Map'}</h2>
             </div>
             {property ? (
