@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   min-width: max-content;
-  animation: alertTickerScroll 40s linear infinite;
+  animation: alertTickerScroll 70s linear infinite;
 }
 
 .alert-ticker-line {
