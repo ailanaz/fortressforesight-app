@@ -2,75 +2,120 @@ import { Link } from 'react-router-dom'
 import './Page.css'
 import './HomePage.css'
 
+const RAIL_ITEMS = [
+  {
+    label: 'Search',
+    text: 'Start with the address.',
+    to: '/search',
+  },
+  {
+    label: 'Records',
+    text: 'Keep the file together.',
+  },
+  {
+    label: 'Recovery',
+    text: 'Move through it cleanly.',
+  },
+]
+
 const PATHWAYS = [
   {
+    number: '01',
     label: 'Buy',
-    title: 'Check the home before close.',
-    tags: ['Address search', 'Risk summary', 'Coverage questions'],
+    title: 'Review the location first.',
+    tags: ['Map', 'Flood / FEMA', 'Area snapshot'],
   },
   {
+    number: '02',
     label: 'Own',
-    title: 'Keep the home file together.',
-    tags: ['Policies', 'Receipts', 'Inspections', 'Contacts'],
+    title: 'Keep the home file ready.',
+    tags: ['Policies', 'Receipts', 'Inspections'],
   },
   {
+    number: '03',
     label: 'Recover',
-    title: 'Move through a claim more cleanly.',
-    tags: ['Damage log', 'Expense tracking', 'Claim steps'],
+    title: 'Track the claim with structure.',
+    tags: ['Damage log', 'Expenses', 'Claim steps'],
   },
 ]
 
 function HomePage() {
   return (
     <div className="page home-page">
-      <section className="home-hero">
-        <article className="home-hero-main card">
-          <p className="home-kicker">Homebuyers • Homeowners • Recovery</p>
-          <h1 className="home-title">Protect what protects you.</h1>
-          <p className="home-subtitle">Search. Organize. Recover.</p>
+      <section className="home-stage">
+        <article className="home-stage-main card">
+          <div className="home-stage-mark">
+            <p className="home-kicker">FortressForesight</p>
+            <img
+              className="home-stage-logo"
+              src="/branding/logos/fortressforesight-logo-square-transparent.png"
+              alt="FortressForesight"
+            />
+          </div>
+
+          <div className="home-stage-copy">
+            <h1 className="home-title">Protect what protects you.</h1>
+            <p className="home-subtitle">
+              Search the home. Read the signals. Keep the file ready.
+            </p>
+          </div>
+
           <div className="home-actions">
             <Link className="btn-primary" to="/search">
-              Search an Address
+              Search Address
             </Link>
             <Link className="btn-outline" to="/login">
               Sign In
             </Link>
           </div>
+
+          <div className="home-pill-row" aria-label="Core app areas">
+            <span className="home-pill">Map</span>
+            <span className="home-pill">Risk Summary</span>
+            <span className="home-pill">Records</span>
+            <span className="home-pill">Recovery</span>
+          </div>
         </article>
 
-        <aside className="home-side card">
-          <p className="home-side-kicker">Inside the app</p>
-          <div className="home-side-list">
-            <div className="home-side-item">
-              <span className="home-side-number">01</span>
-              <span className="home-side-text">Map and Risk Summary</span>
-            </div>
-            <div className="home-side-item">
-              <span className="home-side-number">02</span>
-              <span className="home-side-text">Records and readiness</span>
-            </div>
-            <div className="home-side-item">
-              <span className="home-side-number">03</span>
-              <span className="home-side-text">Recovery workflows</span>
-            </div>
-          </div>
+        <aside className="home-stage-side">
+          {RAIL_ITEMS.map((item) => (
+            <article key={item.label} className="home-side-card card">
+              <p className="home-side-label">{item.label}</p>
+              <p className="home-side-text">{item.text}</p>
+              {item.to ? (
+                <Link className="home-side-link" to={item.to}>
+                  Open
+                </Link>
+              ) : null}
+            </article>
+          ))}
         </aside>
       </section>
 
-      <section className="home-grid">
+      <section className="home-pathways">
         {PATHWAYS.map((item) => (
-          <article key={item.label} className="home-feature card">
-            <p className="home-feature-label">{item.label}</p>
-            <p className="home-feature-title">{item.title}</p>
-            <div className="home-feature-tags">
+          <article key={item.label} className="home-pathway card">
+            <div className="home-pathway-top">
+              <span className="home-pathway-number">{item.number}</span>
+              <span className="home-pathway-label">{item.label}</span>
+            </div>
+            <p className="home-pathway-title">{item.title}</p>
+            <div className="home-pathway-tags">
               {item.tags.map((tag) => (
-                <span key={tag} className="home-feature-tag">
+                <span key={tag} className="home-pathway-tag">
                   {tag}
                 </span>
               ))}
             </div>
           </article>
         ))}
+      </section>
+
+      <section className="home-banner card">
+        <p className="home-banner-kicker">FortressForesight</p>
+        <h2 className="home-banner-title">
+          Clarity before disaster. Structure during crisis. Confidence through recovery.
+        </h2>
       </section>
     </div>
   )
