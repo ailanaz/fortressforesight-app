@@ -10,6 +10,8 @@ const SAMPLE_DOCS = [
   { id: 3, name: 'HVAC Warranty.pdf', type: 'Warranty', date: '2023-06-20', size: '340 KB' },
 ]
 
+const BASE_DOC_TYPES = ['Insurance Policy', 'Receipts', 'Inspection', 'Warranty']
+
 function formatFileSize(bytes) {
   if (!bytes) return '0 KB'
   if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
@@ -36,7 +38,7 @@ function DocumentStorage() {
   const cameraInputRef = useRef(null)
 
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
-  const docTypes = [...new Set(normalizedDocs.map((doc) => doc.type))]
+  const docTypes = [...new Set([...BASE_DOC_TYPES, ...normalizedDocs.map((doc) => doc.type)])]
   const filtered = filter === 'All' ? normalizedDocs : normalizedDocs.filter((doc) => doc.type === filter)
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
