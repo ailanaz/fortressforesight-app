@@ -10,7 +10,7 @@ const SAMPLE_DOCS = [
   { id: 3, name: 'HVAC Warranty.pdf', type: 'Warranty', date: '2023-06-20', size: '340 KB' },
 ]
 
-const BASE_DOC_TYPES = ['Insurance Policy', 'Receipts', 'Inspection', 'Warranty']
+const BASE_DOC_TYPES = ['Insurance Policy', 'Inspection', 'Warranty', 'Receipts']
 
 function formatFileSize(bytes) {
   if (!bytes) return '0 KB'
