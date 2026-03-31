@@ -177,9 +177,7 @@
   align-items: stretch;
   justify-content: flex-start;
   border: 1px solid rgba(61, 100, 240, 0.24);
-  background:
-    linear-gradient(180deg, rgba(61, 100, 240, 0.03), rgba(15, 17, 24, 0.28) 72%),
-    var(--color-surface);
+  background: var(--color-surface);
   gap: 12px;
 }
 
@@ -187,9 +185,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, rgba(15, 17, 24, 0.04), rgba(15, 17, 24, 0.16) 72%),
-    radial-gradient(circle at 86% 20%, rgba(61, 100, 240, 0.04), transparent 36%);
+  background: transparent;
   pointer-events: none;
   z-index: 1;
 }
@@ -230,7 +226,7 @@
   display: block;
   opacity: 1;
   transform: scale(1.04);
-  filter: saturate(1.04) brightness(1.8) contrast(0.94);
+  filter: none;
 }
 
 @media (max-width: 980px) {
