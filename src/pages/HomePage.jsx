@@ -66,7 +66,7 @@ function HomePage() {
         <div className="home-stage-main-stack">
           <article className="home-stage-main card">
             <div className="home-stage-copy">
-              <p className="home-stage-section-label">Property Search</p>
+              <p className="home-stage-section-label">Start Here</p>
               <h1 className="home-title">FortressForesight</h1>
               <p className="home-subtitle">
                 Clarity before disaster. Structure during crisis. Confidence through recovery.
