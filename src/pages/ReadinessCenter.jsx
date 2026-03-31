@@ -141,7 +141,6 @@ function ReadinessCenter() {
         <button className="btn-primary">+ Custom</button>
       </div>
 
-      <h2 className="section-label">Premade Checklists</h2>
       {PREMADE_CHECKLISTS.map((checklist) => (
         <Checklist key={checklist.id} checklist={checklist} />
       ))}
