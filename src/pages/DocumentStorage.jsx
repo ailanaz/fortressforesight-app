@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
 import './Page.css'
 import './DocumentStorage.css'
 
@@ -34,6 +35,8 @@ function DocumentStorage() {
   const { activeHome } = useActiveHome()
   const [filter, setFilter] = useState('All')
   const [docs, setDocs] = useState(SAMPLE_DOCS)
+  const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
+  const [calendarTitle, setCalendarTitle] = useState('')
   const fileInputRef = useRef(null)
 
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
@@ -88,6 +91,13 @@ function DocumentStorage() {
     }
   }
 
+  const handleSaveToCalendar = () => {
+    const title = calendarTitle.trim() || (homeTitle ? `Document Reminder - ${homeTitle}` : 'Document Reminder')
+    const details = homeTitle ? `Document reminder for ${homeTitle} in FortressForesight.` : 'Document reminder in FortressForesight.'
+
+    downloadCalendarInvite({ title, date: calendarDate, details })
+  }
+
   return (
     <div className="page">
       <h1 className="page-title document-vault-title">Document Vault</h1>
@@ -122,6 +132,29 @@ function DocumentStorage() {
       <p className="page-subtitle">
         Photos and files for your policies, receipts, inspections, and warranties.
       </p>
+
+      <div className="page-utility-bar">
+        <div className="page-calendar-actions">
+          <input
+            className="page-input page-input-wide"
+            type="text"
+            value={calendarTitle}
+            onChange={(event) => setCalendarTitle(event.target.value)}
+            placeholder="Bill or reminder"
+            aria-label="Document reminder title"
+          />
+          <input
+            className="page-input"
+            type="date"
+            value={calendarDate}
+            onChange={(event) => setCalendarDate(event.target.value)}
+            aria-label="Document reminder date"
+          />
+          <button className="btn-outline" type="button" onClick={handleSaveToCalendar}>
+            Save to Calendar
+          </button>
+        </div>
+      </div>
 
       <input
         ref={fileInputRef}

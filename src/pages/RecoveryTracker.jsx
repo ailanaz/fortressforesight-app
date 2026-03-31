@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
 import './Page.css'
 import './RecoveryTracker.css'
 
@@ -9,8 +10,17 @@ const TABS = ['Damage Log', 'Expenses', 'Timeline', 'Claim Status']
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
   const [activeTab, setActiveTab] = useState('Damage Log')
+  const [calendarDate, setCalendarDate] = useState(defaultCalendarDate(7))
+  const [calendarTitle, setCalendarTitle] = useState('')
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
+
+  const handleSaveToCalendar = () => {
+    const title = calendarTitle.trim() || (homeTitle ? `Recovery Event - ${homeTitle}` : 'Recovery Event')
+    const details = homeTitle ? `Recovery event for ${homeTitle} in FortressForesight.` : 'Recovery event in FortressForesight.'
+
+    downloadCalendarInvite({ title, date: calendarDate, details })
+  }
 
   return (
     <div className="page">
@@ -41,6 +51,29 @@ function RecoveryTracker() {
       <p className="page-subtitle">
         Document damage, log expenses, and track your claim from start to finish.
       </p>
+
+      <div className="page-utility-bar recovery-utility-bar">
+        <div className="page-calendar-actions">
+          <input
+            className="page-input page-input-wide"
+            type="text"
+            value={calendarTitle}
+            onChange={(event) => setCalendarTitle(event.target.value)}
+            placeholder="Event or appointment"
+            aria-label="Recovery event title"
+          />
+          <input
+            className="page-input"
+            type="date"
+            value={calendarDate}
+            onChange={(event) => setCalendarDate(event.target.value)}
+            aria-label="Recovery event date"
+          />
+          <button className="btn-outline" type="button" onClick={handleSaveToCalendar}>
+            Save to Calendar
+          </button>
+        </div>
+      </div>
 
       <div className="recovery-tabs">
         {TABS.map((tab) => (
