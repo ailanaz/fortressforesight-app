@@ -3,7 +3,7 @@ import './BottomNav.css'
 
 const navItems = [
   {
-    to: '/property',
+    to: '/search',
     label: 'Property',
     icon: (
       <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

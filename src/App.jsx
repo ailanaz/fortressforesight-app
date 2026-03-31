@@ -17,8 +17,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/property" replace />} />
-            <Route path="property" element={<PropertyProfile />} />
+            <Route index element={<Navigate to="/search" replace />} />
+            <Route path="search" element={<PropertyProfile />} />
+            <Route path="home" element={<Navigate to="/search" replace />} />
+            <Route path="property" element={<Navigate to="/search" replace />} />
             <Route path="documents" element={<DocumentStorage />} />
             <Route path="readiness" element={<ReadinessCenter />} />
             <Route path="recovery" element={<RecoveryTracker />} />

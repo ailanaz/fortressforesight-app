@@ -11,13 +11,13 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    navigate('/property')
+    navigate('/search')
   }
 
   return (
     <div className="login-page">
       <div className="login-card">
-        <Link className="login-back-link" to="/property">
+        <Link className="login-back-link" to="/search">
           Back to Home
         </Link>
         <img
