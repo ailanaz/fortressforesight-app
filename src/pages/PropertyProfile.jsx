@@ -634,9 +634,6 @@ function PropertyProfile() {
                 <h2 className="property-map-title">{property.query}</h2>
               ) : null}
             </div>
-            {property ? (
-              <p className="property-map-note">Visual location reference.</p>
-            ) : null}
           </div>
 
           <div className="property-map-frame">
