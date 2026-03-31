@@ -151,7 +151,7 @@ const PREMADE_CHECKLISTS = [
     id: 'storm-preparedness',
     section: 'disasters',
     title: 'Storm Preparedness',
-    description: 'One of the most common home-loss events. Use this checklist to reduce storm-related damage.',
+    description: 'What to secure, inspect, stock, and save before a storm.',
     items: [
       'Secure outdoor furniture and loose items',
       'Inspect roof, flashing, and gutters',
@@ -163,7 +163,7 @@ const PREMADE_CHECKLISTS = [
     id: 'hail-preparedness',
     section: 'disasters',
     title: 'Hail Preparedness',
-    description: 'A common source of roof and exterior damage. Use this checklist to reduce hail-related loss.',
+    description: 'What to inspect and protect before hail season.',
     items: [
       'Inspect roof covering and skylight vulnerability',
       'Set up covered parking or vehicle protection',
@@ -175,7 +175,7 @@ const PREMADE_CHECKLISTS = [
     id: 'flood-preparedness',
     section: 'disasters',
     title: 'Flood Preparedness',
-    description: 'One of the most common and costly risks. Use this checklist to reduce flood-related damage.',
+    description: 'What to check and move before flooding becomes a risk.',
     items: [
       'Check flood zone and drainage around the home',
       'Identify low-entry points, vents, and basement exposure',
@@ -187,7 +187,7 @@ const PREMADE_CHECKLISTS = [
     id: 'wildfire-preparedness',
     section: 'disasters',
     title: 'Wildfire Preparedness',
-    description: 'A common threat in many regions. Use this checklist to reduce vegetation and ember-related exposure.',
+    description: 'What to clear, inspect, and pack before wildfire season.',
     items: [
       'Clear defensible space around the home',
       'Trim overhanging branches and clear debris',
@@ -199,7 +199,7 @@ const PREMADE_CHECKLISTS = [
     id: 'earthquake-preparedness',
     section: 'disasters',
     title: 'Earthquake Preparedness',
-    description: 'Important for homes in seismic areas. Use this checklist to reduce movement-related damage.',
+    description: 'What to secure and locate before an earthquake hits.',
     items: [
       'Check whether older structural elements need retrofitting',
       'Secure water heaters, shelves, and heavy furniture',
