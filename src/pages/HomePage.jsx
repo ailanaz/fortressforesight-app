@@ -4,17 +4,13 @@ import './HomePage.css'
 
 const RAIL_ITEMS = [
   {
-    label: 'Search',
-    text: 'Start with the address.',
-    to: '/search',
+    line: 'Clarity before disaster.',
   },
   {
-    label: 'Records',
-    text: 'Keep the file together.',
+    line: 'Structure during crisis.',
   },
   {
-    label: 'Recovery',
-    text: 'Move through it cleanly.',
+    line: 'Confidence through recovery.',
   },
 ]
 
@@ -78,15 +74,10 @@ function HomePage() {
         </article>
 
         <aside className="home-stage-side">
-          {RAIL_ITEMS.map((item) => (
-            <article key={item.label} className="home-side-card card">
-              <p className="home-side-label">{item.label}</p>
-              <p className="home-side-text">{item.text}</p>
-              {item.to ? (
-                <Link className="home-side-link" to={item.to}>
-                  Open
-                </Link>
-              ) : null}
+          {RAIL_ITEMS.map((item, index) => (
+            <article key={item.line} className="home-side-card card">
+              <p className="home-side-label">{String(index + 1).padStart(2, '0')}</p>
+              <p className="home-side-text">{item.line}</p>
             </article>
           ))}
         </aside>
