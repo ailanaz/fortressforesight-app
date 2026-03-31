@@ -87,7 +87,6 @@
 
 .home-stage-copy {
   max-width: 720px;
-  margin-top: 5%;
 }
 
 .home-stage-section-label {
@@ -100,7 +99,7 @@
 
 .home-title {
   max-width: 620px;
-  margin-top: 10px;
+  margin-top: calc(10px + 5%);
   font-size: clamp(46px, 7vw, 84px);
   line-height: 0.94;
   letter-spacing: -0.04em;
@@ -240,8 +239,11 @@
 
   .home-stage-copy,
   .home-search-form {
-    margin-top: 0;
     margin-bottom: 0;
+  }
+
+  .home-title {
+    margin-top: 10px;
   }
 
   .home-subtitle {
