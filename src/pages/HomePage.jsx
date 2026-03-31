@@ -86,12 +86,12 @@ function HomePage() {
                 id="home-address-search"
                 className="home-search-input"
                 type="text"
-                placeholder="Enter a home address"
+                placeholder="Enter address"
                 value={address}
                 onChange={(event) => setAddress(event.target.value)}
               />
               <button className="btn-primary" type="submit">
-                Search Address
+                Search
               </button>
             </form>
           </article>

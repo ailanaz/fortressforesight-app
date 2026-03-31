@@ -757,12 +757,12 @@ function PropertyProfile() {
           id="property-address-search"
           className="property-search-input"
           type="text"
-          placeholder="Enter a home address"
+          placeholder="Enter address"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
         <button className="btn-primary property-search-button" type="submit">
-          {status === 'loading' ? 'Searching...' : 'Search Address'}
+          {status === 'loading' ? 'Searching...' : 'Search'}
         </button>
         {property ? (
           <button
