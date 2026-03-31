@@ -68,7 +68,6 @@ function HomePage() {
         <div className="home-stage-main-stack">
           <article className="home-stage-main card">
             <div className="home-stage-copy">
-              <p className="home-stage-section-label">Start Here</p>
               <h1 className="home-title">
                 <span className="home-title-word">Fortress</span>
                 <span className="home-title-word">Foresight</span>
@@ -83,6 +82,7 @@ function HomePage() {
               </p>
             </div>
 
+            <p className="home-stage-section-label home-stage-search-label">Start Here</p>
             <form className="home-search-form" onSubmit={handleSearchSubmit}>
               <label className="sr-only" htmlFor="home-address-search">
                 Property address
