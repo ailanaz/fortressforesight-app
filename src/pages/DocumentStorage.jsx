@@ -138,10 +138,6 @@ function DocumentStorage() {
       </div>
 
       <h1 className="page-title">Documents</h1>
-      <p className="page-subtitle">
-        Photos and files for your policies, receipts, inspections, and warranties.
-      </p>
-
       <input
         ref={fileInputRef}
         className="file-input-hidden"
