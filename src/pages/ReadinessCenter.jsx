@@ -309,6 +309,11 @@ function ReadinessCenter() {
         return (
           <section key={section.id} className="readiness-group">
             <h3 className="section-label readiness-group-label">{section.label}</h3>
+            {section.id === 'disasters' ? (
+              <p className="readiness-group-note">
+                These cover the most common situations. Use a custom list for home- and area-specific needs.
+              </p>
+            ) : null}
             {sectionChecklists.map((checklist) => (
               <Checklist key={checklist.id} checklist={checklist} />
             ))}
