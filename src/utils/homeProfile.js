@@ -3,11 +3,14 @@ export function getHomeTitle(home) {
     return ''
   }
 
+  const streetLine = home.address?.street_line
   const street = [home.address?.house_number, home.address?.road]
     .filter(Boolean)
     .join(' ')
+  const queryLine = home.query?.split(',')[0]?.trim()
+  const displayLine = home.displayName?.split(',')[0]?.trim()
 
-  return street || home.query || 'Saved home'
+  return streetLine || street || queryLine || displayLine || home.query || 'Saved home'
 }
 
 export function getHomeLocation(home) {

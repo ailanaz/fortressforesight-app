@@ -208,6 +208,8 @@ function geocodeWithCensus(query, signal) {
       const coordinates = match.coordinates ?? {}
       const components = match.addressComponents ?? {}
       const road = buildCensusRoad(components)
+      const houseNumber = components.fromAddress || ''
+      const streetLine = [houseNumber, road].filter(Boolean).join(' ').trim()
 
       settled = true
       cleanup()
@@ -216,7 +218,9 @@ function geocodeWithCensus(query, signal) {
         lon: Number(coordinates.x),
         displayName: match.matchedAddress,
         address: {
+          house_number: houseNumber,
           road,
+          street_line: streetLine,
           city: components.city || '',
           state: components.state || '',
           postcode: components.zip || '',
