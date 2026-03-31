@@ -21,27 +21,6 @@ const RAIL_ITEMS = [
   },
 ]
 
-const PATHWAYS = [
-  {
-    number: '01',
-    label: 'Buy',
-    title: 'Review the location first.',
-    tags: ['Map', 'Flood / FEMA', 'Area snapshot'],
-  },
-  {
-    number: '02',
-    label: 'Own',
-    title: 'Keep the home file ready.',
-    tags: ['Policies', 'Receipts', 'Inspections'],
-  },
-  {
-    number: '03',
-    label: 'Recover',
-    title: 'Track the claim with structure.',
-    tags: ['Damage log', 'Expenses', 'Claim steps'],
-  },
-]
-
 function HomePage() {
   return (
     <div className="page home-page">
@@ -85,25 +64,6 @@ function HomePage() {
             )
           ))}
         </aside>
-      </section>
-
-      <section className="home-pathways">
-        {PATHWAYS.map((item) => (
-          <article key={item.label} className="home-pathway card">
-            <div className="home-pathway-top">
-              <span className="home-pathway-number">{item.number}</span>
-              <span className="home-pathway-label">{item.label}</span>
-            </div>
-            <p className="home-pathway-title">{item.title}</p>
-            <div className="home-pathway-tags">
-              {item.tags.map((tag) => (
-                <span key={tag} className="home-pathway-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </article>
-        ))}
       </section>
     </div>
   )
