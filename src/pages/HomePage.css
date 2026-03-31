@@ -6,7 +6,7 @@
 
 .home-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.78fr);
+  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.55fr);
   gap: 16px;
 }
 
@@ -15,6 +15,14 @@
 .home-pathway,
 .home-banner {
   margin-bottom: 0;
+}
+
+.home-stage-main {
+  order: 2;
+}
+
+.home-stage-side {
+  order: 1;
 }
 
 .home-stage-main {
@@ -268,6 +276,11 @@
   .home-stage,
   .home-pathways {
     grid-template-columns: 1fr;
+  }
+
+  .home-stage-main,
+  .home-stage-side {
+    order: initial;
   }
 
   .home-stage-main {
