@@ -16,6 +16,11 @@ function formatFileSize(bytes) {
   return `${Math.max(1, Math.round(bytes / 1024))} KB`
 }
 
+function normalizeDocType(type) {
+  if (type === 'Receipt') return 'Receipts'
+  return type
+}
+
 function inferDocType(file) {
   if (file.type.startsWith('image/')) return 'Photo'
   if (file.type === 'application/pdf') return 'PDF'
@@ -30,8 +35,9 @@ function DocumentStorage() {
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
 
-  const docTypes = [...new Set(docs.map((doc) => doc.type))]
-  const filtered = filter === 'All' ? docs : docs.filter((doc) => doc.type === filter)
+  const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
+  const docTypes = [...new Set(normalizedDocs.map((doc) => doc.type))]
+  const filtered = filter === 'All' ? normalizedDocs : normalizedDocs.filter((doc) => doc.type === filter)
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
 
