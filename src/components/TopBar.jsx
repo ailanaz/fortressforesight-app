@@ -1,12 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './TopBar.css'
 
 function TopBar() {
+  const location = useLocation()
   const { activeHome } = useActiveHome()
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
+  const showHomePill = activeHome && location.pathname !== '/home'
 
   return (
     <header className="topbar">
@@ -23,7 +25,7 @@ function TopBar() {
               alt="FortressForesight"
             />
           </Link>
-          {activeHome ? (
+          {showHomePill ? (
             <div className="topbar-home-pill">
               <span className="topbar-home-title">{homeTitle}</span>
               {homeLocation ? (
