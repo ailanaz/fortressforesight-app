@@ -40,6 +40,28 @@
   background: var(--color-yellow);
 }
 
+@media (max-width: 680px) {
+  .recovery-tabs {
+    justify-content: center;
+  }
+
+  .recovery-tab-damage-log {
+    order: 1;
+  }
+
+  .recovery-tab-expenses {
+    order: 2;
+  }
+
+  .recovery-tab-timeline {
+    order: 3;
+  }
+
+  .recovery-tab-claim-status {
+    order: 4;
+  }
+}
+
 .tab-content {
   display: flex;
   flex-direction: column;

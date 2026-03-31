@@ -121,6 +121,11 @@ Holdback: The portion of a replacement cost claim withheld until repairs are com
 
 const CATEGORIES = ['All', 'Insurance Basics', 'Coverage', 'Claims', 'Reference']
 
+function getCategoryClassName(item, category) {
+  const slug = item.toLowerCase().replace(/\s+/g, '-')
+  return `filter-tab filter-tab-${slug}${item === 'All' ? ' filter-tab-all' : ''}${category === item ? ' active' : ''}`
+}
+
 function Article({ article }) {
   const [open, setOpen] = useState(false)
 
@@ -168,7 +173,7 @@ function KnowledgeBase() {
         {CATEGORIES.map((item) => (
           <button
             key={item}
-            className={`filter-tab${item === 'All' ? ' filter-tab-all' : ''}${category === item ? ' active' : ''}`}
+            className={getCategoryClassName(item, category)}
             onClick={() => setCategory(item)}
           >
             {item}

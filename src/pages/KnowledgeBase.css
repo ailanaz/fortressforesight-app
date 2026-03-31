@@ -39,12 +39,28 @@
   }
 
   .filter-tab {
-    padding: 4px 12px;
-    font-size: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
   }
 
   .filter-tab-all {
     display: none;
+  }
+
+  .filter-tab-coverage {
+    order: 1;
+  }
+
+  .filter-tab-claims {
+    order: 2;
+  }
+
+  .filter-tab-reference {
+    order: 3;
+  }
+
+  .filter-tab-insurance-basics {
+    order: 4;
   }
 }
 

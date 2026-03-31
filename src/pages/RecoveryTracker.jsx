@@ -7,6 +7,11 @@ import './RecoveryTracker.css'
 
 const TABS = ['Damage Log', 'Timeline', 'Expenses', 'Claim Status']
 
+function getRecoveryTabClassName(tab, activeTab) {
+  const slug = tab.toLowerCase().replace(/\s+/g, '-')
+  return `recovery-tab recovery-tab-${slug}${activeTab === tab ? ' active' : ''}`
+}
+
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
   const [activeTab, setActiveTab] = useState('Damage Log')
@@ -82,7 +87,7 @@ function RecoveryTracker() {
         {TABS.map((tab) => (
           <button
             key={tab}
-            className={`recovery-tab${activeTab === tab ? ' active' : ''}`}
+            className={getRecoveryTabClassName(tab, activeTab)}
             onClick={() => setActiveTab(tab)}
           >
             {tab}
