@@ -123,16 +123,6 @@ function DocumentStorage() {
         </div>
       )}
 
-      <div className="section-header">
-        <h1 className="page-title">Documents</h1>
-        <button className="btn-primary upload-btn" onClick={() => fileInputRef.current?.click()}>
-          + Upload
-        </button>
-      </div>
-      <p className="page-subtitle">
-        Photos and files for your policies, receipts, inspections, and warranties.
-      </p>
-
       <div className="page-utility-bar">
         <div className="page-calendar-actions">
           <input
@@ -155,6 +145,16 @@ function DocumentStorage() {
           </button>
         </div>
       </div>
+
+      <div className="section-header">
+        <h1 className="page-title">Documents</h1>
+        <button className="btn-primary upload-btn" onClick={() => fileInputRef.current?.click()}>
+          + Upload
+        </button>
+      </div>
+      <p className="page-subtitle">
+        Photos and files for your policies, receipts, inspections, and warranties.
+      </p>
 
       <input
         ref={fileInputRef}

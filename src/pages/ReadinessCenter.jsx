@@ -422,17 +422,15 @@ function ReadinessCenter() {
         </div>
       ) : null}
 
-      <div className="readiness-toolbar">
-        <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
-        <div className="readiness-calendar-actions">
-          <label className="readiness-date-field">
-            <span>Date</span>
-            <input
-              type="date"
-              value={calendarDate}
-              onChange={(event) => setCalendarDate(event.target.value)}
-            />
-          </label>
+      <div className="page-utility-bar">
+        <div className="page-calendar-actions">
+          <input
+            className="page-input"
+            type="date"
+            value={calendarDate}
+            onChange={(event) => setCalendarDate(event.target.value)}
+            aria-label="Readiness review date"
+          />
           <button
             className="btn-outline"
             type="button"
@@ -448,6 +446,8 @@ function ReadinessCenter() {
           </button>
         </div>
       </div>
+
+      <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
 
       <div className="readiness-grid">
         {CHECKLIST_SECTIONS.map((section) => {

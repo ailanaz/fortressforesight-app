@@ -47,11 +47,6 @@ function RecoveryTracker() {
         </div>
       )}
 
-      <h1 className="page-title">Recovery Tracker</h1>
-      <p className="page-subtitle">
-        Document damage, log expenses, and track your claim from start to finish.
-      </p>
-
       <div className="page-utility-bar recovery-utility-bar">
         <div className="page-calendar-actions">
           <input
@@ -74,6 +69,11 @@ function RecoveryTracker() {
           </button>
         </div>
       </div>
+
+      <h1 className="page-title">Recovery Tracker</h1>
+      <p className="page-subtitle">
+        Document damage, log expenses, and track your claim from start to finish.
+      </p>
 
       <div className="recovery-tabs">
         {TABS.map((tab) => (
