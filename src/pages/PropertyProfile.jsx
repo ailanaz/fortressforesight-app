@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useActiveHome } from '../context/HomeContext'
 import './Page.css'
 import './PropertyProfile.css'
@@ -8,17 +8,39 @@ const GOOGLE_MAPS_EMBED_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const EMPTY_DETAIL_ROWS = [
   { label: 'Address', value: '\u2014' },
   { label: 'City / State', value: '\u2014' },
+  { label: 'County', value: '\u2014' },
   { label: 'ZIP code', value: '\u2014' },
-  { label: 'Coordinates', value: '\u2014' },
 ]
 
-const EMPTY_RISK_CARDS = ['Flood', 'Storm', 'Wildfire', 'Insurance']
-
-const RISK_LEVELS = {
-  low: { label: 'Low Risk', color: '#3d64f0', bg: 'rgba(61, 100, 240, 0.18)' },
-  moderate: { label: 'Moderate Risk', color: '#f8c200', bg: 'rgba(248, 194, 0, 0.18)' },
-  high: { label: 'High Risk', color: '#ff6675', bg: 'rgba(255, 102, 117, 0.18)' },
-}
+const EMPTY_SUMMARY_CARDS = [
+  {
+    title: 'Property Context',
+    rows: EMPTY_DETAIL_ROWS,
+  },
+  {
+    title: 'Flood / FEMA',
+    rows: [
+      { label: 'FEMA flood zone', value: '\u2014', pending: true },
+      { label: 'Special flood hazard area', value: '\u2014', pending: true },
+      { label: 'Flood map panel', value: '\u2014', pending: true },
+    ],
+  },
+  {
+    title: 'Area Snapshot',
+    rows: [
+      { label: 'Flood review', value: '\u2014' },
+      { label: 'Storm review', value: '\u2014' },
+      { label: 'Wildfire review', value: '\u2014' },
+    ],
+  },
+  {
+    title: 'Zoning / Land Use',
+    rows: [
+      { label: 'Zoning code', value: '\u2014', pending: true },
+      { label: 'Land use', value: '\u2014', pending: true },
+    ],
+  },
+]
 
 const STATE_ALIASES = {
   ALABAMA: 'AL',
@@ -96,36 +118,15 @@ const WILDFIRE_REVIEW_STATES = new Set([
   'KS', 'NE', 'OK', 'TX',
 ])
 
-function hashString(input) {
-  let hash = 0
-
-  for (let index = 0; index < input.length; index += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(index)
-    hash |= 0
-  }
-
-  return Math.abs(hash)
-}
-
-function pickRiskLevel(seed, shift = 0) {
-  const levels = ['low', 'moderate', 'high']
-  return levels[(seed + shift) % levels.length]
-}
-
-function deriveOverallLevel(levels) {
-  if (levels.includes('high')) {
-    return 'high'
-  }
-
-  if (levels.filter((level) => level === 'moderate').length >= 2) {
-    return 'moderate'
-  }
-
-  return 'low'
-}
-
-function formatCoordinate(value) {
-  return Number(value).toFixed(5)
+function getMunicipality(address) {
+  return (
+    address.city ||
+    address.town ||
+    address.village ||
+    address.hamlet ||
+    address.municipality ||
+    ''
+  )
 }
 
 function normalizeState(value) {
@@ -147,6 +148,22 @@ function inferLevel(stateCode, prioritySet, reviewSet) {
   }
 
   return 'low'
+}
+
+function getFloodReview(level) {
+  return {
+    low: 'Standard review',
+    moderate: 'Regional review',
+    high: 'Priority review',
+  }[level]
+}
+
+function getRegionalReviewLabel(level) {
+  return {
+    low: 'Standard review',
+    moderate: 'Regional review',
+    high: 'Priority review',
+  }[level]
 }
 
 function rankGeocodeResult(result) {
@@ -172,65 +189,59 @@ function rankGeocodeResult(result) {
   return score
 }
 
-function createStarterProfile(result, query) {
+function createStarterProfile(result) {
   const stateCode = normalizeState(result.address?.state)
-  const seed = hashString(`${query}:${result.lat}:${result.lon}`)
   const floodLevel = inferLevel(stateCode, FLOOD_PRIORITY_STATES, FLOOD_REVIEW_STATES)
   const stormLevel = inferLevel(stateCode, STORM_PRIORITY_STATES, STORM_REVIEW_STATES)
   const wildfireLevel = inferLevel(stateCode, WILDFIRE_PRIORITY_STATES, WILDFIRE_REVIEW_STATES)
-  const insuranceLevel = deriveOverallLevel([
-    floodLevel,
-    stormLevel,
-    wildfireLevel,
-    pickRiskLevel(seed, 3),
-  ])
-  const overallLevel = deriveOverallLevel([
-    floodLevel,
-    stormLevel,
-    wildfireLevel,
-    insuranceLevel,
-  ])
 
   return {
-    cards: [
+    summaryCards: [
       {
-        title: 'Flood',
-        level: floodLevel,
-        detail: {
-          low: 'Drainage, gutters, and any prior water intrusion.',
-          moderate: 'Low-point pooling, crawlspace moisture, sump or grading work.',
-          high: 'Flood-zone status, flood policy options, and prior water-loss repairs.',
-        }[floodLevel],
+        title: 'Property Context',
+        rows: [
+          { label: 'Address', value: result.displayName },
+          {
+            label: 'City / State',
+            value:
+              [getMunicipality(result.address), result.address?.state]
+                .filter(Boolean)
+                .join(', ') || 'Not available yet',
+          },
+          {
+            label: 'County',
+            value: result.address?.county || 'Not available yet',
+          },
+          {
+            label: 'ZIP code',
+            value: result.address?.postcode || 'Not available yet',
+          },
+        ],
       },
       {
-        title: 'Storm',
-        level: stormLevel,
-        detail: {
-          low: 'Roof age, window seals, and nearby tree exposure.',
-          moderate: 'Roof age, wind mitigation work, and hail history.',
-          high: 'Wind or hail deductible, roof age, opening protection, prior claims.',
-        }[stormLevel],
+        title: 'Flood / FEMA',
+        rows: [
+          { label: 'FEMA flood zone', value: 'Pending FEMA source', pending: true },
+          { label: 'Special flood hazard area', value: 'Pending FEMA source', pending: true },
+          { label: 'Flood map panel', value: 'Pending FEMA source', pending: true },
+        ],
       },
       {
-        title: 'Wildfire',
-        level: wildfireLevel,
-        detail: {
-          low: 'Roof debris, gutters, and brush near the structure.',
-          moderate: 'Defensible space, vent screening, and roof material.',
-          high: 'Roof material, ember entry points, clearance, evacuation access.',
-        }[wildfireLevel],
+        title: 'Area Snapshot',
+        rows: [
+          { label: 'Flood review', value: getFloodReview(floodLevel) },
+          { label: 'Storm review', value: getRegionalReviewLabel(stormLevel) },
+          { label: 'Wildfire review', value: getRegionalReviewLabel(wildfireLevel) },
+        ],
       },
       {
-        title: 'Coverage',
-        level: insuranceLevel,
-        detail: {
-          low: 'Declarations page, deductible, and carrier contacts.',
-          moderate: 'Replacement cost, loss-of-use, water backup, roof schedule.',
-          high: 'Wind or hail deductible, flood exclusion, replacement-cost language.',
-        }[insuranceLevel],
+        title: 'Zoning / Land Use',
+        rows: [
+          { label: 'Zoning code', value: 'Pending local source', pending: true },
+          { label: 'Land use', value: 'Pending local source', pending: true },
+        ],
       },
     ],
-    overallLevel,
   }
 }
 
@@ -384,25 +395,91 @@ async function geocodeWithNominatim(query, signal) {
   }
 }
 
+async function enrichAddressContext(result, signal) {
+  if (!result?.lat || !result?.lon) {
+    return result
+  }
+
+  const params = new URLSearchParams({
+    format: 'jsonv2',
+    addressdetails: '1',
+    'accept-language': 'en',
+    lat: String(result.lat),
+    lon: String(result.lon),
+    zoom: '18',
+  })
+
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?${params.toString()}`,
+      {
+        signal,
+        headers: {
+          Accept: 'application/json',
+        },
+      },
+    )
+
+    if (!response.ok) {
+      return result
+    }
+
+    const payload = await response.json()
+    const reverseAddress = payload?.address ?? {}
+
+    return {
+      ...result,
+      address: {
+        ...reverseAddress,
+        ...result.address,
+        county: result.address?.county || reverseAddress.county || '',
+        city:
+          result.address?.city ||
+          reverseAddress.city ||
+          reverseAddress.town ||
+          reverseAddress.village ||
+          '',
+        town: result.address?.town || reverseAddress.town || '',
+        village: result.address?.village || reverseAddress.village || '',
+        municipality: result.address?.municipality || reverseAddress.municipality || '',
+      },
+    }
+  } catch {
+    return result
+  }
+}
+
 async function geocodeAddress(query, signal) {
   try {
-    return await geocodeWithCensus(query, signal)
+    const result = await geocodeWithCensus(query, signal)
+    return await enrichAddressContext(result, signal)
   } catch (error) {
     if (error.name === 'AbortError') {
       throw error
     }
 
-    return geocodeWithNominatim(query, signal)
+    const result = await geocodeWithNominatim(query, signal)
+    return await enrichAddressContext(result, signal)
   }
 }
 
-function RiskBadge({ level }) {
-  const risk = RISK_LEVELS[level] || RISK_LEVELS.low
-
+function SummaryCard({ title, rows }) {
   return (
-    <span className="risk-badge" style={{ color: risk.color, background: risk.bg }}>
-      {risk.label}
-    </span>
+    <article className="summary-card card">
+      <div className="summary-card-header">
+        <p className="summary-card-title">{title}</p>
+      </div>
+      <div className="summary-rows">
+        {rows.map((row) => (
+          <div key={`${title}-${row.label}`} className="summary-row">
+            <span className="summary-label">{row.label}</span>
+            <span className={`summary-value${row.pending ? ' summary-value-muted' : ''}`}>
+              {row.value}
+            </span>
+          </div>
+        ))}
+      </div>
+    </article>
   )
 }
 
@@ -441,37 +518,6 @@ function PropertyProfile() {
     setQuery((currentValue) => currentValue || activeHome?.query || '')
   }, [activeHome])
 
-  const detailRows = useMemo(() => {
-    if (!property) {
-      return []
-    }
-
-    return [
-      { label: 'Address', value: property.displayName },
-      {
-        label: 'City / State',
-        value:
-          [
-            property.address.city ||
-              property.address.town ||
-              property.address.village ||
-              property.address.hamlet,
-            property.address.state,
-          ]
-            .filter(Boolean)
-            .join(', ') || 'Not available yet',
-      },
-      {
-        label: 'ZIP code',
-        value: property.address.postcode || 'Not available yet',
-      },
-      {
-        label: 'Coordinates',
-        value: `${formatCoordinate(property.lat)}, ${formatCoordinate(property.lon)}`,
-      },
-    ]
-  }, [property])
-
   const googleEmbedSrc = getGoogleEmbedSrc(property)
 
   const handleSubmit = async (event) => {
@@ -495,7 +541,7 @@ function PropertyProfile() {
 
     try {
       const result = await geocodeAddress(trimmedQuery, controller.signal)
-      const starterProfile = createStarterProfile(result, trimmedQuery)
+      const starterProfile = createStarterProfile(result)
       const nextProperty = {
         ...result,
         ...starterProfile,
@@ -609,26 +655,12 @@ function PropertyProfile() {
                     <p className="property-sidebar-kicker">Risk Summary</p>
                     <h2 className="property-sidebar-title">{property.query}</h2>
                   </div>
-                  <RiskBadge level={property.overallLevel} />
                 </div>
               </div>
 
-              <div className="property-detail-list">
-                {detailRows.map((row) => (
-                  <div key={row.label} className="property-detail-row">
-                    <span className="property-detail-label">{row.label}</span>
-                    <span className="property-detail-value">{row.value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="risk-grid risk-grid-sidebar">
-                {property.cards.map((card) => (
-                  <article key={card.title} className="risk-card">
-                    <span className="risk-label">{card.title}</span>
-                    <RiskBadge level={card.level} />
-                    <span className="risk-detail">{card.detail}</span>
-                  </article>
+              <div className="summary-stack">
+                {property.summaryCards.map((card) => (
+                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
               </div>
 
@@ -653,23 +685,9 @@ function PropertyProfile() {
                 <p className="property-sidebar-kicker">Risk Summary</p>
               </div>
 
-              <div className="property-detail-list">
-                {EMPTY_DETAIL_ROWS.map((row) => (
-                  <div key={row.label} className="property-detail-row">
-                    <span className="property-detail-label">{row.label}</span>
-                    <span className="property-detail-value property-detail-value-placeholder">
-                      {row.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="risk-grid risk-grid-sidebar">
-                {EMPTY_RISK_CARDS.map((title) => (
-                  <article key={title} className="risk-card risk-card-placeholder">
-                    <span className="risk-label">{title}</span>
-                    <span className="risk-detail">\u2014</span>
-                  </article>
+              <div className="summary-stack">
+                {EMPTY_SUMMARY_CARDS.map((card) => (
+                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
               </div>
             </div>
