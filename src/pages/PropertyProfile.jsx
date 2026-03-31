@@ -20,6 +20,14 @@ const EMPTY_SUMMARY_CARDS = [
     rows: EMPTY_DETAIL_ROWS,
   },
   {
+    title: 'Zoning / Future Use',
+    rows: [
+      { label: 'Zoning code', value: '\u2014', pending: true },
+      { label: 'Land use', value: '\u2014', pending: true },
+      { label: 'Future use / corridor', value: '\u2014', pending: true },
+    ],
+  },
+  {
     title: 'Soil & Geology',
     rows: [
       { label: 'USDA soil survey', value: '\u2014', pending: true },
@@ -51,15 +59,22 @@ const EMPTY_SUMMARY_CARDS = [
       { label: 'Area claim pressure', value: '\u2014', pending: true },
     ],
   },
-  {
-    title: 'Zoning / Future Use',
-    rows: [
-      { label: 'Zoning code', value: '\u2014', pending: true },
-      { label: 'Land use', value: '\u2014', pending: true },
-      { label: 'Future use / corridor', value: '\u2014', pending: true },
-    ],
-  },
 ]
+
+const SUMMARY_CARD_ORDER = [
+  'Property Information',
+  'Zoning / Future Use',
+  'Soil & Geology',
+  'Water / Drainage',
+  'Wildfire / Vegetation',
+  'Response / Area Claims',
+]
+
+function orderSummaryCards(cards) {
+  return [...cards].sort(
+    (left, right) => SUMMARY_CARD_ORDER.indexOf(left.title) - SUMMARY_CARD_ORDER.indexOf(right.title),
+  )
+}
 
 function getMunicipality(address) {
   return (
@@ -499,6 +514,9 @@ function PropertyProfile() {
   }, [location.search, location.state, property?.query, saveActiveHome])
 
   const googleEmbedSrc = getGoogleEmbedSrc(property)
+  const orderedSummaryCards = orderSummaryCards(property?.summaryCards || EMPTY_SUMMARY_CARDS)
+  const topSummaryCards = orderedSummaryCards.slice(0, 2)
+  const remainingSummaryCards = orderedSummaryCards.slice(2)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -589,8 +607,6 @@ function PropertyProfile() {
 
       {error ? <p className="property-error">{error}</p> : null}
 
-      <AlertTicker state={property?.address?.state || activeHome?.address?.state} />
-
       <div className="property-workspace">
         <section className="property-summary card">
           {property ? (
@@ -605,7 +621,17 @@ function PropertyProfile() {
               </div>
 
               <div className="summary-stack">
-                {property.summaryCards.map((card) => (
+                {topSummaryCards.map((card) => (
+                  <SummaryCard
+                    key={card.title}
+                    title={card.title}
+                    rows={card.rows}
+                  />
+                ))}
+                <div className="summary-alert-row">
+                  <AlertTicker state={property?.address?.state || activeHome?.address?.state} />
+                </div>
+                {remainingSummaryCards.map((card) => (
                   <SummaryCard
                     key={card.title}
                     title={card.title}
@@ -621,7 +647,13 @@ function PropertyProfile() {
               </div>
 
               <div className="summary-stack">
-                {EMPTY_SUMMARY_CARDS.map((card) => (
+                {topSummaryCards.map((card) => (
+                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
+                ))}
+                <div className="summary-alert-row">
+                  <AlertTicker state={activeHome?.address?.state} />
+                </div>
+                {remainingSummaryCards.map((card) => (
                   <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
               </div>
