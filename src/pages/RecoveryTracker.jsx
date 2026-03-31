@@ -5,7 +5,7 @@ import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
 import './Page.css'
 import './RecoveryTracker.css'
 
-const TABS = ['Damage Log', 'Timeline', 'Claim Status', 'Expenses']
+const TABS = ['Damage Log', 'Timeline', 'Expenses', 'Claim Status']
 
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
