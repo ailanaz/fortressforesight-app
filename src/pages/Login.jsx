@@ -28,6 +28,13 @@ function Login() {
         <p className="login-tagline">
           Clarity before disaster. Structure during crisis. Confidence through recovery.
         </p>
+        {mode === 'signup' ? (
+          <p className="login-description">
+            FortressForesight helps protect the property that protects you by combining
+            pre-purchase and homeownership risk awareness, secure home recordkeeping,
+            disaster preparation, and guided recovery support in one place.
+          </p>
+        ) : null}
 
         <div className="login-tabs">
           <button

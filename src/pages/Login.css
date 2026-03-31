@@ -46,6 +46,15 @@
   margin-bottom: 24px;
 }
 
+.login-description {
+  font-size: 13px;
+  color: var(--color-gray-700);
+  text-align: center;
+  line-height: 1.6;
+  margin: -8px auto 24px;
+  max-width: 420px;
+}
+
 .login-tabs {
   display: flex;
   border-bottom: 2px solid var(--color-gray-100);
