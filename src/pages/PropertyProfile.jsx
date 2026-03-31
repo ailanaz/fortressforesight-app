@@ -60,112 +60,6 @@ const EMPTY_SUMMARY_CARDS = [
   },
 ]
 
-const RISK_LEVELS = {
-  low: { label: 'Low', color: '#3d64f0', bg: 'rgba(61, 100, 240, 0.18)' },
-  moderate: { label: 'Review', color: '#f8c200', bg: 'rgba(248, 194, 0, 0.18)' },
-  high: { label: 'High', color: '#ff6675', bg: 'rgba(255, 102, 117, 0.18)' },
-}
-
-const STATE_ALIASES = {
-  ALABAMA: 'AL',
-  ALASKA: 'AK',
-  ARIZONA: 'AZ',
-  ARKANSAS: 'AR',
-  CALIFORNIA: 'CA',
-  COLORADO: 'CO',
-  CONNECTICUT: 'CT',
-  DELAWARE: 'DE',
-  FLORIDA: 'FL',
-  GEORGIA: 'GA',
-  HAWAII: 'HI',
-  IDAHO: 'ID',
-  ILLINOIS: 'IL',
-  INDIANA: 'IN',
-  IOWA: 'IA',
-  KANSAS: 'KS',
-  KENTUCKY: 'KY',
-  LOUISIANA: 'LA',
-  MAINE: 'ME',
-  MARYLAND: 'MD',
-  MASSACHUSETTS: 'MA',
-  MICHIGAN: 'MI',
-  MINNESOTA: 'MN',
-  MISSISSIPPI: 'MS',
-  MISSOURI: 'MO',
-  MONTANA: 'MT',
-  NEBRASKA: 'NE',
-  NEVADA: 'NV',
-  'NEW HAMPSHIRE': 'NH',
-  'NEW JERSEY': 'NJ',
-  'NEW MEXICO': 'NM',
-  'NEW YORK': 'NY',
-  'NORTH CAROLINA': 'NC',
-  'NORTH DAKOTA': 'ND',
-  OHIO: 'OH',
-  OKLAHOMA: 'OK',
-  OREGON: 'OR',
-  PENNSYLVANIA: 'PA',
-  RHODEISLAND: 'RI',
-  'RHODE ISLAND': 'RI',
-  'SOUTH CAROLINA': 'SC',
-  'SOUTH DAKOTA': 'SD',
-  TENNESSEE: 'TN',
-  TEXAS: 'TX',
-  UTAH: 'UT',
-  VERMONT: 'VT',
-  VIRGINIA: 'VA',
-  WASHINGTON: 'WA',
-  'WEST VIRGINIA': 'WV',
-  WISCONSIN: 'WI',
-  WYOMING: 'WY',
-  'DISTRICT OF COLUMBIA': 'DC',
-  DC: 'DC',
-}
-
-const FLOOD_PRIORITY_STATES = new Set([
-  'AL', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'LA', 'MA', 'MD', 'MS', 'NC', 'NJ',
-  'NY', 'RI', 'SC', 'TX', 'VA',
-])
-const FLOOD_REVIEW_STATES = new Set([
-  'AR', 'CA', 'IA', 'IL', 'KY', 'MI', 'MN', 'MO', 'OH', 'OR', 'PA', 'TN', 'WA', 'WI', 'WV',
-])
-const STORM_PRIORITY_STATES = new Set([
-  'AL', 'AR', 'FL', 'GA', 'IA', 'KS', 'LA', 'MN', 'MO', 'MS', 'NC', 'NE', 'OK', 'SC', 'SD', 'TX',
-])
-const STORM_REVIEW_STATES = new Set([
-  'CO', 'IL', 'IN', 'KY', 'ND', 'NM', 'OH', 'TN', 'VA', 'WI', 'WY',
-])
-const WILDFIRE_PRIORITY_STATES = new Set([
-  'AZ', 'CA', 'CO', 'ID', 'MT', 'NM', 'NV', 'OR', 'UT', 'WA', 'WY',
-])
-const WILDFIRE_REVIEW_STATES = new Set([
-  'KS', 'NE', 'OK', 'TX',
-])
-const SOIL_PRIORITY_STATES = new Set([
-  'CO', 'FL', 'KS', 'KY', 'MO', 'NE', 'OK', 'PA', 'TN', 'TX',
-])
-const SOIL_REVIEW_STATES = new Set([
-  'AR', 'CA', 'IN', 'NM', 'OH', 'UT', 'VA', 'WV',
-])
-const RADON_PRIORITY_STATES = new Set([
-  'CO', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'MN', 'MO', 'MT', 'ND', 'NE', 'OH', 'PA', 'SD', 'UT', 'WI', 'WV', 'WY',
-])
-const RADON_REVIEW_STATES = new Set([
-  'AR', 'CA', 'MI', 'NM', 'NY', 'TN', 'VA',
-])
-const KARST_PRIORITY_STATES = new Set([
-  'AL', 'FL', 'IN', 'KY', 'MO', 'PA', 'TN', 'VA', 'WV',
-])
-const KARST_REVIEW_STATES = new Set([
-  'AR', 'GA', 'OH', 'TX',
-])
-const WETLAND_PRIORITY_STATES = new Set([
-  'AL', 'DE', 'FL', 'GA', 'HI', 'LA', 'MD', 'MS', 'NC', 'NJ', 'NY', 'SC', 'TX', 'VA',
-])
-const WETLAND_REVIEW_STATES = new Set([
-  'CA', 'CT', 'MA', 'OR', 'PA', 'RI', 'WA',
-])
-
 function getMunicipality(address) {
   return (
     address.city ||
@@ -175,47 +69,6 @@ function getMunicipality(address) {
     address.municipality ||
     ''
   )
-}
-
-function normalizeState(value) {
-  if (!value) {
-    return ''
-  }
-
-  const cleaned = String(value).trim().toUpperCase()
-  return STATE_ALIASES[cleaned] || cleaned
-}
-
-function inferLevel(stateCode, prioritySet, reviewSet) {
-  if (prioritySet.has(stateCode)) {
-    return 'high'
-  }
-
-  if (reviewSet.has(stateCode)) {
-    return 'moderate'
-  }
-
-  return 'low'
-}
-
-function getReviewLabel(level) {
-  return {
-    low: 'Low review',
-    moderate: 'Regional review',
-    high: 'High review',
-  }[level]
-}
-
-function mergeLevels(...levels) {
-  if (levels.includes('high')) {
-    return 'high'
-  }
-
-  if (levels.includes('moderate')) {
-    return 'moderate'
-  }
-
-  return 'low'
 }
 
 function rankGeocodeResult(result) {
@@ -242,19 +95,6 @@ function rankGeocodeResult(result) {
 }
 
 function createStarterProfile(result) {
-  const stateCode = normalizeState(result.address?.state)
-  const floodLevel = inferLevel(stateCode, FLOOD_PRIORITY_STATES, FLOOD_REVIEW_STATES)
-  const stormLevel = inferLevel(stateCode, STORM_PRIORITY_STATES, STORM_REVIEW_STATES)
-  const wildfireLevel = inferLevel(stateCode, WILDFIRE_PRIORITY_STATES, WILDFIRE_REVIEW_STATES)
-  const soilLevel = inferLevel(stateCode, SOIL_PRIORITY_STATES, SOIL_REVIEW_STATES)
-  const radonLevel = inferLevel(stateCode, RADON_PRIORITY_STATES, RADON_REVIEW_STATES)
-  const karstLevel = inferLevel(stateCode, KARST_PRIORITY_STATES, KARST_REVIEW_STATES)
-  const wetlandsLevel = inferLevel(stateCode, WETLAND_PRIORITY_STATES, WETLAND_REVIEW_STATES)
-  const soilGeologyLevel = mergeLevels(soilLevel, radonLevel, karstLevel)
-  const waterLevel = mergeLevels(floodLevel, wetlandsLevel)
-  const responseLevel = mergeLevels(stormLevel, wildfireLevel)
-  const claimsLevel = mergeLevels(floodLevel, stormLevel, wildfireLevel)
-
   return {
     summaryCards: [
       {
@@ -280,43 +120,38 @@ function createStarterProfile(result) {
       },
       {
         title: 'Soil & Geology',
-        level: soilGeologyLevel,
         rows: [
-          { label: 'USDA soil survey', value: getReviewLabel(soilLevel) },
-          { label: 'EPA radon zone', value: getReviewLabel(radonLevel) },
-          { label: 'Karst / sinkhole', value: getReviewLabel(karstLevel) },
+          { label: 'USDA soil survey', value: 'Pending USDA source', pending: true },
+          { label: 'EPA radon zone', value: 'Pending EPA source', pending: true },
+          { label: 'Karst / sinkhole', value: 'Pending geology source', pending: true },
         ],
       },
       {
         title: 'Water / Drainage',
-        level: waterLevel,
         rows: [
           { label: 'FEMA flood zone', value: 'Pending FEMA source', pending: true },
-          { label: 'Drainage / low basin', value: getReviewLabel(floodLevel) },
-          { label: 'Water table / wetlands', value: getReviewLabel(wetlandsLevel) },
+          { label: 'Drainage / low basin', value: 'Pending topography source', pending: true },
+          { label: 'Water table / wetlands', value: 'Pending wetlands source', pending: true },
         ],
       },
       {
         title: 'Wildfire / Vegetation',
-        level: wildfireLevel,
         rows: [
-          { label: 'Wildfire community map', value: 'Pending source', pending: true },
-          { label: 'Defensible space review', value: getReviewLabel(wildfireLevel) },
-          { label: 'Brush / canopy check', value: getReviewLabel(wildfireLevel) },
+          { label: 'Wildfire community map', value: 'Pending wildfire source', pending: true },
+          { label: 'Defensible space review', value: 'Pending vegetation source', pending: true },
+          { label: 'Brush / canopy check', value: 'Pending vegetation source', pending: true },
         ],
       },
       {
         title: 'Response / Area Claims',
-        level: responseLevel,
         rows: [
           { label: 'Fire response class', value: 'Pending local source', pending: true },
           { label: 'Hydrant / station review', value: 'Pending local source', pending: true },
-          { label: 'Area claim pressure', value: getReviewLabel(claimsLevel) },
+          { label: 'Area claim pressure', value: 'Pending claims source', pending: true },
         ],
       },
       {
         title: 'Zoning / Future Use',
-        level: 'moderate',
         rows: [
           { label: 'Zoning code', value: 'Pending local source', pending: true },
           { label: 'Land use', value: 'Pending local source', pending: true },
@@ -556,26 +391,11 @@ async function lookupProperty(query, signal) {
   }
 }
 
-function RiskBadge({ level }) {
-  const risk = RISK_LEVELS[level]
-
-  if (!risk) {
-    return null
-  }
-
-  return (
-    <span className="risk-badge" style={{ color: risk.color, background: risk.bg }}>
-      {risk.label}
-    </span>
-  )
-}
-
-function SummaryCard({ title, rows, level }) {
+function SummaryCard({ title, rows }) {
   return (
     <article className="summary-card card">
       <div className="summary-card-header">
         <p className="summary-card-title">{title}</p>
-        <RiskBadge level={level} />
       </div>
       <div className="summary-rows">
         {rows.map((row) => (
@@ -787,7 +607,6 @@ function PropertyProfile() {
                     key={card.title}
                     title={card.title}
                     rows={card.rows}
-                    level={card.level}
                   />
                 ))}
               </div>
@@ -800,7 +619,7 @@ function PropertyProfile() {
 
               <div className="summary-stack">
                 {EMPTY_SUMMARY_CARDS.map((card) => (
-                  <SummaryCard key={card.title} title={card.title} rows={card.rows} level={card.level} />
+                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
               </div>
             </div>
