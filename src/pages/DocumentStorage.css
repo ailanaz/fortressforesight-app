@@ -1,0 +1,100 @@
+.upload-btn {
+  white-space: nowrap;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-tab {
+  background: var(--color-gray-100);
+  border: none;
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.filter-tab.active {
+  background: var(--color-navy);
+  color: #fff;
+}
+
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.doc-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doc-icon {
+  color: var(--color-blue);
+  flex-shrink: 0;
+}
+
+.doc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.doc-name {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-meta {
+  font-size: 12px;
+  color: var(--color-gray-500);
+}
+
+.doc-action {
+  background: none;
+  border: none;
+  color: var(--color-gray-500);
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.upload-area {
+  background: var(--color-gray-100);
+  border: 2px dashed var(--color-gray-200);
+  border-radius: var(--radius);
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--color-gray-500);
+  font-size: 14px;
+}
+
+.upload-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: var(--color-gray-500);
+  font-size: 14px;
+}

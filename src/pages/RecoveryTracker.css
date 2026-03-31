@@ -1,0 +1,104 @@
+.recovery-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.recovery-tab {
+  background: var(--color-gray-100);
+  border: none;
+  border-radius: 99px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.recovery-tab.active {
+  background: var(--color-navy);
+  color: #fff;
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty-room-state {
+  text-align: center;
+  color: var(--color-gray-500);
+  font-size: 14px;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.adjuster-guide {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.guide-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--color-navy);
+}
+
+.guide-list {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guide-list li {
+  font-size: 13px;
+  color: var(--color-gray-700);
+  line-height: 1.5;
+}
+
+.claim-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 16px;
+}
+
+.claim-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-gray-100);
+  font-size: 14px;
+  color: var(--color-gray-500);
+}
+
+.claim-step:last-child {
+  border-bottom: none;
+}
+
+.claim-step.done {
+  color: var(--color-green);
+}
+
+.step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-gray-200);
+  flex-shrink: 0;
+}
+
+.claim-step.done .step-dot {
+  background: var(--color-green);
+  border-color: var(--color-green);
+}

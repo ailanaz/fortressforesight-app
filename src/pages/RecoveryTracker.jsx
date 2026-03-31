@@ -1,0 +1,98 @@
+import { useState } from 'react'
+import './Page.css'
+import './RecoveryTracker.css'
+
+const TABS = ['Damage Log', 'Expenses', 'Timeline', 'Claim Status']
+
+function RecoveryTracker() {
+  const [activeTab, setActiveTab] = useState('Damage Log')
+
+  return (
+    <div className="page">
+      <h1 className="page-title">Recovery Tracker</h1>
+      <p className="page-subtitle">
+        Document damage, log expenses, and track your claim from start to finish.
+      </p>
+
+      <div className="recovery-tabs">
+        {TABS.map((tab) => (
+          <button
+            key={tab}
+            className={`recovery-tab${activeTab === tab ? ' active' : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === 'Damage Log' && (
+        <div className="tab-content">
+          <div className="section-header">
+            <h2 className="section-label">Damage by Room</h2>
+            <button className="btn-primary">+ Add Room</button>
+          </div>
+          <div className="empty-room-state card">
+            <p>No damage logged yet.</p>
+            <p>Add a room to start documenting with photos and notes.</p>
+          </div>
+          <div className="adjuster-guide card">
+            <h3 className="guide-title">Working with Adjusters</h3>
+            <ul className="guide-list">
+              <li>Photograph everything before any cleanup or repairs</li>
+              <li>Do not throw away damaged items - adjusters need to see them</li>
+              <li>Get the adjuster&apos;s name, company, license number, and phone</li>
+              <li>Ask for a written scope of loss after their inspection</li>
+              <li>You have the right to hire a public adjuster if you disagree</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'Expenses' && (
+        <div className="tab-content">
+          <div className="section-header">
+            <h2 className="section-label">Expense Log</h2>
+            <button className="btn-primary">+ Add Expense</button>
+          </div>
+          <div className="empty-room-state card">
+            <p>No expenses logged yet.</p>
+            <p>Log every cost with a receipt photo - hotels, meals, emergency repairs, supplies.</p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'Timeline' && (
+        <div className="tab-content">
+          <h2 className="section-label">Event Timeline</h2>
+          <div className="empty-room-state card">
+            <p>Your claim timeline will appear here as you log events and updates.</p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'Claim Status' && (
+        <div className="tab-content">
+          <h2 className="section-label">Claim Status</h2>
+          <div className="claim-steps card">
+            {[
+              { label: 'Claim Filed', done: false },
+              { label: 'Adjuster Assigned', done: false },
+              { label: 'Inspection Complete', done: false },
+              { label: 'Estimate Received', done: false },
+              { label: 'Payment Issued', done: false },
+              { label: 'Repairs Complete', done: false },
+            ].map((step) => (
+              <div key={step.label} className={`claim-step${step.done ? ' done' : ''}`}>
+                <div className="step-dot" />
+                <span>{step.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default RecoveryTracker

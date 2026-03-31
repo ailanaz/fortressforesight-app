@@ -1,43 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
-  font-family: var(--font-body);
-  --font-body: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
-  --font-display: 'Fraunces', Georgia, serif;
-  --ink: #10273a;
-  --muted: #52626f;
-  --sand: #f7f1e8;
-  --clay: #c96d4d;
-  --mist: #dfe8eb;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at top left, rgba(223, 232, 235, 0.92), transparent 42%),
-    linear-gradient(180deg, #fcfaf6 0%, #f7f1e8 100%);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  min-height: 100%;
+  --color-navy: #1a3a5c;
+  --color-blue: #2563eb;
+  --color-blue-light: #dbeafe;
+  --color-green: #16a34a;
+  --color-yellow: #ca8a04;
+  --color-red: #dc2626;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-500: #6b7280;
+  --color-gray-700: #374151;
+  --color-gray-900: #111827;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
+  font-family: var(--font-sans);
+  color: var(--color-gray-900);
+  background: var(--color-gray-50);
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: inherit;
+  color: var(--color-blue);
+  text-decoration: none;
 }
 
-p {
-  line-height: 1.6;
+button {
+  cursor: pointer;
+  font-family: inherit;
 }

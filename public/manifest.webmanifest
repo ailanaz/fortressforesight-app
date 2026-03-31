@@ -1,7 +1,7 @@
 {
   "name": "FortressForesight",
   "short_name": "Fortress",
-  "start_url": "/#/overview",
+  "start_url": "/#/property",
   "display": "standalone",
   "background_color": "#f7f1e8",
   "theme_color": "#10273a",

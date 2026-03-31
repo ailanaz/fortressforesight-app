@@ -1,0 +1,64 @@
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-blue);
+}
+
+.contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-input {
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.contact-input:focus {
+  border-color: var(--color-blue);
+}
+
+.contact-phone-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.contact-input.phone {
+  flex: 1;
+}
+
+.call-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-green);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+}
