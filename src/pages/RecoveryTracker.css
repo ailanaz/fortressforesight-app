@@ -1,3 +1,11 @@
+.recovery-workspace-title {
+  margin-bottom: 16px;
+}
+
+.recovery-tracker-title {
+  margin-bottom: 4px;
+}
+
 .recovery-tabs {
   display: flex;
   gap: 6px;

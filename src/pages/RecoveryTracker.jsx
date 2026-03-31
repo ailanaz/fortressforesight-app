@@ -24,10 +24,11 @@ function RecoveryTracker() {
 
   return (
     <div className="page">
+      <h1 className="page-title recovery-workspace-title">Recovery Workspace</h1>
+
       {activeHome ? (
         <div className="active-home-card card">
           <div className="active-home-copy">
-            <span className="active-home-kicker">Recovery workspace</span>
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
             <span className="active-home-note">
@@ -38,7 +39,6 @@ function RecoveryTracker() {
       ) : (
         <div className="active-home-card active-home-empty card">
           <div className="active-home-copy">
-            <span className="active-home-kicker">Recovery workspace</span>
             <span className="active-home-title">Add a home to start</span>
             <span className="active-home-note">
               Search an address first so recovery details stay tied to one property instead of a generic claim shell.
@@ -70,7 +70,7 @@ function RecoveryTracker() {
         </div>
       </div>
 
-      <h1 className="page-title">Recovery Tracker</h1>
+      <h2 className="section-label recovery-tracker-title">Recovery Tracker</h2>
       <p className="page-subtitle">
         Document damage, log expenses, and track your claim from start to finish.
       </p>

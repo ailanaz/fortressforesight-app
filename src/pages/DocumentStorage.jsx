@@ -146,12 +146,7 @@ function DocumentStorage() {
         </div>
       </div>
 
-      <div className="section-header">
-        <h1 className="page-title">Documents</h1>
-        <button className="btn-primary upload-btn" onClick={() => fileInputRef.current?.click()}>
-          + Upload
-        </button>
-      </div>
+      <h1 className="page-title">Documents</h1>
       <p className="page-subtitle">
         Photos and files for your policies, receipts, inspections, and warranties.
       </p>
