@@ -6,8 +6,30 @@
 }
 
 .filter-tab {
-  padding-inline: 14px;
+  background: rgba(255, 255, 255, 0.46);
+  border: 0;
+  border-radius: 4px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #ffffff;
   white-space: nowrap;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.filter-tab.active {
+  background: var(--color-yellow);
+  color: var(--color-black);
+}
+
+.filter-tab:hover {
+  background: rgba(255, 255, 255, 0.56);
+  transform: translateY(-1px);
+}
+
+.filter-tab.active:hover {
+  background: var(--color-yellow);
 }
 
 .article-list {
