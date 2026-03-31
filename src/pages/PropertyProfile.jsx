@@ -469,7 +469,10 @@ function PropertyProfile() {
         <section className="property-map-card card">
           <div className="property-map-toolbar">
             <div>
-              <h2 className="property-map-title">{property ? property.query : 'Map'}</h2>
+              <p className="property-map-kicker">Map</p>
+              {property ? (
+                <h2 className="property-map-title">{property.query}</h2>
+              ) : null}
             </div>
             {property ? (
               <p className="property-map-note">Visual location reference.</p>
@@ -478,14 +481,17 @@ function PropertyProfile() {
 
           <div className="property-map-frame">
             {property ? (
-              <iframe
-                className="property-map-embed"
-                title={`Map for ${property.query}`}
-                src={googleEmbedSrc}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
+              <>
+                <iframe
+                  className="property-map-embed"
+                  title={`Map for ${property.query}`}
+                  src={googleEmbedSrc}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+                <span className="property-map-brand">Google Maps</span>
+              </>
             ) : (
               <div className="property-map-placeholder">Search address to load the map.</div>
             )}
