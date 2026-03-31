@@ -59,6 +59,11 @@
   overflow: hidden;
 }
 
+.property-map-card {
+  width: 90%;
+  align-self: center;
+}
+
 .property-map-toolbar,
 .property-sidebar-section,
 .property-empty-state,
@@ -302,6 +307,10 @@
 @media (max-width: 720px) {
   .property-searchbar {
     grid-template-columns: 1fr;
+  }
+
+  .property-map-card {
+    width: 100%;
   }
 
   .property-map-toolbar {
