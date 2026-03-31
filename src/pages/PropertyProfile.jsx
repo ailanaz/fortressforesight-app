@@ -778,38 +778,7 @@ function PropertyProfile() {
       {error ? <p className="property-error">{error}</p> : null}
 
       <div className="property-workspace">
-        <section className="property-map-card card">
-          <div className="property-map-toolbar">
-            <div>
-              <p className="property-map-kicker">Map</p>
-              {property ? (
-                <h2 className="property-map-title">{property.query}</h2>
-              ) : null}
-            </div>
-            {property ? (
-              <p className="property-map-note">Visual location reference.</p>
-            ) : null}
-          </div>
-
-          <div className="property-map-frame">
-            {property ? (
-              <>
-                <iframe
-                  className="property-map-embed"
-                  title={`Map for ${property.query}`}
-                  src={googleEmbedSrc}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </>
-            ) : (
-              <div className="property-map-placeholder">Search address to load the map.</div>
-            )}
-          </div>
-        </section>
-
-        <aside className="property-sidebar card">
+        <section className="property-summary card">
           {property ? (
             <>
               <div className="property-sidebar-section">
@@ -871,7 +840,36 @@ function PropertyProfile() {
               </div>
             </div>
           )}
-        </aside>
+        </section>
+
+        <section className="property-map-card card">
+          <div className="property-map-toolbar">
+            <div>
+              <p className="property-map-kicker">Map</p>
+              {property ? (
+                <h2 className="property-map-title">{property.query}</h2>
+              ) : null}
+            </div>
+            {property ? (
+              <p className="property-map-note">Visual location reference.</p>
+            ) : null}
+          </div>
+
+          <div className="property-map-frame">
+            {property ? (
+              <iframe
+                className="property-map-embed"
+                title={`Map for ${property.query}`}
+                src={googleEmbedSrc}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            ) : (
+              <div className="property-map-placeholder">Search address to load the map.</div>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   )
