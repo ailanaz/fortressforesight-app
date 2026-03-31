@@ -42,28 +42,19 @@
 
 @media (max-width: 680px) {
   .recovery-tabs {
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .recovery-tab {
-    padding: 4px 10px;
-    font-size: 11px;
-  }
-
-  .recovery-tab-damage-log {
-    order: 1;
-  }
-
-  .recovery-tab-expenses {
-    order: 2;
-  }
-
-  .recovery-tab-timeline {
-    order: 3;
-  }
-
-  .recovery-tab-claim-status {
-    order: 4;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 6px;
+    font-size: 10px;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.15;
   }
 }
 
