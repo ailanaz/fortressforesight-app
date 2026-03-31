@@ -487,7 +487,7 @@ function PropertyProfile() {
                 allowFullScreen
               />
             ) : (
-              <div className="property-map-placeholder">Search a home address to load the map.</div>
+              <div className="property-map-placeholder">Search address to load the map.</div>
             )}
           </div>
         </section>
