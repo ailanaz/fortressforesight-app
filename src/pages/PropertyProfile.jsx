@@ -416,8 +416,14 @@ function PropertyProfile() {
   }
 
   const resetSearch = () => {
+    if (requestRef.current) {
+      requestRef.current.abort()
+      requestRef.current = null
+    }
+
+    clearActiveHome()
     setQuery('')
-    setProperty(activeHome ?? null)
+    setProperty(null)
     setStatus('idle')
     setError('')
   }
@@ -521,7 +527,7 @@ function PropertyProfile() {
 
               <div className="property-actions">
                 <button className="btn-outline" type="button" disabled>
-                  Current Home Active
+                  Saved Address
                 </button>
                 {activeHome ? (
                   <button
@@ -529,7 +535,7 @@ function PropertyProfile() {
                     type="button"
                     onClick={clearActiveHome}
                   >
-                    Clear Current Home
+                    Clear Address
                   </button>
                 ) : null}
               </div>
