@@ -168,7 +168,7 @@ function KnowledgeBase() {
         {CATEGORIES.map((item) => (
           <button
             key={item}
-            className={`filter-tab${category === item ? ' active' : ''}`}
+            className={`filter-tab${item === 'All' ? ' filter-tab-all' : ''}${category === item ? ' active' : ''}`}
             onClick={() => setCategory(item)}
           >
             {item}

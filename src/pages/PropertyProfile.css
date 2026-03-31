@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: 100%;
+  overflow-x: clip;
 }
 
 .property-heading {
@@ -305,12 +307,28 @@
 }
 
 @media (max-width: 720px) {
+  .property-heading,
+  .property-workspace,
+  .property-searchbar,
+  .property-summary,
+  .property-map-card {
+    width: 100%;
+    margin-inline: auto;
+  }
+
   .property-searchbar {
     grid-template-columns: 1fr;
   }
 
   .property-map-card {
     width: 100%;
+  }
+
+  .property-searchbar-secondary,
+  .property-map-toolbar,
+  .summary-stack {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   .property-map-toolbar {
