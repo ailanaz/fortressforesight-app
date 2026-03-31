@@ -15,6 +15,14 @@
   margin-bottom: 0;
 }
 
+.readiness-group + .readiness-group {
+  margin-top: 18px;
+}
+
+.readiness-group-label {
+  margin-bottom: 10px;
+}
+
 .checklist-card {
   margin-bottom: 10px;
 }

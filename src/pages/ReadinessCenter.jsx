@@ -4,39 +4,164 @@ import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './Page.css'
 import './ReadinessCenter.css'
 
+const CHECKLIST_SECTIONS = [
+  { id: 'homebuyers', label: 'For Homebuyers' },
+  { id: 'homeowners', label: 'For Homeowners' },
+  { id: 'recovery', label: 'Recovery' },
+]
+
 const PREMADE_CHECKLISTS = [
   {
-    id: 'buying-home',
-    title: 'Buying a Home',
-    description: 'Before you close - what to check and document',
+    id: 'pre-purchase-inspection',
+    section: 'homebuyers',
+    title: 'Pre-Purchase Inspection',
+    description: 'Core systems and structure to verify before you close',
     items: [
-      'Get a full home inspection',
-      'Review inspection report for major issues',
-      'Get flood zone determination',
-      'Get quotes for homeowners insurance before closing',
-      'Check if flood insurance is required',
-      'Understand your deductible options',
-      'Photograph the entire property at move-in',
-      'Document all appliances and serial numbers',
+      'Review structural integrity',
+      'Check HVAC condition and age',
+      'Inspect plumbing systems',
+      'Review electrical systems and panel',
+      'Inspect roof condition and age',
+      'Look for foundation issues or movement',
+    ],
+  },
+  {
+    id: 'title-deed-verification',
+    section: 'homebuyers',
+    title: 'Title & Deed Verification',
+    description: 'Confirm ownership and uncover legal restrictions before closing',
+    items: [
+      'Confirm current ownership',
+      'Review recorded liens',
+      'Check easements affecting the property',
+      'Review deed restrictions or encumbrances',
+    ],
+  },
+  {
+    id: 'neighborhood-assessment',
+    section: 'homebuyers',
+    title: 'Neighborhood Assessment',
+    description: 'Review the area around the home before you commit',
+    items: [
+      'Check local crime patterns',
+      'Review school quality',
+      'Assess nearby amenities and services',
+      'Review future development plans',
+    ],
+  },
+  {
+    id: 'insurance-adequacy-review',
+    section: 'homebuyers',
+    title: 'Insurance Adequacy Review',
+    description: 'Check what coverage may be needed before purchase',
+    items: [
+      'Get homeowners insurance quotes',
+      'Review standard dwelling coverage',
+      'Check whether flood coverage is needed',
+      'Check whether earthquake coverage is needed',
+    ],
+  },
+  {
+    id: 'utility-cost-estimation',
+    section: 'homebuyers',
+    title: 'Utility & Cost Estimation',
+    description: 'Estimate recurring costs tied to the home',
+    items: [
+      'Estimate average utility bills',
+      'Review energy efficiency',
+      'Check appliance age and condition',
+      'Flag systems likely to need replacement soon',
     ],
   },
   {
     id: 'seasonal',
+    section: 'homeowners',
     title: 'Seasonal Maintenance',
     description: 'Annual tasks to keep your home protected',
     items: [
-      'Test smoke and CO detectors',
-      'Inspect roof for missing or damaged shingles',
       'Clean gutters and downspouts',
-      'Check caulk around windows and doors',
-      'Service HVAC system',
-      'Check water heater for leaks or rust',
-      'Inspect attic insulation and ventilation',
-      'Test sump pump if applicable',
+      'Schedule HVAC servicing',
+      'Replace smoke detector batteries',
+      'Inspect roof for damage',
+      'Check exterior drainage and grading',
+      'Inspect weather seals and caulking',
+    ],
+  },
+  {
+    id: 'emergency-preparedness',
+    section: 'homeowners',
+    title: 'Emergency Preparedness',
+    description: 'Keep emergency supplies and plans ready before a loss',
+    items: [
+      'Keep a fire extinguisher accessible',
+      'Maintain a stocked first aid kit',
+      'Update emergency contacts',
+      'Create a household evacuation plan',
+    ],
+  },
+  {
+    id: 'home-safety-audit',
+    section: 'homeowners',
+    title: 'Home Safety Audit',
+    description: 'Review essential safety systems and basic security',
+    items: [
+      'Test carbon monoxide detectors',
+      'Review security system status',
+      'Check door and window locks',
+      'Review exterior lighting coverage',
+    ],
+  },
+  {
+    id: 'appliance-equipment-inventory',
+    section: 'homeowners',
+    title: 'Appliance & Equipment Inventory',
+    description: 'Track what is in the home and when it may need replacement',
+    items: [
+      'Record serial numbers',
+      'Save warranty documents',
+      'Track expected replacement schedules',
+      'Keep model details for recall checks',
+    ],
+  },
+  {
+    id: 'document-organization',
+    section: 'homeowners',
+    title: 'Document Organization',
+    description: 'Keep key home records easy to find when needed',
+    items: [
+      'Store home insurance documents',
+      'Store mortgage information',
+      'Save renovation permits',
+      'Save repair and contractor receipts',
+    ],
+  },
+  {
+    id: 'financial-readiness',
+    section: 'homeowners',
+    title: 'Financial Readiness',
+    description: 'Prepare for repairs, long-term upkeep, and recovery costs',
+    items: [
+      'Set a repair emergency fund target',
+      'Review home equity position',
+      'Estimate near-term maintenance costs',
+      'Plan for deductible and out-of-pocket expenses',
+    ],
+  },
+  {
+    id: 'natural-disaster-preparedness',
+    section: 'homeowners',
+    title: 'Natural Disaster Preparedness',
+    description: 'Add region-specific protections before disaster season',
+    items: [
+      'Review earthquake retrofitting needs',
+      'Assess flood barrier options',
+      'Review storm shutter needs',
+      'Prioritize region-specific hardening steps',
     ],
   },
   {
     id: 'post-storm',
+    section: 'recovery',
     title: 'After a Storm',
     description: 'Immediate steps if your property was affected',
     items: [
@@ -142,9 +267,22 @@ function ReadinessCenter() {
         <button className="btn-primary">+ Custom</button>
       </div>
 
-      {PREMADE_CHECKLISTS.map((checklist) => (
-        <Checklist key={checklist.id} checklist={checklist} />
-      ))}
+      {CHECKLIST_SECTIONS.map((section) => {
+        const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section.id)
+
+        if (!sectionChecklists.length) {
+          return null
+        }
+
+        return (
+          <section key={section.id} className="readiness-group">
+            <h3 className="section-label readiness-group-label">{section.label}</h3>
+            {sectionChecklists.map((checklist) => (
+              <Checklist key={checklist.id} checklist={checklist} />
+            ))}
+          </section>
+        )
+      })}
     </div>
   )
 }
