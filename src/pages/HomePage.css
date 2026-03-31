@@ -168,10 +168,10 @@
 
 .home-side-image {
   width: 100%;
-  max-width: 220px;
-  height: auto;
+  height: clamp(88px, 10vw, 126px);
   object-fit: contain;
   display: block;
+  margin-top: auto;
 }
 
 .home-pathways {
