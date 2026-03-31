@@ -8,6 +8,7 @@ const RAIL_ITEMS = [
     label: 'Clarity',
     alt: 'Clarity before disaster',
     src: '/branding/home/clarity-before-disaster.png',
+    to: '/readiness',
   },
   {
     label: 'Structure',
