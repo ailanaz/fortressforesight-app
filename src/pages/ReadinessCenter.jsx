@@ -488,9 +488,6 @@ function ReadinessCenter() {
 
         <section className="readiness-group-card readiness-custom-card card">
           <h3 className="section-label readiness-group-label">Custom Checklists</h3>
-          <p className="readiness-group-note">
-            Create a Custom Checklist for property and area specific needs.
-          </p>
           <div className="readiness-custom-content">
             {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
               <Checklist key={checklist.id} checklist={checklist} />
