@@ -129,7 +129,7 @@
 
 .property-map-frame {
   height: 560px;
-  background: #040507;
+  background: #dfe6ef;
 }
 
 .property-map,
@@ -301,7 +301,7 @@
 }
 
 .leaflet-container {
-  background: #040507;
+  background: #dfe6ef;
   font-family: var(--font-sans);
 }
 

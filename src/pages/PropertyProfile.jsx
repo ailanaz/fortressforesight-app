@@ -352,17 +352,17 @@ function PropertyProfile() {
 
           <div className="property-map-frame">
             {isMapReady ? (
-              <MapContainer
-                center={DEFAULT_CENTER}
-                zoom={DEFAULT_ZOOM}
-                scrollWheelZoom
-                className="property-map"
-              >
-                <TileLayer
-                  attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                  subdomains="abcd"
-                />
+                <MapContainer
+                  center={DEFAULT_CENTER}
+                  zoom={DEFAULT_ZOOM}
+                  scrollWheelZoom
+                  className="property-map"
+                >
+                  <TileLayer
+                    attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    subdomains="abcd"
+                  />
                 <MapViewportController center={activeCenter} zoom={activeZoom} />
                 {property && (
                   <CircleMarker
