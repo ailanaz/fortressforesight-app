@@ -119,6 +119,8 @@
 .property-map-embed {
   display: block;
   border: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .property-map-placeholder {
@@ -134,12 +136,14 @@
   bottom: 10px;
   font-size: 11px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.42);
-  background: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   padding: 4px 8px;
   border-radius: 999px;
   pointer-events: none;
   backdrop-filter: blur(4px);
+  z-index: 2;
 }
 
 .property-sidebar {

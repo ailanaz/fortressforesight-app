@@ -490,7 +490,7 @@ function PropertyProfile() {
                   referrerPolicy="no-referrer-when-downgrade"
                   allowFullScreen
                 />
-                <span className="property-map-brand">Google Maps</span>
+                <span className="property-map-brand">Powered by Google</span>
               </>
             ) : (
               <div className="property-map-placeholder">Search address to load the map.</div>
