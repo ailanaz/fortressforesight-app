@@ -18,29 +18,52 @@ const EMPTY_SUMMARY_CARDS = [
     rows: EMPTY_DETAIL_ROWS,
   },
   {
-    title: 'Flood / FEMA',
+    title: 'Soil & Geology',
+    rows: [
+      { label: 'USDA soil survey', value: '\u2014', pending: true },
+      { label: 'EPA radon zone', value: '\u2014', pending: true },
+      { label: 'Karst / sinkhole', value: '\u2014', pending: true },
+    ],
+  },
+  {
+    title: 'Water / Drainage',
     rows: [
       { label: 'FEMA flood zone', value: '\u2014', pending: true },
-      { label: 'Special flood hazard area', value: '\u2014', pending: true },
-      { label: 'Flood map panel', value: '\u2014', pending: true },
+      { label: 'Drainage / low basin', value: '\u2014', pending: true },
+      { label: 'Water table / wetlands', value: '\u2014', pending: true },
     ],
   },
   {
-    title: 'Area Snapshot',
+    title: 'Wildfire / Vegetation',
     rows: [
-      { label: 'Flood review', value: '\u2014' },
-      { label: 'Storm review', value: '\u2014' },
-      { label: 'Wildfire review', value: '\u2014' },
+      { label: 'Wildfire community map', value: '\u2014', pending: true },
+      { label: 'Defensible space review', value: '\u2014', pending: true },
+      { label: 'Brush / canopy check', value: '\u2014', pending: true },
     ],
   },
   {
-    title: 'Zoning / Land Use',
+    title: 'Response / Area Claims',
+    rows: [
+      { label: 'Fire response class', value: '\u2014', pending: true },
+      { label: 'Hydrant / station review', value: '\u2014', pending: true },
+      { label: 'Area claim pressure', value: '\u2014', pending: true },
+    ],
+  },
+  {
+    title: 'Zoning / Future Use',
     rows: [
       { label: 'Zoning code', value: '\u2014', pending: true },
       { label: 'Land use', value: '\u2014', pending: true },
+      { label: 'Future use / corridor', value: '\u2014', pending: true },
     ],
   },
 ]
+
+const RISK_LEVELS = {
+  low: { label: 'Low', color: '#3d64f0', bg: 'rgba(61, 100, 240, 0.18)' },
+  moderate: { label: 'Review', color: '#f8c200', bg: 'rgba(248, 194, 0, 0.18)' },
+  high: { label: 'High', color: '#ff6675', bg: 'rgba(255, 102, 117, 0.18)' },
+}
 
 const STATE_ALIASES = {
   ALABAMA: 'AL',
@@ -117,6 +140,30 @@ const WILDFIRE_PRIORITY_STATES = new Set([
 const WILDFIRE_REVIEW_STATES = new Set([
   'KS', 'NE', 'OK', 'TX',
 ])
+const SOIL_PRIORITY_STATES = new Set([
+  'CO', 'FL', 'KS', 'KY', 'MO', 'NE', 'OK', 'PA', 'TN', 'TX',
+])
+const SOIL_REVIEW_STATES = new Set([
+  'AR', 'CA', 'IN', 'NM', 'OH', 'UT', 'VA', 'WV',
+])
+const RADON_PRIORITY_STATES = new Set([
+  'CO', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'MN', 'MO', 'MT', 'ND', 'NE', 'OH', 'PA', 'SD', 'UT', 'WI', 'WV', 'WY',
+])
+const RADON_REVIEW_STATES = new Set([
+  'AR', 'CA', 'MI', 'NM', 'NY', 'TN', 'VA',
+])
+const KARST_PRIORITY_STATES = new Set([
+  'AL', 'FL', 'IN', 'KY', 'MO', 'PA', 'TN', 'VA', 'WV',
+])
+const KARST_REVIEW_STATES = new Set([
+  'AR', 'GA', 'OH', 'TX',
+])
+const WETLAND_PRIORITY_STATES = new Set([
+  'AL', 'DE', 'FL', 'GA', 'HI', 'LA', 'MD', 'MS', 'NC', 'NJ', 'NY', 'SC', 'TX', 'VA',
+])
+const WETLAND_REVIEW_STATES = new Set([
+  'CA', 'CT', 'MA', 'OR', 'PA', 'RI', 'WA',
+])
 
 function getMunicipality(address) {
   return (
@@ -150,20 +197,24 @@ function inferLevel(stateCode, prioritySet, reviewSet) {
   return 'low'
 }
 
-function getFloodReview(level) {
+function getReviewLabel(level) {
   return {
-    low: 'Standard review',
+    low: 'Low review',
     moderate: 'Regional review',
-    high: 'Priority review',
+    high: 'High review',
   }[level]
 }
 
-function getRegionalReviewLabel(level) {
-  return {
-    low: 'Standard review',
-    moderate: 'Regional review',
-    high: 'Priority review',
-  }[level]
+function mergeLevels(...levels) {
+  if (levels.includes('high')) {
+    return 'high'
+  }
+
+  if (levels.includes('moderate')) {
+    return 'moderate'
+  }
+
+  return 'low'
 }
 
 function rankGeocodeResult(result) {
@@ -194,8 +245,25 @@ function createStarterProfile(result) {
   const floodLevel = inferLevel(stateCode, FLOOD_PRIORITY_STATES, FLOOD_REVIEW_STATES)
   const stormLevel = inferLevel(stateCode, STORM_PRIORITY_STATES, STORM_REVIEW_STATES)
   const wildfireLevel = inferLevel(stateCode, WILDFIRE_PRIORITY_STATES, WILDFIRE_REVIEW_STATES)
+  const soilLevel = inferLevel(stateCode, SOIL_PRIORITY_STATES, SOIL_REVIEW_STATES)
+  const radonLevel = inferLevel(stateCode, RADON_PRIORITY_STATES, RADON_REVIEW_STATES)
+  const karstLevel = inferLevel(stateCode, KARST_PRIORITY_STATES, KARST_REVIEW_STATES)
+  const wetlandsLevel = inferLevel(stateCode, WETLAND_PRIORITY_STATES, WETLAND_REVIEW_STATES)
+  const soilGeologyLevel = mergeLevels(soilLevel, radonLevel, karstLevel)
+  const waterLevel = mergeLevels(floodLevel, wetlandsLevel)
+  const responseLevel = mergeLevels(stormLevel, wildfireLevel)
+  const claimsLevel = mergeLevels(floodLevel, stormLevel, wildfireLevel)
+  const county = result.address?.county || 'County pending'
+  const municipality = getMunicipality(result.address) || 'Municipality pending'
 
   return {
+    watchItems: [
+      `${municipality} • ${county}`,
+      `Soil ${RISK_LEVELS[soilGeologyLevel].label}`,
+      `Water ${RISK_LEVELS[waterLevel].label}`,
+      `Wildfire ${RISK_LEVELS[wildfireLevel].label}`,
+      `Weather / local alert feed can sit here later`,
+    ],
     summaryCards: [
       {
         title: 'Property',
@@ -219,26 +287,48 @@ function createStarterProfile(result) {
         ],
       },
       {
-        title: 'Flood / FEMA',
+        title: 'Soil & Geology',
+        level: soilGeologyLevel,
+        rows: [
+          { label: 'USDA soil survey', value: getReviewLabel(soilLevel) },
+          { label: 'EPA radon zone', value: getReviewLabel(radonLevel) },
+          { label: 'Karst / sinkhole', value: getReviewLabel(karstLevel) },
+        ],
+      },
+      {
+        title: 'Water / Drainage',
+        level: waterLevel,
         rows: [
           { label: 'FEMA flood zone', value: 'Pending FEMA source', pending: true },
-          { label: 'Special flood hazard area', value: 'Pending FEMA source', pending: true },
-          { label: 'Flood map panel', value: 'Pending FEMA source', pending: true },
+          { label: 'Drainage / low basin', value: getReviewLabel(floodLevel) },
+          { label: 'Water table / wetlands', value: getReviewLabel(wetlandsLevel) },
         ],
       },
       {
-        title: 'Area Snapshot',
+        title: 'Wildfire / Vegetation',
+        level: wildfireLevel,
         rows: [
-          { label: 'Flood review', value: getFloodReview(floodLevel) },
-          { label: 'Storm review', value: getRegionalReviewLabel(stormLevel) },
-          { label: 'Wildfire review', value: getRegionalReviewLabel(wildfireLevel) },
+          { label: 'Wildfire community map', value: 'Pending source', pending: true },
+          { label: 'Defensible space review', value: getReviewLabel(wildfireLevel) },
+          { label: 'Brush / canopy check', value: getReviewLabel(wildfireLevel) },
         ],
       },
       {
-        title: 'Zoning / Land Use',
+        title: 'Response / Area Claims',
+        level: responseLevel,
+        rows: [
+          { label: 'Fire response class', value: 'Pending local source', pending: true },
+          { label: 'Hydrant / station review', value: 'Pending local source', pending: true },
+          { label: 'Area claim pressure', value: getReviewLabel(claimsLevel) },
+        ],
+      },
+      {
+        title: 'Zoning / Future Use',
+        level: 'moderate',
         rows: [
           { label: 'Zoning code', value: 'Pending local source', pending: true },
           { label: 'Land use', value: 'Pending local source', pending: true },
+          { label: 'Future use / corridor', value: 'Pending local source', pending: true },
         ],
       },
     ],
@@ -463,11 +553,26 @@ async function geocodeAddress(query, signal) {
   }
 }
 
-function SummaryCard({ title, rows }) {
+function RiskBadge({ level }) {
+  const risk = RISK_LEVELS[level]
+
+  if (!risk) {
+    return null
+  }
+
+  return (
+    <span className="risk-badge" style={{ color: risk.color, background: risk.bg }}>
+      {risk.label}
+    </span>
+  )
+}
+
+function SummaryCard({ title, rows, level }) {
   return (
     <article className="summary-card card">
       <div className="summary-card-header">
         <p className="summary-card-title">{title}</p>
+        <RiskBadge level={level} />
       </div>
       <div className="summary-rows">
         {rows.map((row) => (
@@ -658,9 +763,25 @@ function PropertyProfile() {
                 </div>
               </div>
 
+              <div className="summary-ticker" aria-label="Area Watch">
+                <span className="summary-ticker-label">Area Watch</span>
+                <div className="summary-ticker-track">
+                  {property.watchItems.map((item) => (
+                    <span key={item} className="summary-ticker-item">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
               <div className="summary-stack">
                 {property.summaryCards.map((card) => (
-                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
+                  <SummaryCard
+                    key={card.title}
+                    title={card.title}
+                    rows={card.rows}
+                    level={card.level}
+                  />
                 ))}
               </div>
 
@@ -687,7 +808,7 @@ function PropertyProfile() {
 
               <div className="summary-stack">
                 {EMPTY_SUMMARY_CARDS.map((card) => (
-                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
+                  <SummaryCard key={card.title} title={card.title} rows={card.rows} level={card.level} />
                 ))}
               </div>
             </div>
