@@ -130,7 +130,7 @@ function ReadinessCenter() {
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
             <span className="active-home-note">
-              Use these checklists to reduce risk and get this specific home better prepared before a loss.
+              Use these checklists for proactive clarity around home risk and recovery, and to get this home better prepared before a loss.
             </span>
           </div>
         </div>
@@ -140,9 +140,6 @@ function ReadinessCenter() {
         <h1 className="page-title">Readiness Center</h1>
         <button className="btn-primary">+ Custom</button>
       </div>
-      <p className="page-subtitle">
-        Tap a checklist to expand it and track your progress.
-      </p>
 
       <h2 className="section-label">Premade Checklists</h2>
       {PREMADE_CHECKLISTS.map((checklist) => (
