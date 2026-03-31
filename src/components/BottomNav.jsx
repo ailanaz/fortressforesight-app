@@ -3,12 +3,22 @@ import './BottomNav.css'
 
 const navItems = [
   {
-    to: '/search',
-    label: 'Search',
+    to: '/home',
+    label: 'Home',
     icon: (
       <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path d="M3 12L12 3l9 9" />
         <path d="M9 21V12h6v9" />
+      </svg>
+    ),
+  },
+  {
+    to: '/search',
+    label: 'Search',
+    icon: (
+      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" />
+        <path d="M20 20l-3.5-3.5" />
       </svg>
     ),
   },
