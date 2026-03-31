@@ -46,19 +46,10 @@ function HomePage() {
     <div className="page home-page">
       <section className="home-stage">
         <article className="home-stage-main card">
-          <div className="home-stage-mark">
-            <p className="home-kicker">FortressForesight</p>
-            <img
-              className="home-stage-logo"
-              src="/branding/logos/fortressforesight-logo-square-transparent.png"
-              alt="FortressForesight"
-            />
-          </div>
-
           <div className="home-stage-copy">
-            <h1 className="home-title">Protect what protects you.</h1>
+            <h1 className="home-title">FortressForesight</h1>
             <p className="home-subtitle">
-              Search the home. Read the signals. Keep the file ready.
+              Clarity before disaster. Structure during crisis. Confidence through recovery.
             </p>
           </div>
 
@@ -83,7 +74,9 @@ function HomePage() {
           {RAIL_ITEMS.map((item) => (
             <article key={item.alt} className="home-side-card card">
               <p className="home-side-label">{item.label}</p>
-              <img className="home-side-image" src={item.src} alt={item.alt} />
+              <div className="home-side-media">
+                <img className="home-side-image" src={item.src} alt={item.alt} />
+              </div>
             </article>
           ))}
         </aside>
@@ -106,13 +99,6 @@ function HomePage() {
             </div>
           </article>
         ))}
-      </section>
-
-      <section className="home-banner card">
-        <p className="home-banner-kicker">FortressForesight</p>
-        <h2 className="home-banner-title">
-          Clarity before disaster. Structure during crisis. Confidence through recovery.
-        </h2>
       </section>
     </div>
   )
