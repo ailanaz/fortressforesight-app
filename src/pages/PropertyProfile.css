@@ -168,6 +168,10 @@
   line-height: 1.45;
 }
 
+.property-detail-value-placeholder {
+  color: var(--color-gray-500);
+}
+
 .risk-grid-sidebar {
   padding: 0 20px 20px;
 }
@@ -204,10 +208,19 @@
   width: fit-content;
 }
 
+.risk-badge-placeholder {
+  color: var(--color-gray-500);
+  background: rgba(151, 160, 192, 0.14);
+}
+
 .risk-detail {
   font-size: 12px;
   color: var(--color-gray-500);
   line-height: 1.5;
+}
+
+.risk-card-placeholder {
+  opacity: 0.92;
 }
 
 .property-checklist {
@@ -249,37 +262,21 @@
 .property-empty-state {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
   min-height: 100%;
 }
 
-.property-empty-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.property-empty-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--color-gray-900);
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.property-empty-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: var(--color-blue);
-  box-shadow: 0 0 0 6px rgba(61, 100, 240, 0.14);
+.property-checklist-placeholder li {
+  color: var(--color-gray-500);
 }
 
 .leaflet-container {
   background: #dfe6ef;
   font-family: var(--font-sans);
+}
+
+.leaflet-tile {
+  image-rendering: auto;
 }
 
 .leaflet-popup-content-wrapper,

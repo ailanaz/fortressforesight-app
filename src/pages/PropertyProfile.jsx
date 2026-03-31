@@ -13,6 +13,13 @@ import './PropertyProfile.css'
 const DEFAULT_CENTER = [39.8283, -98.5795]
 const DEFAULT_ZOOM = 4
 const PROPERTY_ZOOM = 17
+const EMPTY_DETAIL_ROWS = [
+  { label: 'Matched address', value: 'Will populate here' },
+  { label: 'County / State', value: 'Will populate here' },
+  { label: 'ZIP code', value: 'Will populate here' },
+  { label: 'Coordinates', value: 'Will populate here' },
+]
+const EMPTY_RISK_CARDS = ['Flood', 'Storm', 'Wildfire', 'Insurance']
 
 const RISK_LEVELS = {
   low: { label: 'Low Risk', color: '#3d64f0', bg: 'rgba(61, 100, 240, 0.18)' },
@@ -50,6 +57,29 @@ function deriveOverallLevel(levels) {
 
 function formatCoordinate(value) {
   return Number(value).toFixed(5)
+}
+
+function rankGeocodeResult(result) {
+  const address = result.address ?? {}
+  let score = Number(result.importance ?? 0)
+
+  if (address.house_number && address.road) {
+    score += 5
+  }
+
+  if (address.road) {
+    score += 2
+  }
+
+  if (address.postcode) {
+    score += 1
+  }
+
+  if (['house', 'building', 'office', 'amenity', 'residential'].includes(result.addresstype)) {
+    score += 2
+  }
+
+  return score
 }
 
 function createStarterProfile(result, query) {
@@ -129,9 +159,11 @@ function createStarterProfile(result, query) {
 async function geocodeAddress(query, signal) {
   const params = new URLSearchParams({
     format: 'jsonv2',
-    limit: '1',
+    limit: '5',
     addressdetails: '1',
     countrycodes: 'us',
+    dedupe: '1',
+    'accept-language': 'en',
     q: query,
   })
 
@@ -155,13 +187,24 @@ async function geocodeAddress(query, signal) {
     throw new Error('No address match found.')
   }
 
-  const match = results[0]
+  const match = [...results].sort((left, right) => rankGeocodeResult(right) - rankGeocodeResult(left))[0]
+  const [south, north, west, east] = (match.boundingbox ?? []).map(Number)
 
   return {
     lat: Number(match.lat),
     lon: Number(match.lon),
     displayName: match.display_name,
     address: match.address ?? {},
+    bounds:
+      Number.isFinite(south) &&
+      Number.isFinite(north) &&
+      Number.isFinite(west) &&
+      Number.isFinite(east)
+        ? [
+            [south, west],
+            [north, east],
+          ]
+        : null,
   }
 }
 
@@ -175,15 +218,25 @@ function RiskBadge({ level }) {
   )
 }
 
-function MapViewportController({ center, zoom }) {
+function MapViewportController({ bounds, center, zoom }) {
   const map = useMap()
 
   useEffect(() => {
+    if (bounds) {
+      map.flyToBounds(bounds, {
+        animate: true,
+        duration: 1.2,
+        padding: [28, 28],
+        maxZoom: PROPERTY_ZOOM,
+      })
+      return
+    }
+
     map.flyTo(center, zoom, {
       animate: true,
       duration: 1.2,
     })
-  }, [center, zoom, map])
+  }, [bounds, center, zoom, map])
 
   return null
 }
@@ -218,6 +271,7 @@ function PropertyProfile() {
     ? [property.lat, property.lon]
     : DEFAULT_CENTER
   const activeZoom = property ? PROPERTY_ZOOM : DEFAULT_ZOOM
+  const activeBounds = property?.bounds ?? null
 
   const detailRows = useMemo(() => {
     if (!property) {
@@ -361,11 +415,12 @@ function PropertyProfile() {
                   className="property-map"
                 >
                   <TileLayer
-                    attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    subdomains="abcd"
+                    attribution='&copy; OpenStreetMap contributors'
+                    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    maxZoom={19}
+                    detectRetina
                   />
-                <MapViewportController center={activeCenter} zoom={activeZoom} />
+                <MapViewportController bounds={activeBounds} center={activeCenter} zoom={activeZoom} />
                 {property && (
                   <CircleMarker
                     center={[property.lat, property.lon]}
@@ -397,13 +452,13 @@ function PropertyProfile() {
               <div className="property-sidebar-section">
                 <div className="property-sidebar-header">
                   <div>
-                    <p className="property-sidebar-kicker">Starter summary</p>
+                    <p className="property-sidebar-kicker">Risk Summary</p>
                     <h2 className="property-sidebar-title">{property.query}</h2>
                   </div>
                   <RiskBadge level={property.overallLevel} />
                 </div>
                 <p className="property-sidebar-copy">
-                  Starter summary for the searched property.
+                  Starter view for the searched property.
                 </p>
               </div>
 
@@ -455,11 +510,49 @@ function PropertyProfile() {
             </>
           ) : (
             <div className="property-empty-state">
-              <p className="property-sidebar-kicker">Property summary</p>
-              <h2 className="property-sidebar-title">Search an address</h2>
-              <p className="property-sidebar-copy">
-                The summary will appear here.
-              </p>
+              <div className="property-sidebar-section">
+                <div className="property-sidebar-header">
+                  <div>
+                    <p className="property-sidebar-kicker">Risk Summary</p>
+                    <h2 className="property-sidebar-title">Awaiting address</h2>
+                  </div>
+                  <span className="risk-badge risk-badge-placeholder">
+                    Will populate here
+                  </span>
+                </div>
+                <p className="property-sidebar-copy">
+                  Search an address to populate this panel.
+                </p>
+              </div>
+
+              <div className="property-detail-list">
+                {EMPTY_DETAIL_ROWS.map((row) => (
+                  <div key={row.label} className="property-detail-row">
+                    <span className="property-detail-label">{row.label}</span>
+                    <span className="property-detail-value property-detail-value-placeholder">
+                      {row.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="risk-grid risk-grid-sidebar">
+                {EMPTY_RISK_CARDS.map((title) => (
+                  <article key={title} className="risk-card risk-card-placeholder">
+                    <span className="risk-label">{title}</span>
+                    <span className="risk-badge risk-badge-placeholder">Pending</span>
+                    <span className="risk-detail">Will populate here.</span>
+                  </article>
+                ))}
+              </div>
+
+              <div className="property-sidebar-section">
+                <p className="property-sidebar-kicker">Next actions</p>
+                <ul className="property-checklist property-checklist-placeholder">
+                  <li>Search a property to populate this section.</li>
+                  <li>Review the summary and save the home.</li>
+                </ul>
+              </div>
             </div>
           )}
         </aside>
