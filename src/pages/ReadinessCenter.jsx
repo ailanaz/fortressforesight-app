@@ -209,6 +209,19 @@ const PREMADE_CHECKLISTS = [
   },
 ]
 
+const CUSTOM_STARTER_CHECKLISTS = [
+  {
+    id: 'my-emergency-planning',
+    title: 'My Emergency Planning and Kits',
+    description: 'Starter custom checklist',
+    items: [
+      'Pack my three-day emergency kit with food, water, lights, batteries, and first aid supplies',
+      'Save my emergency contacts and choose family meeting spots',
+      'Map two ways out of every room and practice fire drills twice a year',
+    ],
+  },
+]
+
 function ChecklistItem({ text, done, onToggle }) {
   return (
     <li className={`checklist-item${done ? ' done' : ''}`} onClick={onToggle}>
@@ -327,14 +340,9 @@ function ReadinessCenter() {
             Create custom checklists.
           </p>
           <div className="readiness-custom-content">
-            <div className="readiness-custom-block">
-              <div className="checklist-title">Emergency Planning and Kits</div>
-              <ul className="readiness-custom-list">
-                <li>Prepare at least three days of food, water, and essential supplies.</li>
-                <li>Build a communication plan with emergency contacts and meeting spots.</li>
-                <li>Map two ways out of every room and practice fire drills twice a year.</li>
-              </ul>
-            </div>
+            {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
+              <Checklist key={checklist.id} checklist={checklist} />
+            ))}
           </div>
           <div className="readiness-custom-actions">
             <button className="btn-primary">+ Custom</button>
