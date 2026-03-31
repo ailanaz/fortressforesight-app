@@ -29,9 +29,7 @@ function Login() {
           Clarity before disaster. Structure during crisis. Confidence through recovery.
         </p>
         <p className="login-description">
-          FortressForesight helps protect the property that protects you by combining
-          pre-purchase and homeownership risk awareness, secure home recordkeeping,
-          disaster preparation, and guided recovery support in one place.
+          Protect the home that protects you.
         </p>
 
         <div className="login-tabs">

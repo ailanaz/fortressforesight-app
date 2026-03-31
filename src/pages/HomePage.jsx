@@ -51,22 +51,17 @@ function HomePage() {
             <p className="home-subtitle">
               Clarity before disaster. Structure during crisis. Confidence through recovery.
             </p>
+            <p className="home-description">
+              FortressForesight helps protect the property that protects you by combining
+              pre-purchase and homeownership risk awareness, secure home recordkeeping,
+              disaster preparation, and guided recovery support in one place.
+            </p>
           </div>
 
           <div className="home-actions">
             <Link className="btn-primary" to="/search">
               Search Address
             </Link>
-            <Link className="btn-outline" to="/login">
-              Sign In
-            </Link>
-          </div>
-
-          <div className="home-pill-row" aria-label="Core app areas">
-            <span className="home-pill">Map</span>
-            <span className="home-pill">Risk Summary</span>
-            <span className="home-pill">Records</span>
-            <span className="home-pill">Recovery</span>
           </div>
         </article>
 
