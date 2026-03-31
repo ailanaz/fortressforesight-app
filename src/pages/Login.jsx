@@ -6,6 +6,7 @@ function Login() {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = (event) => {
@@ -51,7 +52,7 @@ function Login() {
           />
           <input
             className="login-input"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -62,7 +63,20 @@ function Login() {
           </button>
         </form>
 
-        {mode === 'login' && <button className="forgot-link">Forgot password?</button>}
+        <div className={`login-actions${mode === 'signup' ? ' login-actions-single' : ''}`}>
+          <button
+            className="login-secondary-link"
+            type="button"
+            onClick={() => setShowPassword((value) => !value)}
+          >
+            {showPassword ? 'Hide password' : 'Show password'}
+          </button>
+          {mode === 'login' ? (
+            <button className="login-secondary-link" type="button">
+              Forgot password?
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   )

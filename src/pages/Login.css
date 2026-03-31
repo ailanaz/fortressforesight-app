@@ -95,12 +95,32 @@
   background: var(--color-blue-strong);
 }
 
-.forgot-link {
+.login-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.login-actions-single {
+  justify-content: center;
+}
+
+.login-secondary-link {
   background: none;
   border: none;
   color: var(--color-yellow);
   font-size: 13px;
-  margin-top: 12px;
-  width: 100%;
   text-align: center;
+}
+
+.login-secondary-link:hover {
+  color: #ffe17b;
+}
+
+@media (max-width: 520px) {
+  .login-actions {
+    flex-direction: column;
+  }
 }
