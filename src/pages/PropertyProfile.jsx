@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useActiveHome } from '../context/HomeContext'
 import './Page.css'
 import './PropertyProfile.css'
@@ -553,6 +554,17 @@ async function geocodeAddress(query, signal) {
   }
 }
 
+async function lookupProperty(query, signal) {
+  const result = await geocodeAddress(query, signal)
+  const starterProfile = createStarterProfile(result)
+
+  return {
+    ...result,
+    ...starterProfile,
+    query,
+  }
+}
+
 function RiskBadge({ level }) {
   const risk = RISK_LEVELS[level]
 
@@ -604,11 +616,13 @@ function getGoogleEmbedSrc(property) {
 
 function PropertyProfile() {
   const { activeHome, saveActiveHome, clearActiveHome } = useActiveHome()
+  const location = useLocation()
   const [query, setQuery] = useState(activeHome?.query || '')
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState('')
   const [property, setProperty] = useState(activeHome)
   const requestRef = useRef(null)
+  const autoSearchRef = useRef('')
 
   useEffect(() => {
     return () => {
@@ -622,6 +636,55 @@ function PropertyProfile() {
     setProperty(activeHome ?? null)
     setQuery((currentValue) => currentValue || activeHome?.query || '')
   }, [activeHome])
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const prefilledQuery = (
+      location.state?.initialQuery ||
+      searchParams.get('address') ||
+      ''
+    ).trim()
+
+    if (!prefilledQuery || autoSearchRef.current === prefilledQuery) {
+      return
+    }
+
+    if (property?.query === prefilledQuery) {
+      setQuery(prefilledQuery)
+      autoSearchRef.current = prefilledQuery
+      return
+    }
+
+    if (requestRef.current) {
+      requestRef.current.abort()
+    }
+
+    const controller = new AbortController()
+    requestRef.current = controller
+    autoSearchRef.current = prefilledQuery
+    setQuery(prefilledQuery)
+    setStatus('loading')
+    setError('')
+
+    ;(async () => {
+      try {
+        const nextProperty = await lookupProperty(prefilledQuery, controller.signal)
+        setProperty(nextProperty)
+        saveActiveHome(nextProperty)
+        setStatus('success')
+      } catch (lookupError) {
+        if (lookupError.name === 'AbortError') {
+          return
+        }
+
+        setProperty(null)
+        setStatus('error')
+        setError('We could not place that home yet. Try the street address with city and state.')
+      } finally {
+        requestRef.current = null
+      }
+    })()
+  }, [location.search, location.state, property?.query, saveActiveHome])
 
   const googleEmbedSrc = getGoogleEmbedSrc(property)
 
@@ -645,16 +708,10 @@ function PropertyProfile() {
     setError('')
 
     try {
-      const result = await geocodeAddress(trimmedQuery, controller.signal)
-      const starterProfile = createStarterProfile(result)
-      const nextProperty = {
-        ...result,
-        ...starterProfile,
-        query: trimmedQuery,
-      }
-
+      const nextProperty = await lookupProperty(trimmedQuery, controller.signal)
       setProperty(nextProperty)
       saveActiveHome(nextProperty)
+      autoSearchRef.current = trimmedQuery
       setStatus('success')
     } catch (lookupError) {
       if (lookupError.name === 'AbortError') {
@@ -676,6 +733,7 @@ function PropertyProfile() {
     }
 
     clearActiveHome()
+    autoSearchRef.current = ''
     setQuery('')
     setProperty(null)
     setStatus('idle')

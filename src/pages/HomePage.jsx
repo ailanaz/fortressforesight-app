@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import './Page.css'
 import './HomePage.css'
 
@@ -22,6 +23,23 @@ const RAIL_ITEMS = [
 ]
 
 function HomePage() {
+  const [address, setAddress] = useState('')
+  const navigate = useNavigate()
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault()
+
+    const trimmedAddress = address.trim()
+
+    if (!trimmedAddress) {
+      return
+    }
+
+    navigate(`/search?address=${encodeURIComponent(trimmedAddress)}`, {
+      state: { initialQuery: trimmedAddress },
+    })
+  }
+
   return (
     <div className="page home-page">
       <section className="home-stage">
@@ -60,11 +78,22 @@ function HomePage() {
               </p>
             </div>
 
-            <div className="home-actions">
-              <Link className="btn-primary" to="/search">
+            <form className="home-search-form" onSubmit={handleSearchSubmit}>
+              <label className="sr-only" htmlFor="home-address-search">
+                Property address
+              </label>
+              <input
+                id="home-address-search"
+                className="home-search-input"
+                type="text"
+                placeholder="Enter a home address"
+                value={address}
+                onChange={(event) => setAddress(event.target.value)}
+              />
+              <button className="btn-primary" type="submit">
                 Search Address
-              </Link>
-            </div>
+              </button>
+            </form>
           </article>
 
           <article className="home-stage-panel card" aria-hidden="true" />
