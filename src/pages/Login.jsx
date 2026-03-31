@@ -17,7 +17,7 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <Link className="login-back-link" to="/search">
+        <Link className="login-back-link" to="/home">
           Back to Home
         </Link>
         <img

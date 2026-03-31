@@ -4,7 +4,7 @@ import './BottomNav.css'
 const navItems = [
   {
     to: '/search',
-    label: 'Property',
+    label: 'Search',
     icon: (
       <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path d="M3 12L12 3l9 9" />

@@ -1,6 +1,7 @@
 import { HashRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import { HomeProvider } from './context/HomeContext'
+import HomePage from './pages/HomePage'
 import PropertyProfile from './pages/PropertyProfile'
 import DocumentStorage from './pages/DocumentStorage'
 import ReadinessCenter from './pages/ReadinessCenter'
@@ -17,9 +18,9 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/search" replace />} />
+            <Route index element={<Navigate to="/home" replace />} />
+            <Route path="home" element={<HomePage />} />
             <Route path="search" element={<PropertyProfile />} />
-            <Route path="home" element={<Navigate to="/search" replace />} />
             <Route path="property" element={<Navigate to="/search" replace />} />
             <Route path="documents" element={<DocumentStorage />} />
             <Route path="readiness" element={<ReadinessCenter />} />

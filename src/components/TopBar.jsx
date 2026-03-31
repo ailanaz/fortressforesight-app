@@ -14,7 +14,7 @@ function TopBar() {
         <div className="topbar-brand-group">
           <Link
             className="topbar-logo-link"
-            to="/search"
+            to="/home"
             aria-label="FortressForesight home"
           >
             <img
