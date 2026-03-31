@@ -205,16 +205,25 @@
 
 @media (max-width: 980px) {
   .home-stage {
-    grid-template-columns: 1fr;
-  }
-
-  .home-stage-main-stack,
-  .home-stage-side {
-    order: initial;
+    display: flex;
+    flex-direction: column;
   }
 
   .home-stage-main-stack {
+    display: contents;
     grid-template-rows: minmax(0, 1fr) minmax(160px, 0.75fr);
+  }
+
+  .home-stage-main {
+    order: 1;
+  }
+
+  .home-stage-side {
+    order: 2;
+  }
+
+  .home-stage-panel {
+    order: 3;
   }
 
   .home-side-card {
