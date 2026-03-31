@@ -326,6 +326,16 @@ function ReadinessCenter() {
           <p className="readiness-group-note">
             Create lists for this home, your area, and your own routines.
           </p>
+          <div className="readiness-custom-content">
+            <div className="readiness-custom-block">
+              <div className="checklist-title">Emergency Planning and Kits</div>
+              <ul className="readiness-custom-list">
+                <li>Prepare at least three days of food, water, and essential supplies.</li>
+                <li>Build a communication plan with emergency contacts and meeting spots.</li>
+                <li>Map two ways out of every room and practice fire drills twice a year.</li>
+              </ul>
+            </div>
+          </div>
           <div className="readiness-custom-actions">
             <button className="btn-primary">+ Custom</button>
           </div>
