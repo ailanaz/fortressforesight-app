@@ -50,13 +50,6 @@
   background: rgba(12, 15, 25, 0.88);
 }
 
-.topbar-home-kicker {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-gray-500);
-}
-
 .topbar-home-title,
 .topbar-home-meta {
   max-width: 280px;

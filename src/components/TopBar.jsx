@@ -25,7 +25,6 @@ function TopBar() {
           </Link>
           {activeHome ? (
             <div className="topbar-home-pill">
-              <span className="topbar-home-kicker">Current home</span>
               <span className="topbar-home-title">{homeTitle}</span>
               {homeLocation ? (
                 <span className="topbar-home-meta">{homeLocation}</span>
