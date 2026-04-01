@@ -89,9 +89,11 @@ function Login({ initialMode = 'login' }) {
             ) : (
               <>
                 <div className="login-upgrade">
-                  <h2 className="login-upgrade-title">Upgrade</h2>
+                  <h2 className="login-upgrade-title">Upgrade to Paid Access</h2>
                   <p className="login-upgrade-copy">
-                    Save and organize your home in one place.
+                    Paid access gives you a signed-in account so your property details,
+                    progress, notes, files, and recovery information stay organized in one
+                    place and are there when you come back.
                   </p>
                   <div className="login-upgrade-list">
                     <div className="login-upgrade-item">Save up to 2 properties</div>
@@ -126,7 +128,7 @@ function Login({ initialMode = 'login' }) {
 
           <div className="login-actions login-actions-centered">
             <button className="login-submit login-submit-inline" type="submit">
-              {mode === 'login' ? 'Sign In' : 'Sign Up'}
+              {mode === 'login' ? 'Sign In' : 'Upgrade to Paid'}
             </button>
           </div>
 
