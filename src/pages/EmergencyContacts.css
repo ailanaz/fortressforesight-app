@@ -26,7 +26,26 @@
 
 .contact-card-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-save-btn {
+  border: 0;
+  background: transparent;
+  color: #071f69;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.contact-save-btn:hover {
+  color: #071f69;
+}
+
+.contact-save-btn.is-saved {
+  color: rgba(7, 31, 105, 0.58);
 }
 
 .contact-category {

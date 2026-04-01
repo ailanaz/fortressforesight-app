@@ -7,10 +7,10 @@ import './Page.css'
 import './EmergencyContacts.css'
 
 const DEFAULT_CONTACTS = [
-  { id: 1, name: '', phone: '', placeholder: 'Insurance agent' },
-  { id: 2, name: '', phone: '', placeholder: 'Contractor' },
-  { id: 3, name: '', phone: '', placeholder: 'Plumber' },
-  { id: 4, name: '', phone: '', placeholder: 'Electrician' },
+  { id: 1, name: '', phone: '', placeholder: 'Insurance agent', isSaved: false },
+  { id: 2, name: '', phone: '', placeholder: 'Contractor', isSaved: false },
+  { id: 3, name: '', phone: '', placeholder: 'Plumber', isSaved: false },
+  { id: 4, name: '', phone: '', placeholder: 'Electrician', isSaved: false },
 ]
 
 const CONTACT_PLACEHOLDERS = [
@@ -33,7 +33,15 @@ function EmergencyContacts() {
 
   const updateContact = (id, field, value) => {
     setContacts((previous) =>
-      previous.map((contact) => (contact.id === id ? { ...contact, [field]: value } : contact)),
+      previous.map((contact) =>
+        contact.id === id ? { ...contact, [field]: value, isSaved: false } : contact,
+      ),
+    )
+  }
+
+  const saveContact = (id) => {
+    setContacts((previous) =>
+      previous.map((contact) => (contact.id === id ? { ...contact, isSaved: true } : contact)),
     )
   }
 
@@ -49,6 +57,7 @@ function EmergencyContacts() {
         name: '',
         phone: '',
         placeholder: CONTACT_PLACEHOLDERS[previous.length % CONTACT_PLACEHOLDERS.length],
+        isSaved: false,
       },
     ])
   }
@@ -99,6 +108,9 @@ function EmergencyContacts() {
               </div>
             </div>
             <div className="contact-card-actions">
+              <button className={`contact-save-btn${contact.isSaved ? ' is-saved' : ''}`} type="button" onClick={() => saveContact(contact.id)}>
+                {contact.isSaved ? 'Saved' : 'Save'}
+              </button>
               <button className="contact-remove-btn" type="button" onClick={() => removeContact(contact.id)}>
                 Remove
               </button>
