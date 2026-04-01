@@ -146,13 +146,19 @@
 
 @media (max-width: 680px) {
   .document-tabs-wrap {
-    justify-content: center;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
     margin-bottom: 20px;
   }
 
   .document-tab {
-    padding: 4px 10px;
-    font-size: 11px;
+    width: 100%;
+    min-width: 0;
+    padding: 5px 6px;
+    font-size: 10px;
+    line-height: 1.15;
+    white-space: normal;
+    text-align: center;
   }
 }
