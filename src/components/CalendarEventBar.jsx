@@ -55,6 +55,7 @@ function CalendarEventBar({
   dateAriaLabel,
 }) {
   const [open, setOpen] = useState(false)
+  const [hintOpen, setHintOpen] = useState(false)
   const pickerRef = useRef(null)
   const today = useMemo(() => defaultCalendarDate(0), [])
   const selectedDate = dateFromValue(date) ?? dateFromValue(today)
@@ -117,7 +118,21 @@ function CalendarEventBar({
           placeholder="Add calendar event"
           aria-label="Calendar event"
         />
-        <span className="page-paid-badge">Account</span>
+        <span className={`page-upgrade-hint${hintOpen ? ' is-open' : ''}`}>
+          <button
+            className="page-upgrade-hint-trigger"
+            type="button"
+            aria-label="Upgrade info"
+            aria-expanded={hintOpen}
+            onClick={() => setHintOpen((current) => !current)}
+            onBlur={() => setHintOpen(false)}
+          >
+            i
+          </button>
+          <span className="page-upgrade-tooltip" role="tooltip">
+            Upgrade to save calendar events.
+          </span>
+        </span>
       </div>
 
       <div className="calendar-picker" ref={pickerRef}>
