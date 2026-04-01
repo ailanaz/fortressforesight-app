@@ -11,22 +11,18 @@ const RECOVERY_SECTIONS = [
   {
     id: 'damage-log',
     label: 'Damage Log',
-    summary: 'Document damage by area, room, and exterior section.',
   },
   {
     id: 'timeline',
     label: 'Timeline',
-    summary: 'Track calls, updates, inspections, and claim events.',
   },
   {
     id: 'expenses',
     label: 'Expenses',
-    summary: 'Keep repair, hotel, meal, and supply costs together.',
   },
   {
     id: 'claim-status',
     label: 'Claim Status',
-    summary: 'See the status of the claim from filing through repairs.',
   },
 ]
 
@@ -94,9 +90,6 @@ function RecoveryTracker() {
       </div>
 
       <h2 className="section-label recovery-tracker-title">Tracker</h2>
-      <p className="page-subtitle">
-        Document damage, log expenses, and track your claim from start to finish.
-      </p>
 
       <div className="recovery-card-list">
         <div className="recovery-card card">
@@ -105,9 +98,7 @@ function RecoveryTracker() {
             onClick={handleToggleSection}
           >
             <div>
-              <span className="recovery-card-category">{selectedSection.label}</span>
               <div className="recovery-card-title">{selectedSection.label}</div>
-              <div className="recovery-card-summary">{selectedSection.summary}</div>
             </div>
             <svg
               width="18"
@@ -152,11 +143,6 @@ function RecoveryTracker() {
                   </div>
                   <div className="empty-room-state">
                     <p>No damage logged yet.</p>
-                    <p>
-                      {damageScope === 'Interior'
-                        ? 'Add a room to start documenting with photos and notes.'
-                        : 'Add an exterior area to start documenting roof, siding, windows, yard, or other outside damage.'}
-                    </p>
                   </div>
                   <div className="recovery-guide-block">
                     <h3 className="guide-title">Working with Adjusters</h3>
@@ -173,21 +159,14 @@ function RecoveryTracker() {
 
               {selectedSection.id === 'timeline' ? (
                 <div className="empty-room-state">
-                  <p>Your claim timeline will appear here as you log events and updates.</p>
+                  <p>No timeline events logged yet.</p>
                 </div>
               ) : null}
 
               {selectedSection.id === 'expenses' ? (
-                <>
-                  <div className="section-header">
-                    <h3 className="section-label">Expense Log</h3>
-                    <button className="btn-outline recovery-add-btn">+ Add Expense</button>
-                  </div>
-                  <div className="empty-room-state">
-                    <p>No expenses logged yet.</p>
-                    <p>Log every cost with a receipt photo - hotels, meals, emergency repairs, supplies.</p>
-                  </div>
-                </>
+                <div className="empty-room-state">
+                  <p>No expenses logged yet.</p>
+                </div>
               ) : null}
 
               {selectedSection.id === 'claim-status' ? (

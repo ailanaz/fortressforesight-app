@@ -7,7 +7,7 @@
 }
 
 .recovery-tracker-title {
-  margin-bottom: 4px;
+  margin-bottom: 12px;
 }
 
 .recovery-filter-tabs {
@@ -65,28 +65,11 @@
   gap: 12px;
 }
 
-.recovery-card-category {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #071f69;
-  display: block;
-  margin-bottom: 4px;
-}
-
 .recovery-card-title {
   font-size: 15px;
   font-weight: 700;
-  margin-bottom: 4px;
   line-height: 1.3;
   color: #071f69;
-}
-
-.recovery-card-summary {
-  font-size: 13px;
-  color: var(--color-gray-500);
-  line-height: 1.4;
 }
 
 .recovery-card-body {
