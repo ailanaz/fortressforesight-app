@@ -94,7 +94,9 @@ function PendingSummaryInfo() {
         i
       </button>
       <span className="summary-label-tooltip" role="tooltip">
-        {PENDING_SUMMARY_HINT}
+        Search address to
+        <br />
+        see Risk Summary
       </span>
     </span>
   )
