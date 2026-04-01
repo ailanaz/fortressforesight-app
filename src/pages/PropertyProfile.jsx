@@ -1008,12 +1008,6 @@ function PropertyProfile() {
                   />
                 ) : null}
                 <article className="summary-map-card card">
-                  <div className="property-map-toolbar">
-                    <div>
-                      <p className="property-map-kicker">Map</p>
-                    </div>
-                  </div>
-
                   <div className="property-map-frame">
                     <iframe
                       className="property-map-embed"
@@ -1065,12 +1059,6 @@ function PropertyProfile() {
                   />
                 ) : null}
                 <article className="summary-map-card card">
-                  <div className="property-map-toolbar">
-                    <div>
-                      <p className="property-map-kicker">Map</p>
-                    </div>
-                  </div>
-
                   <div className="property-map-frame">
                     <div className="property-map-placeholder">Search address to load the map.</div>
                   </div>

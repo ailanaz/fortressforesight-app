@@ -234,6 +234,8 @@
 
 .summary-map-card .property-map-frame {
   flex: 1;
+  height: 100%;
+  min-height: 336px;
 }
 
 .summary-alert-row {
@@ -492,6 +494,10 @@
     grid-column: 1 / -1;
   }
 
+  .summary-map-card .property-map-frame {
+    min-height: 320px;
+  }
+
   .local-hazards-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -540,6 +546,10 @@
 
   .property-map-frame {
     height: 420px;
+  }
+
+  .summary-map-card .property-map-frame {
+    min-height: 300px;
   }
 
   .summary-top-row,
