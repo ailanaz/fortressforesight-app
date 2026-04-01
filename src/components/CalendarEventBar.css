@@ -145,13 +145,15 @@
 }
 
 @media (max-width: 680px) {
-  .calendar-picker,
-  .page-date-trigger {
-    width: 100%;
+  .calendar-picker {
+    width: auto;
+    align-self: center;
   }
 
   .page-date-trigger {
-    justify-content: flex-start;
+    width: auto;
+    min-width: 164px;
+    justify-content: center;
   }
 
   .calendar-popover {
