@@ -1,12 +1,12 @@
 .topbar {
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.38);
   color: var(--color-gray-900);
   position: sticky;
   top: 0;
   z-index: 1200;
-  border-bottom: 1px solid rgba(61, 100, 240, 0.08);
+  border-bottom: 1px solid rgba(61, 100, 240, 0.04);
   box-shadow: none;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(7px);
 }
 
 .topbar-inner {
