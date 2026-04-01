@@ -21,7 +21,7 @@ function TopBar() {
           >
             <img
               className="topbar-logo-image"
-              src="/branding/logos/fortressforesight-logo-horizontal-transparent.png"
+              src="/branding/logos/fortressforesight-logo-header-xl.png"
               alt="FortressForesight"
             />
           </Link>
