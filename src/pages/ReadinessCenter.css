@@ -182,6 +182,10 @@
   margin-top: 12px;
 }
 
+.custom-checklist-title-edit {
+  margin-top: 12px;
+}
+
 .custom-checklist-add .page-input {
   flex: 1;
 }

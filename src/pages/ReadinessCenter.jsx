@@ -302,6 +302,7 @@ function Checklist({ checklist }) {
 
 function CustomChecklist({ checklist }) {
   const [open, setOpen] = useState(false)
+  const [title, setTitle] = useState(checklist.title)
   const [done, setDone] = useState({})
   const [items, setItems] = useState(
     checklist.items.map((text, index) => ({
@@ -344,7 +345,7 @@ function CustomChecklist({ checklist }) {
     <div className="checklist-card card">
       <div className="checklist-header" onClick={() => setOpen((value) => !value)}>
         <div>
-          <div className="checklist-title">{checklist.title}</div>
+          <div className="checklist-title">{title}</div>
         </div>
         <div className="checklist-progress">
           <span>
@@ -365,6 +366,16 @@ function CustomChecklist({ checklist }) {
       </div>
       {open && (
         <>
+          <div className="custom-checklist-title-edit">
+            <input
+              className="page-input page-input-wide"
+              type="text"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="List title"
+              aria-label="Custom checklist title"
+            />
+          </div>
           <ul className="checklist-items">
             {items.map((item) => (
               <li key={item.id} className={`checklist-item${done[item.id] ? ' done' : ''}`}>
