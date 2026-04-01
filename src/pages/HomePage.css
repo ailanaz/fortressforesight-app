@@ -132,9 +132,9 @@
 }
 
 .home-title-word-outline {
-  color: var(--color-yellow);
-  -webkit-text-stroke: 0;
-  text-stroke: 0;
+  color: transparent;
+  -webkit-text-stroke: 1.5px #071f69;
+  text-stroke: 1.5px #071f69;
 }
 
 .home-title-word-solid {
