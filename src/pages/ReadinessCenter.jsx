@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
@@ -10,6 +11,7 @@ const CHECKLIST_SECTIONS = [
   { id: 'homebuyers', label: 'Before Buying a Home' },
   { id: 'homeowners', label: 'Homeowner Preparedness' },
   { id: 'disasters', label: 'Disaster Preparedness' },
+  { id: 'custom', label: 'Custom Checklists' },
 ]
 
 const PREMADE_CHECKLISTS = [
@@ -441,10 +443,32 @@ function CustomChecklist({ checklist }) {
 }
 
 function ReadinessCenter() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { activeHome } = useActiveHome()
   const homeTitle = getHomeTitle(activeHome)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
+  const sectionParam = searchParams.get('section')
+  const initialSection = CHECKLIST_SECTIONS.some((section) => section.id === sectionParam)
+    ? sectionParam
+    : 'homebuyers'
+  const [section, setSection] = useState(initialSection)
+
+  const handleSectionChange = (nextSection) => {
+    setSection(nextSection)
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      if (nextSection === 'homebuyers') {
+        next.delete('section')
+      } else {
+        next.set('section', nextSection)
+      }
+      return next
+    }, { replace: true })
+  }
+
+  const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section)
+  const activeSectionLabel = CHECKLIST_SECTIONS.find((item) => item.id === section)?.label ?? 'Checklists'
 
   return (
     <div className="page">
@@ -464,43 +488,48 @@ function ReadinessCenter() {
 
       <h2 className="section-label readiness-checklists-label">Checklists</h2>
 
-      <div className="readiness-grid">
-        {CHECKLIST_SECTIONS.map((section) => {
-          const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section.id)
+      <div className="readiness-tabs">
+        {CHECKLIST_SECTIONS.map((item) => (
+          <button
+            key={item.id}
+            className={`readiness-tab${section === item.id ? ' active' : ''}`}
+            onClick={() => handleSectionChange(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
 
-          if (!sectionChecklists.length) {
-            return null
-          }
-
-          return (
-            <section key={section.id} className="readiness-group-card card">
-              <h3 className="section-label readiness-group-label">{section.label}</h3>
-              {section.id === 'disasters' ? (
-                <p className="readiness-group-note">
-                  These cover the most common situations.
-                </p>
-              ) : null}
-              <div className="readiness-group-content">
-                {sectionChecklists.map((checklist) => (
-                  <Checklist key={checklist.id} checklist={checklist} />
-                ))}
-              </div>
-            </section>
-          )
-        })}
-
-        <section className="readiness-group-card readiness-custom-card card">
-          <div className="readiness-custom-header">
-            <h3 className="section-label readiness-group-label">Custom Checklists</h3>
+      {section === 'custom' ? (
+        <>
+          <div className="readiness-custom-header readiness-custom-header-inline">
+            <h3 className="section-label readiness-group-label">{activeSectionLabel}</h3>
             <button className="btn-outline readiness-custom-button">Add Custom List</button>
           </div>
-          <div className="readiness-custom-content">
+          <div className="readiness-group-note readiness-custom-note">
+            Create a Custom Checklist for property and area specific needs.
+          </div>
+          <div className="readiness-list">
             {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
               <CustomChecklist key={checklist.id} checklist={checklist} />
             ))}
           </div>
-        </section>
-      </div>
+        </>
+      ) : (
+        <>
+          <h3 className="section-label readiness-group-label">{activeSectionLabel}</h3>
+          {section === 'disasters' ? (
+            <p className="readiness-group-note">
+              These cover the most common situations.
+            </p>
+          ) : null}
+          <div className="readiness-list">
+            {sectionChecklists.map((checklist) => (
+              <Checklist key={checklist.id} checklist={checklist} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

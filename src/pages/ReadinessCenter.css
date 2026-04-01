@@ -15,24 +15,37 @@
   margin-bottom: 12px;
 }
 
-.readiness-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 12px;
-  row-gap: 8px;
+.readiness-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
-.readiness-group-card {
-  margin-bottom: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 448px;
-  max-height: 448px;
-  overflow: hidden;
-  background: #f7f9fc;
-  border: 0;
-  box-shadow: none;
-  padding: 12px;
+.readiness-tab {
+  background: #071f69;
+  border: 1px solid #071f69;
+  border-radius: 4px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-yellow);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.readiness-tab.active {
+  background: var(--color-yellow);
+  border-color: #071f69;
+  color: #071f69;
+}
+
+.readiness-tab:hover {
+  background: var(--color-yellow);
+  border-color: #071f69;
+  color: #071f69;
+  transform: translateY(-1px);
 }
 
 .readiness-group-label {
@@ -46,14 +59,10 @@
   color: var(--color-gray-500);
 }
 
-.readiness-group-content {
-  max-height: 404px;
-  overflow-y: auto;
-  padding-right: 2px;
-}
-
-.readiness-custom-card {
-  justify-content: space-between;
+.readiness-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .readiness-custom-header {
@@ -68,11 +77,12 @@
   margin-bottom: 0;
 }
 
-.readiness-custom-content {
-  margin-top: 2px;
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 2px;
+.readiness-custom-header-inline {
+  margin-bottom: 4px;
+}
+
+.readiness-custom-note {
+  margin-top: 0;
 }
 
 .readiness-custom-button {
@@ -87,7 +97,7 @@
 }
 
 .checklist-card {
-  margin-bottom: 8px;
+  margin-bottom: 0;
   padding: 12px 14px;
 }
 
@@ -215,27 +225,6 @@
 }
 
 @media (max-width: 980px) {
-  .readiness-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .readiness-group-card {
-    min-height: auto;
-    max-height: none;
-    overflow: visible;
-  }
-
-  .readiness-group-content {
-    max-height: none;
-    overflow: visible;
-    padding-right: 0;
-  }
-
-  .readiness-custom-content {
-    overflow: visible;
-    padding-right: 0;
-  }
-
   .checklist-item {
     flex-direction: column;
     align-items: stretch;
@@ -253,5 +242,17 @@
   .readiness-custom-header {
     flex-wrap: wrap;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .readiness-tabs {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .readiness-tab {
+    padding: 4px 10px;
+    font-size: 11px;
   }
 }
