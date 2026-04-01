@@ -6,7 +6,7 @@
 
 .home-stage {
   display: grid;
-  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.55fr);
+  grid-template-columns: minmax(266px, 0.74fr) minmax(0, 1.59fr);
   gap: 16px;
 }
 
