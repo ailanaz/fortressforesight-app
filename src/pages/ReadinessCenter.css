@@ -228,6 +228,12 @@
   margin-top: 12px;
 }
 
+.custom-checklist-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
 .custom-checklist-add .page-input {
   flex: 1;
 }

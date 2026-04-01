@@ -337,7 +337,7 @@ function Checklist({ checklist }) {
   )
 }
 
-function CustomChecklist({ checklist }) {
+function CustomChecklist({ checklist, onDelete }) {
   const [open, setOpen] = useState(!!checklist.initiallyOpen)
   const [title, setTitle] = useState(checklist.title)
   const [done, setDone] = useState({})
@@ -412,6 +412,11 @@ function CustomChecklist({ checklist }) {
               aria-label="Custom checklist title"
             />
           </div>
+          <div className="custom-checklist-actions">
+            <button className="checklist-remove custom-checklist-delete" type="button" onClick={() => onDelete(checklist.id)}>
+              Delete List
+            </button>
+          </div>
           <ul className="checklist-items">
             {items.map((item) => (
               <li key={item.id} className={`checklist-item${done[item.id] ? ' done' : ''}`}>
@@ -480,6 +485,10 @@ function ReadinessCenter() {
     setCustomChecklists((current) => [createCustomChecklistDraft(), ...current])
   }
 
+  const handleDeleteCustomList = (id) => {
+    setCustomChecklists((current) => current.filter((checklist) => checklist.id !== id))
+  }
+
   const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section)
 
   return (
@@ -529,7 +538,7 @@ function ReadinessCenter() {
           </div>
           <div className="readiness-list">
             {customChecklists.map((checklist) => (
-              <CustomChecklist key={checklist.id} checklist={checklist} />
+              <CustomChecklist key={checklist.id} checklist={checklist} onDelete={handleDeleteCustomList} />
             ))}
           </div>
         </>
