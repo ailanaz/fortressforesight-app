@@ -27,31 +27,31 @@ const RAIL_ITEMS = [
 const JOURNEY_SLIDES = [
   {
     id: 'clarity-search',
-    kicker: 'Pre-purchase',
+    label: 'Clarity',
     title: 'You search an address',
     text: 'You find out it sits in a flood zone, a wildfire corridor, and has radon risk. You know this before you sign anything.',
   },
   {
     id: 'clarity-review',
-    kicker: 'Before closing',
+    label: 'Clarity',
     title: 'You know what deserves a closer look',
     text: 'Zoning, drainage, and area questions show up early, while there is still time to review them carefully.',
   },
   {
     id: 'structure-ready',
-    kicker: 'Early ownership',
+    label: 'Readiness',
     title: 'Everything you need in one place',
     text: 'Your policy is uploaded. Your maintenance checklist is running. Your contractor number is saved. Nothing is lost in a drawer.',
   },
   {
     id: 'structure-organized',
-    kicker: 'Staying ready',
+    label: 'Readiness',
     title: 'The home feels more organized',
     text: 'Documents, reminders, and contacts stay connected to one address instead of getting scattered over time.',
   },
   {
     id: 'confidence-recover',
-    kicker: 'After a storm',
+    label: 'Recovery',
     title: 'The storm hits',
     text: 'You open the app. Your documents are there, your recovery tracker is ready, and you know what to do next.',
   },
