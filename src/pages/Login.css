@@ -56,30 +56,19 @@
   max-width: 420px;
 }
 
+.login-panel {
+  min-height: 388px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
 .login-upgrade {
-  padding: 18px;
-  border: 1px solid rgba(7, 31, 105, 0.12);
-  background: #ffffff;
-  min-height: 188px;
-  transition: border-color 0.15s, background 0.15s, opacity 0.15s;
-}
-
-.login-upgrade-shell {
-  min-height: 208px;
-  margin-bottom: 20px;
-}
-
-.login-upgrade.is-placeholder {
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
-}
-
-.login-upgrade.is-placeholder .login-upgrade-title,
-.login-upgrade.is-placeholder .login-upgrade-copy,
-.login-upgrade.is-placeholder .login-upgrade-list {
-  opacity: 0;
-  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 18px;
 }
 
 .login-upgrade-title {
@@ -137,6 +126,11 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.login-form-inline {
+  flex: 1;
+  justify-content: center;
 }
 
 .login-input {
@@ -203,6 +197,10 @@
 }
 
 @media (max-width: 520px) {
+  .login-panel {
+    min-height: 0;
+  }
+
   .login-actions {
     flex-direction: row;
     justify-content: space-between;
