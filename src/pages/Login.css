@@ -1,8 +1,8 @@
 .login-page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top, rgba(61, 100, 240, 0.18), transparent 26%),
-    var(--color-black);
+    linear-gradient(180deg, #f4f7fb 0%, #ffffff 28%),
+    #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,7 @@
 
 .login-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--color-gray-100);
   border-radius: 12px;
   padding: 32px 24px;
   width: 100%;
@@ -29,7 +29,7 @@
 }
 
 .login-back-link:hover {
-  color: #7f9cff;
+  color: var(--color-blue-strong);
 }
 
 .login-logo-image {
@@ -86,7 +86,7 @@
 }
 
 .login-input {
-  background: var(--color-surface-elevated);
+  background: #ffffff;
   border: 1.5px solid var(--color-gray-200);
   border-radius: var(--radius);
   padding: 12px 14px;
@@ -99,6 +99,7 @@
 
 .login-input:focus {
   border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(61, 100, 240, 0.12);
 }
 
 .login-submit {
@@ -132,13 +133,13 @@
 .login-secondary-link {
   background: none;
   border: none;
-  color: var(--color-yellow);
+  color: var(--color-blue);
   font-size: 13px;
   text-align: center;
 }
 
 .login-secondary-link:hover {
-  color: #ffe17b;
+  color: var(--color-blue-strong);
 }
 
 @media (max-width: 520px) {

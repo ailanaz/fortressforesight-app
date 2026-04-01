@@ -5,10 +5,8 @@
   overflow: hidden;
   padding: 12px 16px;
   min-height: 52px;
-  border: 1px solid rgba(61, 100, 240, 0.3);
-  background:
-    linear-gradient(90deg, rgba(61, 100, 240, 0.08), rgba(15, 17, 24, 0.96) 24%),
-    var(--color-surface);
+  border: 1px solid rgba(61, 100, 240, 0.14);
+  background: #f8fbff;
 }
 
 .alert-ticker-label {
@@ -17,7 +15,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-yellow);
+  color: var(--color-blue);
 }
 
 .alert-ticker-track {

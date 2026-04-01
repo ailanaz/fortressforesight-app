@@ -76,15 +76,15 @@
 .doc-action {
   background: none;
   border: none;
-  color: var(--color-yellow);
+  color: var(--color-blue);
   padding: 4px;
   flex-shrink: 0;
   cursor: pointer;
 }
 
 .upload-area {
-  background: var(--color-surface-elevated);
-  border: 2px dashed rgba(61, 100, 240, 0.55);
+  background: #f8fbff;
+  border: 2px dashed rgba(61, 100, 240, 0.24);
   border-radius: var(--radius);
   padding: 32px 16px;
   text-align: center;

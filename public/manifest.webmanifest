@@ -3,8 +3,8 @@
   "short_name": "Fortress",
   "start_url": "/#/property",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/branding/logos/fortressforesight-logo-square-transparent.png",

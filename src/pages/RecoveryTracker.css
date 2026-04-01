@@ -14,14 +14,14 @@
 }
 
 .recovery-tab {
-  background: rgba(255, 255, 255, 0.46);
-  border: 0;
+  background: #f7f9fc;
+  border: 1px solid var(--color-gray-100);
   border-radius: 4px;
   padding: 4px 14px;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.25;
-  color: #ffffff;
+  color: var(--color-gray-700);
   white-space: nowrap;
   transition: background 0.15s, color 0.15s, transform 0.15s;
 }
@@ -32,7 +32,7 @@
 }
 
 .recovery-tab:hover {
-  background: rgba(255, 255, 255, 0.56);
+  background: var(--color-blue-light);
   transform: translateY(-1px);
 }
 
@@ -70,8 +70,8 @@
 }
 
 .recovery-scope-tab {
-  border: 1px solid rgba(61, 100, 240, 0.22);
-  background: rgba(61, 100, 240, 0.08);
+  border: 1px solid rgba(61, 100, 240, 0.14);
+  background: #f8fbff;
   color: var(--color-blue);
   border-radius: 999px;
   padding: 6px 12px;
@@ -97,15 +97,15 @@
 }
 
 .adjuster-guide {
-  background: var(--color-blue-light);
-  border: 1px solid rgba(61, 100, 240, 0.35);
+  background: #f8fbff;
+  border: 1px solid rgba(61, 100, 240, 0.14);
 }
 
 .guide-title {
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: var(--color-yellow);
+  color: var(--color-blue);
 }
 
 .guide-list {
@@ -143,7 +143,7 @@
 }
 
 .claim-step.done {
-  color: var(--color-yellow);
+  color: var(--color-blue);
 }
 
 .step-dot {
@@ -155,6 +155,6 @@
 }
 
 .claim-step.done .step-dot {
-  background: var(--color-yellow);
-  border-color: var(--color-yellow);
+  background: var(--color-blue);
+  border-color: var(--color-blue);
 }
