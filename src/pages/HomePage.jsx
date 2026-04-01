@@ -175,8 +175,8 @@ function HomePage() {
           <article className="home-stage-main card">
             <div className="home-stage-copy">
               <h1 className="home-title">
-                <span className="home-title-word">Fortress</span>
-                <span className="home-title-word">Foresight</span>
+                <span className="home-title-word home-title-word-outline">Fortress</span>
+                <span className="home-title-word home-title-word-solid">Foresight</span>
               </h1>
               <p className="home-subtitle">
                 Clarity before disaster. Structure during crisis. Confidence through recovery.
