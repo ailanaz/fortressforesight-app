@@ -108,7 +108,7 @@ function EmergencyContacts() {
       </div>
 
       <div className="contacts-footer-actions">
-        <button className="btn-primary" type="button" onClick={addContact}>
+        <button className="btn-outline contact-add-btn" type="button" onClick={addContact}>
           + Add Contact
         </button>
       </div>

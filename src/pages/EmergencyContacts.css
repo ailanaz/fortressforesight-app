@@ -8,6 +8,16 @@
   margin-top: 16px;
 }
 
+.contact-add-btn {
+  color: #071f69;
+  border-color: #071f69;
+}
+
+.contact-add-btn:hover {
+  color: #071f69;
+  border-color: #071f69;
+}
+
 .contact-card {
   display: flex;
   flex-direction: column;
