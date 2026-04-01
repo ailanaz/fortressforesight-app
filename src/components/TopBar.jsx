@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
@@ -6,10 +7,35 @@ import './TopBar.css'
 function TopBar() {
   const location = useLocation()
   const { activeHome } = useActiveHome()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const mobileMenuRef = useRef(null)
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
   const showHomePill = activeHome && location.pathname !== '/home'
   const showPlanPill = location.pathname !== '/home'
+  const showMobileSwitcher = location.pathname !== '/home'
+
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return undefined
+
+    const handlePointerDown = (event) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMobileMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    document.addEventListener('touchstart', handlePointerDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+      document.removeEventListener('touchstart', handlePointerDown)
+    }
+  }, [mobileMenuOpen])
 
   return (
     <header className="topbar">
@@ -41,6 +67,50 @@ function TopBar() {
             </Link>
           ) : null}
         </div>
+        {showMobileSwitcher ? (
+          <div className="topbar-mobile-switcher" ref={mobileMenuRef}>
+            <button
+              className={`topbar-mobile-toggle${mobileMenuOpen ? ' is-open' : ''}`}
+              type="button"
+              aria-label="Property menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              <span className="topbar-mobile-toggle-copy">
+                <span className="topbar-mobile-toggle-title">{showHomePill ? homeTitle : 'Saved Properties'}</span>
+                <span className="topbar-mobile-toggle-meta">{showHomePill ? 'Tap for more' : 'Upgrade to save'}</span>
+              </span>
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                className="topbar-mobile-toggle-icon"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+
+            {mobileMenuOpen ? (
+              <div className="topbar-mobile-menu">
+                {showHomePill ? (
+                  <div className="topbar-home-pill topbar-mobile-menu-card">
+                    <span className="topbar-home-title">{homeTitle}</span>
+                    {homeLocation ? <span className="topbar-home-meta">{homeLocation}</span> : null}
+                  </div>
+                ) : null}
+                {showPlanPill ? (
+                  <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link topbar-mobile-menu-card" to="/upgrade">
+                    <span className="topbar-home-title">Saved Properties</span>
+                    <span className="topbar-home-meta">Upgrade to save properties.</span>
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <Link className="topbar-account" aria-label="Account" to="/login">
           <svg
             width="24"
