@@ -447,7 +447,7 @@ function ReadinessCenter() {
         />
       </div>
 
-      <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
+      <h2 className="section-label readiness-checklists-label">Checklists</h2>
 
       <div className="readiness-grid">
         {CHECKLIST_SECTIONS.map((section) => {

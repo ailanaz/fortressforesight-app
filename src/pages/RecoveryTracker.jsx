@@ -47,7 +47,7 @@ function RecoveryTracker() {
         />
       </div>
 
-      <h2 className="section-label recovery-tracker-title">Recovery Tracker</h2>
+      <h2 className="section-label recovery-tracker-title">Tracker</h2>
       <p className="page-subtitle">
         Document damage, log expenses, and track your claim from start to finish.
       </p>
