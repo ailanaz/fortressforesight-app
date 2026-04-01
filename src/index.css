@@ -32,7 +32,7 @@ body {
   font-family: var(--font-sans);
   color: var(--color-gray-900);
   background:
-    linear-gradient(180deg, rgba(61, 100, 240, 0.4), rgba(61, 100, 240, 0.24)),
+    linear-gradient(180deg, rgba(21, 63, 135, 0.25), rgba(21, 63, 135, 0.16)),
     #ffffff;
   -webkit-font-smoothing: antialiased;
   color-scheme: light;
