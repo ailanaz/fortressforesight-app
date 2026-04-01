@@ -1,3 +1,7 @@
+.recovery-filter-tabs-wrap {
+  margin-bottom: 14px;
+}
+
 .recovery-workspace-title {
   margin-bottom: 16px;
 }
@@ -10,7 +14,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 0;
 }
 
 .recovery-filter-tab {

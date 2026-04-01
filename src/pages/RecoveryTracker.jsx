@@ -79,22 +79,24 @@ function RecoveryTracker() {
         />
       </div>
 
+      <div className="recovery-filter-tabs-wrap">
+        <div className="recovery-filter-tabs">
+          {RECOVERY_SECTIONS.map((section) => (
+            <button
+              key={section.id}
+              className={getSectionTabClassName(section.id, activeSection)}
+              onClick={() => handleSelectSection(section.id)}
+            >
+              {section.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <h2 className="section-label recovery-tracker-title">Tracker</h2>
       <p className="page-subtitle">
         Document damage, log expenses, and track your claim from start to finish.
       </p>
-
-      <div className="recovery-filter-tabs">
-        {RECOVERY_SECTIONS.map((section) => (
-          <button
-            key={section.id}
-            className={getSectionTabClassName(section.id, activeSection)}
-            onClick={() => handleSelectSection(section.id)}
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
 
       <div className="recovery-card-list">
         <div className="recovery-card card">

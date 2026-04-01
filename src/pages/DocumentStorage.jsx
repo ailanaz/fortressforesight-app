@@ -128,9 +128,7 @@ function DocumentStorage() {
         />
       </div>
 
-      <h2 className="section-label">Documents</h2>
-
-      <div className="document-tabs">
+      <div className="document-tabs-wrap">
         {docTabs.map((type) => (
           <button
             key={type}
@@ -141,6 +139,8 @@ function DocumentStorage() {
           </button>
         ))}
       </div>
+
+      <h2 className="section-label">Documents</h2>
 
       <input
         ref={fileInputRef}

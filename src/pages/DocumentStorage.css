@@ -1,3 +1,7 @@
+.document-tabs-wrap {
+  margin-bottom: 14px;
+}
+
 .document-vault-title {
   margin-bottom: 16px;
 }
@@ -10,7 +14,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 0;
 }
 
 .document-tab {
