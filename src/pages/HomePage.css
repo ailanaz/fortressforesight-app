@@ -274,6 +274,8 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-yellow);
+  -webkit-text-stroke: 0.5px #071f69;
+  text-stroke: 0.5px #071f69;
   padding: 6px 10px;
   border-radius: 6px;
   background: rgba(7, 31, 105, 0.08);
