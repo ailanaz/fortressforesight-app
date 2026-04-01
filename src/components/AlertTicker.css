@@ -40,14 +40,14 @@
   flex-shrink: 0;
   display: block;
   font-size: 15px;
-  color: var(--color-yellow);
+  color: #ffe27a;
   white-space: nowrap;
   padding-right: 32px;
 }
 
 .alert-ticker-static {
   font-size: 15px;
-  color: var(--color-yellow);
+  color: #ffe27a;
 }
 
 @keyframes alertTickerScroll {
