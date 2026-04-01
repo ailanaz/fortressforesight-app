@@ -408,6 +408,16 @@
   .property-map-card {
     width: 100%;
     margin-inline: auto;
+    min-width: 0;
+  }
+
+  .property-page,
+  .property-workspace,
+  .property-summary,
+  .property-map-card,
+  .summary-stack,
+  .summary-alert-row {
+    min-width: 0;
   }
 
   .property-searchbar {
