@@ -21,7 +21,7 @@
 .home-stage-main-stack {
   order: 2;
   display: grid;
-  grid-template-rows: minmax(0, 1.15fr) minmax(180px, 0.85fr);
+  grid-template-rows: minmax(0, 1.08fr) minmax(196px, 0.92fr);
   gap: 16px;
 }
 
@@ -122,7 +122,7 @@
 
 .home-title {
   max-width: 620px;
-  margin-top: 8px;
+  margin-top: 4px;
   font-family: 'The Seasons', 'The Seasons Regular', 'The Seasons Light', 'Playfair Display', Georgia, serif;
   font-weight: 700;
   font-size: clamp(46px, 7vw, 84px);
@@ -147,7 +147,7 @@
 
 .home-subtitle {
   max-width: 620px;
-  margin-top: 18px;
+  margin-top: 14px;
   font-size: 17px;
   line-height: 1.45;
   color: var(--color-navy);
@@ -155,7 +155,7 @@
 
 .home-description {
   max-width: 620px;
-  margin-top: 18px;
+  margin-top: 14px;
   font-size: 15px;
   line-height: 1.6;
   color: var(--color-gray-500);
@@ -164,12 +164,12 @@
 .home-search-form {
   display: block;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 6px;
   margin-bottom: 2.5%;
 }
 
 .home-stage-search-label {
-  margin-top: 26px;
+  margin-top: 18px;
 }
 
 @media (min-width: 981px) {
