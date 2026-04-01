@@ -301,7 +301,7 @@ function Checklist({ checklist }) {
 }
 
 function CustomChecklist({ checklist }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [done, setDone] = useState({})
   const [items, setItems] = useState(
     checklist.items.map((text, index) => ({
