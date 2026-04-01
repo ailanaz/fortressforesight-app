@@ -362,6 +362,17 @@ function getMunicipality(address) {
   )
 }
 
+function getStreetLine(result) {
+  const address = result?.address ?? {}
+  const streetLine = [address.house_number, address.road].filter(Boolean).join(' ').trim()
+
+  if (streetLine) {
+    return streetLine
+  }
+
+  return result?.query || result?.displayName || 'Not available yet'
+}
+
 function rankGeocodeResult(result) {
   const address = result.address ?? {}
   let score = Number(result.importance ?? 0)
@@ -391,7 +402,7 @@ function createStarterProfile(result) {
       {
         title: 'Property Information',
         rows: [
-          { label: 'Address', value: result.displayName },
+          { label: 'Address', value: getStreetLine(result) },
           {
             label: 'City / State',
             value:
