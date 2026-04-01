@@ -64,6 +64,28 @@
   gap: 12px;
 }
 
+.recovery-scope-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.recovery-scope-tab {
+  border: 1px solid rgba(61, 100, 240, 0.22);
+  background: rgba(61, 100, 240, 0.08);
+  color: var(--color-blue);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.recovery-scope-tab.active {
+  background: var(--color-yellow);
+  border-color: var(--color-yellow);
+  color: var(--color-black);
+}
+
 .empty-room-state {
   text-align: center;
   color: var(--color-gray-500);

@@ -15,6 +15,7 @@ function getRecoveryTabClassName(tab, activeTab) {
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
   const [activeTab, setActiveTab] = useState('Damage Log')
+  const [damageScope, setDamageScope] = useState('Interior')
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate(7))
   const homeTitle = getHomeTitle(activeHome)
@@ -85,13 +86,33 @@ function RecoveryTracker() {
 
       {activeTab === 'Damage Log' && (
         <div className="tab-content">
+          <div className="recovery-scope-tabs">
+            {['Interior', 'Exterior'].map((scope) => (
+              <button
+                key={scope}
+                type="button"
+                className={`recovery-scope-tab${damageScope === scope ? ' active' : ''}`}
+                onClick={() => setDamageScope(scope)}
+              >
+                {scope}
+              </button>
+            ))}
+          </div>
           <div className="section-header">
-            <h2 className="section-label">Damage by Room</h2>
-            <button className="btn-primary">+ Add Room</button>
+            <h2 className="section-label">
+              {damageScope === 'Interior' ? 'Damage by Room' : 'Exterior Damage'}
+            </h2>
+            <button className="btn-primary">
+              {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
+            </button>
           </div>
           <div className="empty-room-state card">
             <p>No damage logged yet.</p>
-            <p>Add a room to start documenting with photos and notes.</p>
+            <p>
+              {damageScope === 'Interior'
+                ? 'Add a room to start documenting with photos and notes.'
+                : 'Add an exterior area to start documenting roof, siding, windows, yard, or other outside damage.'}
+            </p>
           </div>
           <div className="adjuster-guide card">
             <h3 className="guide-title">Working with Adjusters</h3>
