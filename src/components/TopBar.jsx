@@ -96,10 +96,10 @@ function TopBar() {
             {mobileMenuOpen ? (
               <div className="topbar-mobile-menu">
                 {showHomePill ? (
-                  <div className="topbar-home-pill topbar-mobile-menu-card">
+                  <Link className="topbar-home-pill topbar-mobile-menu-card topbar-plan-pill-link" to="/search">
                     <span className="topbar-home-title">{homeTitle}</span>
                     {homeLocation ? <span className="topbar-home-meta">{homeLocation}</span> : null}
-                  </div>
+                  </Link>
                 ) : null}
                 {showPlanPill ? (
                   <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link topbar-mobile-menu-card" to="/upgrade">
