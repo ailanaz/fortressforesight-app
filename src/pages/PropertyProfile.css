@@ -452,6 +452,11 @@
     grid-template-columns: 1fr;
   }
 
+  .summary-alert-row {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
 }
 
 .sr-only {
