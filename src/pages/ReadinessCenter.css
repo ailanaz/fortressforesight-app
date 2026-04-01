@@ -28,6 +28,7 @@
   min-height: 560px;
   max-height: 560px;
   overflow: hidden;
+  background: #f7f9fc;
 }
 
 .readiness-group-label {
