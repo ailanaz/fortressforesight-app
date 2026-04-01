@@ -9,6 +9,7 @@ function TopBar() {
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
   const showHomePill = activeHome && location.pathname !== '/home'
+  const showPlanPill = location.pathname !== '/home'
 
   return (
     <header className="topbar">
@@ -31,6 +32,12 @@ function TopBar() {
               {homeLocation ? (
                 <span className="topbar-home-meta">{homeLocation}</span>
               ) : null}
+            </div>
+          ) : null}
+          {showPlanPill ? (
+            <div className="topbar-home-pill topbar-plan-pill">
+              <span className="topbar-home-title">Saved Properties</span>
+              <span className="topbar-home-meta">Upgrade for more</span>
             </div>
           ) : null}
         </div>

@@ -37,7 +37,7 @@
 .topbar-logo-image {
   display: block;
   width: auto;
-  height: 100px;
+  height: 96px;
 }
 
 .topbar-home-pill {
@@ -50,6 +50,10 @@
   border: 1px solid rgba(61, 100, 240, 0.16);
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
+}
+
+.topbar-plan-pill {
+  min-width: 150px;
 }
 
 .topbar-home-title,
@@ -99,7 +103,8 @@
     height: 80px;
   }
 
-  .topbar-home-pill {
+  .topbar-home-pill,
+  .topbar-plan-pill {
     display: none;
   }
 }

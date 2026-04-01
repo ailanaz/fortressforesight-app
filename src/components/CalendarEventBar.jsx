@@ -117,7 +117,7 @@ function CalendarEventBar({
           placeholder="Add calendar event"
           aria-label="Calendar event"
         />
-        <span className="page-paid-badge">Paid</span>
+        <span className="page-paid-badge">Account</span>
       </div>
 
       <div className="calendar-picker" ref={pickerRef}>
