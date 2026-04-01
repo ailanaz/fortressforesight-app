@@ -266,6 +266,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 14px;
+  padding-top: 8px;
   opacity: 0;
   transform: translateX(24px);
   pointer-events: none;
@@ -284,6 +285,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-yellow);
+  margin-top: -10px;
 }
 
 .home-journey-title {
