@@ -285,7 +285,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-yellow);
-  margin-top: -10px;
+  margin-top: -18px;
 }
 
 .home-journey-title {
@@ -298,6 +298,7 @@
 
 .home-journey-text {
   max-width: 470px;
+  margin-top: 8px;
   font-size: 15px;
   line-height: 1.65;
   color: var(--color-gray-700);
