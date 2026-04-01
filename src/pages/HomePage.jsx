@@ -27,31 +27,31 @@ const RAIL_ITEMS = [
 const JOURNEY_SLIDES = [
   {
     id: 'clarity-search',
-    label: 'Clarity',
+    kicker: 'Pre-purchase',
     title: 'You search an address',
     text: 'You find out it sits in a flood zone, a wildfire corridor, and has radon risk. You know this before you sign anything.',
   },
   {
     id: 'clarity-review',
-    label: 'Clarity',
+    kicker: 'Before closing',
     title: 'You know what deserves a closer look',
     text: 'Zoning, drainage, and area questions show up early, while there is still time to review them carefully.',
   },
   {
     id: 'structure-ready',
-    label: 'Structure',
+    kicker: 'Early ownership',
     title: 'Everything you need in one place',
     text: 'Your policy is uploaded. Your maintenance checklist is running. Your contractor number is saved. Nothing is lost in a drawer.',
   },
   {
     id: 'structure-organized',
-    label: 'Structure',
+    kicker: 'Staying ready',
     title: 'The home feels more organized',
     text: 'Documents, reminders, and contacts stay connected to one address instead of getting scattered over time.',
   },
   {
     id: 'confidence-recover',
-    label: 'Confidence',
+    kicker: 'After a storm',
     title: 'The storm hits',
     text: 'You open the app. Your documents are there, your recovery tracker is ready, and you know what to do next.',
   },
@@ -149,6 +149,7 @@ function HomePage() {
                   className={`home-journey-slide${index === activeSlide ? ' active' : ''}`}
                   aria-hidden={index !== activeSlide}
                 >
+                  <p className="home-journey-kicker">{slide.kicker}</p>
                   <h2 className="home-journey-title">{slide.title}</h2>
                   <p className="home-journey-text">{slide.text}</p>
                 </section>
