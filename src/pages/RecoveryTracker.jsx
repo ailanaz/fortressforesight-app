@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
-import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
 import './Page.css'
 import './RecoveryTracker.css'
@@ -20,20 +20,10 @@ function RecoveryTracker() {
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate(7))
   const homeTitle = getHomeTitle(activeHome)
-  const homeLocation = getHomeLocation(activeHome)
 
   return (
     <div className="page">
       <h1 className="page-title recovery-workspace-title">Recovery Workspace</h1>
-
-      {activeHome ? (
-        <div className="active-home-card card">
-          <div className="active-home-copy">
-            <span className="active-home-title">{homeTitle}</span>
-            {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
-          </div>
-        </div>
-      ) : null}
 
       <div className="page-utility-bar recovery-utility-bar">
         <CalendarEventBar

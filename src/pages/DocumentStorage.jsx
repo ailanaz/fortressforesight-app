@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
-import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
 import './Page.css'
 import './DocumentStorage.css'
@@ -42,7 +42,6 @@ function DocumentStorage() {
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
   const otherDocs = normalizedDocs.filter((doc) => !BASE_DOC_TYPES.includes(doc.type))
   const homeTitle = getHomeTitle(activeHome)
-  const homeLocation = getHomeLocation(activeHome)
 
   const addFiles = (files) => {
     const nextDocs = Array.from(files).map((file, index) => ({
@@ -93,15 +92,6 @@ function DocumentStorage() {
   return (
     <div className="page">
       <h1 className="page-title document-vault-title">Document Vault</h1>
-
-      {activeHome ? (
-        <div className="active-home-card card">
-          <div className="active-home-copy">
-            <span className="active-home-title">{homeTitle}</span>
-            {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
-          </div>
-        </div>
-      ) : null}
 
       <div className="page-utility-bar">
         <CalendarEventBar
