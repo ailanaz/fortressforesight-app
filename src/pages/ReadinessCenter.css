@@ -82,6 +82,28 @@
   margin-top: 0;
 }
 
+.readiness-custom-note-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.readiness-custom-text-link {
+  border: 0;
+  background: transparent;
+  color: #071f69;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.readiness-custom-text-link:hover {
+  text-decoration: underline;
+}
+
 .checklist-card {
   margin-bottom: 0;
   padding: 12px 14px;
@@ -211,6 +233,11 @@
 }
 
 @media (max-width: 980px) {
+  .readiness-custom-note-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .readiness-tabs-wrap {
     width: 100%;
     justify-content: flex-start;

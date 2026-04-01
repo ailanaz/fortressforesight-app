@@ -506,8 +506,13 @@ function ReadinessCenter() {
       {section === 'custom' ? (
         <>
           <div className="readiness-section-spacer" aria-hidden="true" />
-          <div className="readiness-group-note readiness-custom-note">
-            Create a Custom Checklist for property and area specific needs.
+          <div className="readiness-custom-note-row">
+            <div className="readiness-group-note readiness-custom-note">
+              Create a Custom Checklist for property and area specific needs.
+            </div>
+            <button type="button" className="readiness-custom-text-link">
+              Create Custom List
+            </button>
           </div>
           <div className="readiness-list">
             {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
