@@ -104,8 +104,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(135deg, rgba(15, 34, 70, 0.5), rgba(15, 34, 70, 0.3) 42%, rgba(15, 34, 70, 0.56)),
-    linear-gradient(180deg, rgba(61, 100, 240, 0.06), transparent 62%);
+    linear-gradient(135deg, rgba(15, 34, 70, 0.4), rgba(15, 34, 70, 0.21) 42%, rgba(15, 34, 70, 0.45)),
+    linear-gradient(180deg, rgba(61, 100, 240, 0.05), transparent 62%);
 }
 
 .home-stage-copy {
