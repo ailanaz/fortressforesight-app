@@ -14,6 +14,11 @@
   gap: 10px;
 }
 
+.contact-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .contact-category {
   font-size: 11px;
   font-weight: 700;
@@ -67,6 +72,20 @@
   font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
+}
+
+.contact-remove-btn {
+  border: 0;
+  background: transparent;
+  color: var(--color-gray-500);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.contact-remove-btn:hover {
+  color: var(--color-blue);
 }
 
 @media (max-width: 680px) {

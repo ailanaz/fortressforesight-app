@@ -26,6 +26,10 @@ function EmergencyContacts() {
     )
   }
 
+  const removeContact = (id) => {
+    setContacts((previous) => previous.filter((contact) => contact.id !== id))
+  }
+
   const addContact = () => {
     setContacts((previous) => [
       ...previous,
@@ -107,6 +111,11 @@ function EmergencyContacts() {
                   </a>
                 )}
               </div>
+            </div>
+            <div className="contact-card-actions">
+              <button className="contact-remove-btn" type="button" onClick={() => removeContact(contact.id)}>
+                Remove
+              </button>
             </div>
           </div>
         ))}
