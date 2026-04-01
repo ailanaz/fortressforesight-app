@@ -8,7 +8,7 @@
 
 .home-stage {
   display: grid;
-  grid-template-columns: minmax(266px, 0.74fr) minmax(0, 1.59fr);
+  grid-template-columns: minmax(244px, 0.66fr) minmax(0, 1.67fr);
   gap: 16px;
 }
 
