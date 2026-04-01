@@ -6,30 +6,34 @@
 }
 
 .filter-tab {
-  background: #f7f9fc;
-  border: 1px solid var(--color-gray-100);
+  background: #071f69;
+  border: 1px solid #071f69;
   border-radius: 4px;
   padding: 4px 14px;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.25;
-  color: var(--color-gray-700);
+  color: var(--color-yellow);
   white-space: nowrap;
-  transition: background 0.15s, color 0.15s, transform 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
 }
 
 .filter-tab.active {
   background: var(--color-yellow);
-  color: var(--color-black);
+  border-color: #071f69;
+  color: #071f69;
 }
 
 .filter-tab:hover {
-  background: var(--color-blue-light);
+  background: var(--color-yellow);
+  border-color: #071f69;
+  color: #071f69;
   transform: translateY(-1px);
 }
 
 .filter-tab.active:hover {
   background: var(--color-yellow);
+  color: #071f69;
 }
 
 @media (max-width: 680px) {
@@ -86,7 +90,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-yellow);
+  color: #071f69;
   display: block;
   margin-bottom: 4px;
 }
@@ -96,6 +100,7 @@
   font-weight: 700;
   margin-bottom: 4px;
   line-height: 1.3;
+  color: #071f69;
 }
 
 .article-summary {

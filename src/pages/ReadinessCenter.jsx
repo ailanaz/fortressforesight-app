@@ -465,14 +465,14 @@ function ReadinessCenter() {
         })}
 
         <section className="readiness-group-card readiness-custom-card card">
-          <h3 className="section-label readiness-group-label">Custom Checklists</h3>
+          <div className="readiness-custom-header">
+            <h3 className="section-label readiness-group-label">Custom Checklists</h3>
+            <button className="btn-outline readiness-custom-button">Add Custom List</button>
+          </div>
           <div className="readiness-custom-content">
             {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
               <CustomChecklist key={checklist.id} checklist={checklist} />
             ))}
-          </div>
-          <div className="readiness-custom-actions">
-            <button className="btn-outline">Add Custom List</button>
           </div>
         </section>
       </div>

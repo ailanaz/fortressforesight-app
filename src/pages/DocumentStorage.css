@@ -105,6 +105,13 @@
 
 .upload-single-btn {
   margin-top: 12px;
+  color: #071f69;
+  border-color: #071f69;
+}
+
+.upload-single-btn:hover {
+  color: #071f69;
+  border-color: #071f69;
 }
 
 .empty-state {
