@@ -99,11 +99,11 @@ function RecoveryTracker() {
           <section className="recovery-panel recovery-guide-panel">
             <h3 className="guide-title">Working with Adjusters</h3>
             <ul className="guide-list">
-              <li>Photograph everything before any cleanup or repairs</li>
-              <li>Do not throw away damaged items - adjusters need to see them</li>
-              <li>Get the adjuster&apos;s name, company, license number, and phone</li>
-              <li>Ask for a written scope of loss after their inspection</li>
-              <li>You have the right to hire a public adjuster if you disagree</li>
+              <li>Photograph damage before any cleanup or repairs</li>
+              <li>If possible, keep damaged items until they are documented</li>
+              <li>Save the adjuster&apos;s name, company, license number, and phone</li>
+              <li>Ask for a written scope of loss after the inspection</li>
+              <li>Company adjusters work for the insurer; you can hire a public adjuster if needed</li>
             </ul>
           </section>
         </div>
