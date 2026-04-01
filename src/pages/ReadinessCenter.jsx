@@ -268,7 +268,7 @@ const CUSTOM_STARTER_CHECKLISTS = [
 function createCustomChecklistDraft() {
   return {
     id: `custom-${Date.now()}`,
-    title: 'New Custom List',
+    title: '',
     items: [],
     initiallyOpen: true,
   }
@@ -340,6 +340,7 @@ function Checklist({ checklist }) {
 function CustomChecklist({ checklist, onDelete }) {
   const [open, setOpen] = useState(!!checklist.initiallyOpen)
   const [title, setTitle] = useState(checklist.title)
+  const [editingTitle, setEditingTitle] = useState(!!checklist.initiallyOpen)
   const [done, setDone] = useState({})
   const [items, setItems] = useState(
     checklist.items.map((text, index) => ({
@@ -376,6 +377,11 @@ function CustomChecklist({ checklist, onDelete }) {
     setOpen(true)
   }
 
+  const lockTitle = () => {
+    setTitle((current) => current.trim() || 'New Custom List')
+    setEditingTitle(false)
+  }
+
   const doneCount = items.filter((item) => done[item.id]).length
   const progressLabel = items.length ? `${doneCount}/${items.length}` : '0 items'
 
@@ -402,17 +408,30 @@ function CustomChecklist({ checklist, onDelete }) {
       </div>
       {open && (
         <>
-          <div className="custom-checklist-title-edit">
-            <input
-              className="page-input page-input-wide"
-              type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              placeholder="List title"
-              aria-label="Custom checklist title"
-            />
-          </div>
-          <div className="custom-checklist-actions">
+          {editingTitle ? (
+            <div className="custom-checklist-title-edit">
+              <input
+                className="page-input page-input-wide"
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    lockTitle()
+                  }
+                }}
+                placeholder="List title"
+                aria-label="Custom checklist title"
+              />
+            </div>
+          ) : null}
+          <div className={`custom-checklist-actions${editingTitle ? ' is-editing' : ''}`}>
+            {editingTitle ? (
+              <button className="checklist-remove custom-checklist-lock" type="button" onClick={lockTitle}>
+                Lock Name
+              </button>
+            ) : null}
             <button className="checklist-remove custom-checklist-delete" type="button" onClick={() => onDelete(checklist.id)}>
               Delete List
             </button>

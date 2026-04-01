@@ -234,6 +234,10 @@
   margin-top: 10px;
 }
 
+.custom-checklist-actions.is-editing {
+  justify-content: space-between;
+}
+
 .custom-checklist-add .page-input {
   flex: 1;
 }
