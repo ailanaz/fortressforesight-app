@@ -72,6 +72,24 @@ const SUMMARY_CARD_ORDER = [
 
 const PENDING_SUMMARY_HINT = 'Search address to see Risk Summary'
 
+const RISK_SUMMARY_SOURCES = {
+  'Soil & Geology': [
+    { label: 'USDA Soil Survey', href: 'https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey' },
+    { label: 'EPA Radon', href: 'https://www.epa.gov/radon/epa-map-radon-zones-and-supplemental-information-0' },
+    { label: 'USGS Karst', href: 'https://pubs.usgs.gov/sir/2008/5023/pdf/SIR2008-5023.pdf' },
+  ],
+  'Water / Drainage': [
+    { label: 'FEMA Flood Maps', href: 'https://msc.fema.gov/portal/search' },
+    { label: 'EPA Wetlands', href: 'https://www.epa.gov/wetlands/wetlands-monitoring-and-assessment' },
+  ],
+  'Wildfire / Vegetation': [
+    { label: 'USDA Wildfire Risk', href: 'https://www.fs.usda.gov/es/node/231140' },
+  ],
+  'Response / Area Claims': [
+    { label: 'FEMA Risk Index', href: 'https://hazards.fema.gov/nri/' },
+  ],
+}
+
 function orderSummaryCards(cards) {
   return [...cards].sort(
     (left, right) => SUMMARY_CARD_ORDER.indexOf(left.title) - SUMMARY_CARD_ORDER.indexOf(right.title),
@@ -162,6 +180,7 @@ function createStarterProfile(result) {
       },
       {
         title: 'Soil & Geology',
+        sources: RISK_SUMMARY_SOURCES['Soil & Geology'],
         rows: [
           { label: 'USDA soil survey', value: 'Pending USDA source', pending: true },
           { label: 'EPA radon zone', value: 'Pending EPA source', pending: true },
@@ -170,6 +189,7 @@ function createStarterProfile(result) {
       },
       {
         title: 'Water / Drainage',
+        sources: RISK_SUMMARY_SOURCES['Water / Drainage'],
         rows: [
           { label: 'FEMA flood zone', value: 'Pending FEMA source', pending: true },
           { label: 'Drainage / low basin', value: 'Pending topography source', pending: true },
@@ -178,6 +198,7 @@ function createStarterProfile(result) {
       },
       {
         title: 'Wildfire / Vegetation',
+        sources: RISK_SUMMARY_SOURCES['Wildfire / Vegetation'],
         rows: [
           { label: 'Wildfire community map', value: 'Pending wildfire source', pending: true },
           { label: 'Defensible space review', value: 'Pending vegetation source', pending: true },
@@ -186,6 +207,7 @@ function createStarterProfile(result) {
       },
       {
         title: 'Response / Area Claims',
+        sources: RISK_SUMMARY_SOURCES['Response / Area Claims'],
         rows: [
           { label: 'Fire response class', value: 'Pending local source', pending: true },
           { label: 'Hydrant / station review', value: 'Pending local source', pending: true },
@@ -433,7 +455,7 @@ async function lookupProperty(query, signal) {
   }
 }
 
-function SummaryCard({ title, rows }) {
+function SummaryCard({ title, rows, sources }) {
   return (
     <article className="summary-card card">
       <div className="summary-card-header">
@@ -454,6 +476,21 @@ function SummaryCard({ title, rows }) {
           </div>
         ))}
       </div>
+      {sources?.length ? (
+        <div className="summary-sources">
+          {sources.map((source) => (
+            <a
+              key={`${title}-${source.label}`}
+              className="summary-source-link"
+              href={source.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {source.label}
+            </a>
+          ))}
+        </div>
+      ) : null}
     </article>
   )
 }
