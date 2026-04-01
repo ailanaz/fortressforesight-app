@@ -40,7 +40,7 @@ const JOURNEY_SLIDES = [
   {
     id: 'structure-ready',
     label: 'Structure',
-    title: 'Everything starts to stay in one place',
+    title: 'Everything you need in one place',
     text: 'Your policy is uploaded. Your maintenance checklist is running. Your contractor number is saved. Nothing is lost in a drawer.',
   },
   {
