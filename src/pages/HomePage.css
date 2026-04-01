@@ -269,19 +269,6 @@
   pointer-events: auto;
 }
 
-.home-journey-head {
-  display: flex;
-  align-items: center;
-}
-
-.home-journey-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-yellow);
-}
-
 .home-journey-title {
   max-width: 340px;
   font-size: clamp(24px, 3vw, 34px);

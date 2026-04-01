@@ -137,9 +137,6 @@ function HomePage() {
                   className={`home-journey-slide${index === activeSlide ? ' active' : ''}`}
                   aria-hidden={index !== activeSlide}
                 >
-                  <div className="home-journey-head">
-                    <span className="home-journey-label">{slide.label}</span>
-                  </div>
                   <h2 className="home-journey-title">{slide.title}</h2>
                   <p className="home-journey-text">{slide.text}</p>
                 </section>
