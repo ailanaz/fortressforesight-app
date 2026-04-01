@@ -139,7 +139,7 @@
 }
 
 .calendar-link-button-save {
-  color: var(--color-yellow);
+  color: var(--color-blue);
 }
 
 @media (max-width: 680px) {
