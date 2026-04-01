@@ -132,7 +132,7 @@
 }
 
 .home-title-word-outline {
-  color: transparent;
+  color: var(--color-yellow);
   -webkit-text-stroke: 1.5px #071f69;
   text-stroke: 1.5px #071f69;
 }
