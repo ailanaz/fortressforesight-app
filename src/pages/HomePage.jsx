@@ -53,7 +53,7 @@ const JOURNEY_SLIDES = [
     id: 'structure-put-off',
     label: 'Structure',
     title: 'Preparedness gets put off',
-    text: 'FortressForesight turns readiness into clear next steps.',
+    text: 'FortressForesight turns checklists into a clearer way to spot risks, stay ahead of losses, and move through recovery.',
   },
   {
     id: 'structure-chaos',

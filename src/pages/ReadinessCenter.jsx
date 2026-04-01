@@ -430,9 +430,6 @@ function ReadinessCenter() {
           <div className="active-home-copy">
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
-            <span className="active-home-note">
-              Use the Property Readiness Checklists to proactively identify risks, streamline recovery, and stay ahead of potential losses.
-            </span>
           </div>
         </div>
       ) : null}
