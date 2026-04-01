@@ -6,6 +6,20 @@
   overflow-x: clip;
 }
 
+.property-page .page-title {
+  color: #071f69;
+}
+
+.property-page .btn-outline {
+  color: #071f69;
+  border-color: #071f69;
+}
+
+.property-page .btn-outline:hover {
+  color: #071f69;
+  border-color: #071f69;
+}
+
 .property-heading {
   display: flex;
   align-items: flex-end;
@@ -316,7 +330,7 @@
 
 .summary-row-link {
   width: fit-content;
-  color: var(--color-blue);
+  color: #071f69;
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;
