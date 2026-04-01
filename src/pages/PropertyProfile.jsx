@@ -91,7 +91,7 @@ function PendingSummaryInfo() {
         onClick={() => setOpen((value) => !value)}
         onBlur={() => setOpen(false)}
       >
-        ⓘ
+        i
       </button>
       <span className="summary-label-tooltip" role="tooltip">
         {PENDING_SUMMARY_HINT}
