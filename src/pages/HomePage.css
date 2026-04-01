@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 
 .home-page {
   display: flex;
@@ -123,7 +123,7 @@
 .home-title {
   max-width: 620px;
   margin-top: 8px;
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-weight: 700;
   font-size: clamp(46px, 7vw, 84px);
   line-height: 0.94;
