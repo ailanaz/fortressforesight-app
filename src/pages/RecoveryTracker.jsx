@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
-import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
+import { defaultCalendarDate } from '../utils/calendar'
 import './Page.css'
 import './RecoveryTracker.css'
 
@@ -21,13 +22,6 @@ function RecoveryTracker() {
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
 
-  const handleSaveToCalendar = () => {
-    const title = calendarTitle.trim() || (homeTitle ? `Recovery Event - ${homeTitle}` : 'Recovery Event')
-    const details = homeTitle ? `Recovery event for ${homeTitle} in FortressForesight.` : 'Recovery event in FortressForesight.'
-
-    downloadCalendarInvite({ title, date: calendarDate, details })
-  }
-
   return (
     <div className="page">
       <h1 className="page-title recovery-workspace-title">Recovery Workspace</h1>
@@ -42,29 +36,15 @@ function RecoveryTracker() {
       ) : null}
 
       <div className="page-utility-bar recovery-utility-bar">
-        <div className="page-calendar-actions">
-          <div className="page-event-field">
-            <input
-              className="page-input page-input-wide"
-              type="text"
-              value={calendarTitle}
-              onChange={(event) => setCalendarTitle(event.target.value)}
-              placeholder="Add calendar event"
-              aria-label="Calendar event"
-            />
-            <span className="page-paid-badge">Paid</span>
-          </div>
-          <input
-            className="page-input"
-            type="date"
-            value={calendarDate}
-            onChange={(event) => setCalendarDate(event.target.value)}
-            aria-label="Recovery event date"
-          />
-          <button className="btn-outline" type="button" onClick={handleSaveToCalendar}>
-            Save to Calendar
-          </button>
-        </div>
+        <CalendarEventBar
+          title={calendarTitle}
+          setTitle={setCalendarTitle}
+          date={calendarDate}
+          setDate={setCalendarDate}
+          defaultTitle={homeTitle ? `Recovery Event - ${homeTitle}` : 'Recovery Event'}
+          details={homeTitle ? `Recovery event for ${homeTitle} in FortressForesight.` : 'Recovery event in FortressForesight.'}
+          dateAriaLabel="Recovery event date"
+        />
       </div>
 
       <h2 className="section-label recovery-tracker-title">Recovery Tracker</h2>

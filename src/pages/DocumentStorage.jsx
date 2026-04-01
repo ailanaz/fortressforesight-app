@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
+import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
-import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
+import { defaultCalendarDate } from '../utils/calendar'
 import './Page.css'
 import './DocumentStorage.css'
 
@@ -89,13 +90,6 @@ function DocumentStorage() {
     }
   }
 
-  const handleSaveToCalendar = () => {
-    const title = calendarTitle.trim() || (homeTitle ? `Document Reminder - ${homeTitle}` : 'Document Reminder')
-    const details = homeTitle ? `Document reminder for ${homeTitle} in FortressForesight.` : 'Document reminder in FortressForesight.'
-
-    downloadCalendarInvite({ title, date: calendarDate, details })
-  }
-
   return (
     <div className="page">
       <h1 className="page-title document-vault-title">Document Vault</h1>
@@ -110,29 +104,15 @@ function DocumentStorage() {
       ) : null}
 
       <div className="page-utility-bar">
-        <div className="page-calendar-actions">
-          <div className="page-event-field">
-            <input
-              className="page-input page-input-wide"
-              type="text"
-              value={calendarTitle}
-              onChange={(event) => setCalendarTitle(event.target.value)}
-              placeholder="Add calendar event"
-              aria-label="Calendar event"
-            />
-            <span className="page-paid-badge">Paid</span>
-          </div>
-          <input
-            className="page-input"
-            type="date"
-            value={calendarDate}
-            onChange={(event) => setCalendarDate(event.target.value)}
-            aria-label="Document reminder date"
-          />
-          <button className="btn-outline" type="button" onClick={handleSaveToCalendar}>
-            Save to Calendar
-          </button>
-        </div>
+        <CalendarEventBar
+          title={calendarTitle}
+          setTitle={setCalendarTitle}
+          date={calendarDate}
+          setDate={setCalendarDate}
+          defaultTitle={homeTitle ? `Document Reminder - ${homeTitle}` : 'Document Reminder'}
+          details={homeTitle ? `Document reminder for ${homeTitle} in FortressForesight.` : 'Document reminder in FortressForesight.'}
+          dateAriaLabel="Document reminder date"
+        />
       </div>
 
       <h2 className="section-label">Documents</h2>

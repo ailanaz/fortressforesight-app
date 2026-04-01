@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
-import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
+import { defaultCalendarDate } from '../utils/calendar'
 import './Page.css'
 import './ReadinessCenter.css'
 
@@ -435,39 +436,15 @@ function ReadinessCenter() {
       ) : null}
 
       <div className="page-utility-bar">
-        <div className="page-calendar-actions">
-          <div className="page-event-field">
-            <input
-              className="page-input page-input-wide"
-              type="text"
-              value={calendarTitle}
-              onChange={(event) => setCalendarTitle(event.target.value)}
-              placeholder="Add calendar event"
-              aria-label="Calendar event"
-            />
-            <span className="page-paid-badge">Paid</span>
-          </div>
-          <input
-            className="page-input"
-            type="date"
-            value={calendarDate}
-            onChange={(event) => setCalendarDate(event.target.value)}
-            aria-label="Readiness review date"
-          />
-          <button
-            className="btn-outline"
-            type="button"
-            onClick={() =>
-              downloadCalendarInvite({
-                title: calendarTitle.trim() || (homeTitle ? `Property Readiness Review - ${homeTitle}` : 'Property Readiness Review'),
-                date: calendarDate,
-                details: 'Review your property readiness checklists in FortressForesight.',
-              })
-            }
-          >
-            Save to Calendar
-          </button>
-        </div>
+        <CalendarEventBar
+          title={calendarTitle}
+          setTitle={setCalendarTitle}
+          date={calendarDate}
+          setDate={setCalendarDate}
+          defaultTitle={homeTitle ? `Property Readiness Review - ${homeTitle}` : 'Property Readiness Review'}
+          details="Review your property readiness checklists in FortressForesight."
+          dateAriaLabel="Readiness review date"
+        />
       </div>
 
       <h2 className="section-label readiness-checklists-label">Property Readiness Checklists</h2>
