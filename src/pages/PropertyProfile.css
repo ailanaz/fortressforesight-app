@@ -246,6 +246,12 @@
   gap: 6px;
 }
 
+.summary-label-info-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .summary-label {
   font-size: 11px;
   font-weight: 700;
@@ -263,9 +269,39 @@
   font-size: 11px;
   line-height: 1;
   color: var(--color-gray-500);
+  background: transparent;
   border: 1px solid var(--color-gray-200);
   border-radius: 50%;
-  cursor: help;
+  cursor: pointer;
+  padding: 0;
+}
+
+.summary-label-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  min-width: 164px;
+  max-width: 190px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: rgba(15, 17, 24, 0.96);
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-900);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 5;
+}
+
+.summary-label-info-wrap:hover .summary-label-tooltip,
+.summary-label-info-wrap:focus-within .summary-label-tooltip,
+.summary-label-info-wrap.is-open .summary-label-tooltip {
+  opacity: 1;
 }
 
 .summary-value {

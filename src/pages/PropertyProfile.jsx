@@ -78,6 +78,28 @@ function orderSummaryCards(cards) {
   )
 }
 
+function PendingSummaryInfo() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <span className={`summary-label-info-wrap${open ? ' is-open' : ''}`}>
+      <button
+        type="button"
+        className="summary-label-info"
+        aria-label={PENDING_SUMMARY_HINT}
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        onBlur={() => setOpen(false)}
+      >
+        ⓘ
+      </button>
+      <span className="summary-label-tooltip" role="tooltip">
+        {PENDING_SUMMARY_HINT}
+      </span>
+    </span>
+  )
+}
+
 function getMunicipality(address) {
   return (
     address.city ||
@@ -421,13 +443,7 @@ function SummaryCard({ title, rows }) {
             <span className="summary-label-wrap">
               <span className="summary-label">{row.label}</span>
               {row.pending ? (
-                <span
-                  className="summary-label-info"
-                  title={PENDING_SUMMARY_HINT}
-                  aria-label={PENDING_SUMMARY_HINT}
-                >
-                  ⓘ
-                </span>
+                <PendingSummaryInfo />
               ) : null}
             </span>
             <span className={`summary-value${row.pending ? ' summary-value-muted' : ''}`}>
