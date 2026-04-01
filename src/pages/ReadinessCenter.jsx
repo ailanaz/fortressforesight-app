@@ -347,7 +347,6 @@ function Checklist({ checklist }) {
       <div className="checklist-header" onClick={() => setOpen((value) => !value)}>
         <div>
           <div className="checklist-title">{checklist.title}</div>
-          <div className="checklist-desc">{checklist.description}</div>
         </div>
         <div className="checklist-progress">
           <span>

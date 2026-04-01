@@ -76,9 +76,7 @@ function HomePage() {
                 Clarity before disaster. Structure during crisis. Confidence through recovery.
               </p>
               <p className="home-description">
-                FortressForesight helps protect the property that protects you by combining
-                pre-purchase and homeownership risk awareness, secure home recordkeeping,
-                disaster preparation, and guided recovery support in one place.
+                Property risk doesn't wait for you to be ready. FortressForesight makes sure you are.
               </p>
             </div>
 
