@@ -129,9 +129,9 @@ function RecoveryTracker() {
                   </div>
                   <div className="section-header">
                     <h3 className="section-label">
-                      {damageScope === 'Interior' ? 'Damage by Room' : 'Exterior Damage'}
+                      {damageScope === 'Interior' ? 'Interior Damage' : 'Exterior Damage'}
                     </h3>
-                    <button className="btn-primary">
+                    <button className="btn-outline recovery-add-btn">
                       {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
                     </button>
                   </div>

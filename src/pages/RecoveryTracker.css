@@ -115,6 +115,16 @@
   color: #071f69;
 }
 
+.recovery-add-btn {
+  color: #071f69;
+  border-color: #071f69;
+}
+
+.recovery-add-btn:hover {
+  color: #071f69;
+  border-color: #071f69;
+}
+
 .empty-room-state {
   text-align: left;
   color: var(--color-gray-500);
