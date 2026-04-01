@@ -114,16 +114,7 @@ function DocumentStorage() {
             </span>
           </div>
         </div>
-      ) : (
-        <div className="active-home-card active-home-empty card">
-          <div className="active-home-copy">
-            <span className="active-home-title">Pick a home first</span>
-            <span className="active-home-note">
-              Search an address in Property Search and this vault will follow that home across the app.
-            </span>
-          </div>
-        </div>
-      )}
+      ) : null}
 
       <div className="page-utility-bar">
         <div className="page-calendar-actions">
