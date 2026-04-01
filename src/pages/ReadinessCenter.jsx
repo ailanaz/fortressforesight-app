@@ -7,8 +7,8 @@ import './Page.css'
 import './ReadinessCenter.css'
 
 const CHECKLIST_SECTIONS = [
-  { id: 'homebuyers', label: 'Homebuying Checklists' },
-  { id: 'homeowners', label: 'Homeowner Checklists' },
+  { id: 'homebuyers', label: 'Before Buying a Home' },
+  { id: 'homeowners', label: 'Homeowner Preparedness' },
   { id: 'disasters', label: 'Disaster Preparedness' },
 ]
 
