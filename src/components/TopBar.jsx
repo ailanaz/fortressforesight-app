@@ -35,10 +35,10 @@ function TopBar() {
             </div>
           ) : null}
           {showPlanPill ? (
-            <div className="topbar-home-pill topbar-plan-pill">
+            <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link" to="/upgrade">
               <span className="topbar-home-title">Saved Properties</span>
               <span className="topbar-home-meta">Upgrade to save properties.</span>
-            </div>
+            </Link>
           ) : null}
         </div>
         <Link className="topbar-account" aria-label="Account" to="/login">

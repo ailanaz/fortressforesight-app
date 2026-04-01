@@ -1,0 +1,22 @@
+.upgrade-page {
+  max-width: 760px;
+}
+
+.upgrade-card {
+  padding: 20px;
+}
+
+.upgrade-list {
+  display: grid;
+  gap: 10px;
+}
+
+.upgrade-item {
+  color: #071f69;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.upgrade-actions {
+  margin-top: 18px;
+}

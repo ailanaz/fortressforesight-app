@@ -9,6 +9,7 @@ import RecoveryTracker from './pages/RecoveryTracker'
 import KnowledgeBase from './pages/KnowledgeBase'
 import EmergencyContacts from './pages/EmergencyContacts'
 import Login from './pages/Login'
+import UpgradePage from './pages/UpgradePage'
 import './App.css'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="recovery" element={<RecoveryTracker />} />
             <Route path="knowledge" element={<KnowledgeBase />} />
             <Route path="contacts" element={<EmergencyContacts />} />
+            <Route path="upgrade" element={<UpgradePage />} />
           </Route>
         </Routes>
       </Router>
