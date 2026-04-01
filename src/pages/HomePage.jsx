@@ -191,17 +191,22 @@ function HomePage() {
               <label className="sr-only" htmlFor="home-address-search">
                 Property address
               </label>
-              <input
-                id="home-address-search"
-                className="home-search-input"
-                type="text"
-                placeholder="Enter address"
-                value={address}
-                onChange={(event) => setAddress(event.target.value)}
-              />
-              <button className="btn-primary" type="submit">
-                Search
-              </button>
+              <div className="home-search-field">
+                <input
+                  id="home-address-search"
+                  className="home-search-input"
+                  type="text"
+                  placeholder="Enter address"
+                  value={address}
+                  onChange={(event) => setAddress(event.target.value)}
+                />
+                <button className="home-search-icon-button" type="submit" aria-label="Search address">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M20 20l-3.5-3.5" />
+                  </svg>
+                </button>
+              </div>
             </form>
           </article>
 
