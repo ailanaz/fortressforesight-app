@@ -90,11 +90,11 @@ function Login({ initialMode = 'login' }) {
             ) : (
               <>
                 <div className="login-upgrade">
-                  <h2 className="login-upgrade-title">Upgrade to Paid Access</h2>
+                  <h2 className="login-upgrade-title">Upgrade to a Foresight Account</h2>
                   <p className="login-upgrade-copy">
-                    With paid access, your information is saved to your account so
-                    everything stays connected, organized, and easy to come back to
-                    when you need it.
+                    A Foresight account is a paid option that lets you keep your
+                    properties, progress, notes, files, and recovery details saved in
+                    one place for when you need them.
                   </p>
                   <div className="login-upgrade-list">
                     <div className="login-upgrade-item">Save up to 2 properties</div>
