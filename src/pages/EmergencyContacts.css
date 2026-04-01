@@ -45,7 +45,7 @@
 
 .contact-input {
   background: #ffffff;
-  border: 1.5px solid var(--color-gray-200);
+  border: 1.5px solid #071f69;
   border-radius: var(--radius);
   padding: 9px 12px;
   font-size: 14px;
