@@ -41,6 +41,21 @@ function Login({ initialMode = 'login' }) {
           Clarity before disaster. Structure during crisis. Confidence through recovery.
         </p>
 
+        <div className="login-tabs">
+          <button
+            className={`login-tab${mode === 'login' ? ' active' : ''}`}
+            onClick={() => changeMode('login')}
+          >
+            Sign In
+          </button>
+          <button
+            className={`login-tab${mode === 'signup' ? ' active' : ''}`}
+            onClick={() => changeMode('signup')}
+          >
+            Create Account
+          </button>
+        </div>
+
         <form className="login-shell-form" onSubmit={handleSubmit}>
           <div className="login-panel card">
             {mode === 'login' ? (
@@ -98,21 +113,6 @@ function Login({ initialMode = 'login' }) {
                 </div>
               </>
             )}
-          </div>
-
-          <div className="login-tabs">
-            <button
-              className={`login-tab${mode === 'login' ? ' active' : ''}`}
-              onClick={() => changeMode('login')}
-            >
-              Sign In
-            </button>
-            <button
-              className={`login-tab${mode === 'signup' ? ' active' : ''}`}
-              onClick={() => changeMode('signup')}
-            >
-              Create Account
-            </button>
           </div>
 
           <div className={`login-actions${mode === 'signup' ? ' login-actions-single' : ''}`}>
