@@ -130,7 +130,9 @@ function CalendarEventBar({
             i
           </button>
           <span className="page-upgrade-tooltip" role="tooltip">
-            Upgrade to save calendar events.
+            Upgrade to
+            <br />
+            save calendar events.
           </span>
         </span>
       </div>
