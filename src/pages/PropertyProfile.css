@@ -86,15 +86,9 @@
   gap: 18px;
 }
 
-.property-map-card,
 .property-summary {
   padding: 0;
   overflow: hidden;
-}
-
-.property-map-card {
-  width: 80%;
-  align-self: center;
 }
 
 .property-map-toolbar,
@@ -111,8 +105,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  padding-top: 18px;
-  padding-bottom: 16px;
+  padding: 16px 18px 14px;
   border-bottom: 1px solid var(--color-gray-200);
 }
 
@@ -144,7 +137,7 @@
 .property-map-frame {
   position: relative;
   isolation: isolate;
-  height: 520px;
+  height: 300px;
   background: #eef3f8;
 }
 
@@ -227,9 +220,20 @@
 
 .summary-top-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 1.15fr) minmax(0, 1fr);
   gap: 12px;
   padding: 18px 20px 0;
+}
+
+.summary-map-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.summary-map-card .property-map-frame {
+  flex: 1;
 }
 
 .summary-alert-row {
@@ -470,10 +474,22 @@
   gap: 0;
 }
 
+.property-searchbar-bottom {
+  padding: 0 20px 4px;
+}
+
 @media (max-width: 980px) {
   .summary-top-row,
   .summary-stack {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-top-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-map-card {
+    grid-column: 1 / -1;
   }
 
   .local-hazards-grid {
@@ -486,7 +502,7 @@
   .property-workspace,
   .property-searchbar,
   .property-summary,
-  .property-map-card {
+  .property-searchbar-bottom {
     width: 100%;
     margin-inline: auto;
     min-width: 0;
@@ -495,7 +511,7 @@
   .property-page,
   .property-workspace,
   .property-summary,
-  .property-map-card,
+  .property-searchbar-bottom,
   .summary-stack,
   .summary-alert-row {
     min-width: 0;
@@ -503,10 +519,6 @@
 
   .property-searchbar {
     grid-template-columns: 1fr;
-  }
-
-  .property-map-card {
-    width: 100%;
   }
 
   .property-searchbar-secondary,
@@ -533,6 +545,10 @@
   .summary-top-row,
   .summary-stack {
     grid-template-columns: 1fr;
+  }
+
+  .property-searchbar-bottom {
+    padding: 0 16px 4px;
   }
 
   .local-hazards-grid {

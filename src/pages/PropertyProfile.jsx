@@ -884,9 +884,8 @@ function PropertyProfile() {
 
   const googleEmbedSrc = getGoogleEmbedSrc(property)
   const orderedSummaryCards = orderSummaryCards(property?.summaryCards || EMPTY_SUMMARY_CARDS)
-  const topSummaryCards = orderedSummaryCards.filter(
-    (card) => card.title === 'Property Information' || card.title === 'Zoning / Future Use',
-  )
+  const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
+  const zoningCard = orderedSummaryCards.find((card) => card.title === 'Zoning / Future Use')
   const remainingSummaryCards = orderedSummaryCards.filter(
     (card) => card.title !== 'Property Information' && card.title !== 'Zoning / Future Use',
   )
@@ -990,13 +989,38 @@ function PropertyProfile() {
               </div>
 
               <div className="summary-top-row">
-                {topSummaryCards.map((card) => (
+                {propertyInformationCard ? (
                   <SummaryCard
-                    key={card.title}
-                    title={card.title}
-                    rows={card.rows}
+                    key={propertyInformationCard.title}
+                    title={propertyInformationCard.title}
+                    rows={propertyInformationCard.rows}
                   />
-                ))}
+                ) : null}
+                <article className="summary-map-card card">
+                  <div className="property-map-toolbar">
+                    <div>
+                      <p className="property-map-kicker">Map</p>
+                    </div>
+                  </div>
+
+                  <div className="property-map-frame">
+                    <iframe
+                      className="property-map-embed"
+                      title={property ? `Map for ${property.query}` : 'Property map'}
+                      src={googleEmbedSrc}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      allowFullScreen
+                    />
+                  </div>
+                </article>
+                {zoningCard ? (
+                  <SummaryCard
+                    key={zoningCard.title}
+                    title={zoningCard.title}
+                    rows={zoningCard.rows}
+                  />
+                ) : null}
               </div>
 
               <div className="summary-stack">
@@ -1022,9 +1046,27 @@ function PropertyProfile() {
               </div>
 
               <div className="summary-top-row">
-                {topSummaryCards.map((card) => (
-                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
-                ))}
+                {propertyInformationCard ? (
+                  <SummaryCard
+                    key={propertyInformationCard.title}
+                    title={propertyInformationCard.title}
+                    rows={propertyInformationCard.rows}
+                  />
+                ) : null}
+                <article className="summary-map-card card">
+                  <div className="property-map-toolbar">
+                    <div>
+                      <p className="property-map-kicker">Map</p>
+                    </div>
+                  </div>
+
+                  <div className="property-map-frame">
+                    <div className="property-map-placeholder">Search address to load the map.</div>
+                  </div>
+                </article>
+                {zoningCard ? (
+                  <SummaryCard key={zoningCard.title} title={zoningCard.title} rows={zoningCard.rows} />
+                ) : null}
               </div>
 
               <div className="summary-stack">
@@ -1042,56 +1084,30 @@ function PropertyProfile() {
           )}
         </section>
 
-        <section className="property-map-card">
-          <div className="property-map-toolbar">
-            <div>
-              <p className="property-map-kicker">Map</p>
-              {property ? (
-                <h2 className="property-map-title">{property.query}</h2>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="property-map-frame">
-            {property ? (
-              <iframe
-                className="property-map-embed"
-                title={`Map for ${property.query}`}
-                src={googleEmbedSrc}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            ) : (
-              <div className="property-map-placeholder">Search address to load the map.</div>
-            )}
-          </div>
-
-          <form className="property-searchbar property-searchbar-secondary" onSubmit={handleSubmit}>
-            <label className="sr-only" htmlFor="property-address-search-secondary">
-              Property address
-            </label>
-            <input
-              id="property-address-search-secondary"
-              className="property-search-input"
-              type="text"
-              placeholder="Enter address"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            <button className="btn-primary property-search-button" type="submit">
-              {status === 'loading' ? 'Searching...' : 'Search'}
-            </button>
-            <button
-              className="btn-outline property-search-button"
-              type="button"
-              onClick={resetSearch}
-              disabled={!query && !property}
-            >
-              Reset
-            </button>
-          </form>
-        </section>
+        <form className="property-searchbar property-searchbar-secondary property-searchbar-bottom" onSubmit={handleSubmit}>
+          <label className="sr-only" htmlFor="property-address-search-secondary">
+            Property address
+          </label>
+          <input
+            id="property-address-search-secondary"
+            className="property-search-input"
+            type="text"
+            placeholder="Enter address"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <button className="btn-primary property-search-button" type="submit">
+            {status === 'loading' ? 'Searching...' : 'Search'}
+          </button>
+          <button
+            className="btn-outline property-search-button"
+            type="button"
+            onClick={resetSearch}
+            disabled={!query && !property}
+          >
+            Reset
+          </button>
+        </form>
       </div>
     </div>
   )
