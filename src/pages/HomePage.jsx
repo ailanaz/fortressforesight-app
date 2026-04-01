@@ -130,17 +130,6 @@ function HomePage() {
           </article>
 
           <article className="home-stage-panel card">
-            <div className="home-journey-stage-nav" aria-hidden="true">
-              {JOURNEY_SLIDES.map((slide, index) => (
-                <span
-                  key={slide.id}
-                  className={`home-journey-stage${index === activeSlide ? ' active' : ''}`}
-                >
-                  {slide.label}
-                </span>
-              ))}
-            </div>
-
             <div className="home-journey-track">
               {JOURNEY_SLIDES.map((slide, index) => (
                 <section

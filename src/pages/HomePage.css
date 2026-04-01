@@ -244,29 +244,6 @@
   filter: none;
 }
 
-.home-journey-stage-nav {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.home-journey-stage {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-gray-500);
-  transition: color 0.2s ease;
-}
-
-.home-journey-stage.active {
-  color: var(--color-yellow);
-}
-
 .home-journey-track {
   position: relative;
   z-index: 1;
@@ -417,9 +394,5 @@
 
   .home-journey-track {
     min-height: 188px;
-  }
-
-  .home-journey-stage-nav {
-    gap: 8px;
   }
 }
