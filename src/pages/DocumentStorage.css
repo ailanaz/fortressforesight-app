@@ -1,5 +1,5 @@
 .document-tabs-wrap {
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .document-vault-title {
@@ -44,7 +44,7 @@
 }
 
 .document-section-header {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .doc-category-card {
@@ -58,14 +58,14 @@
 .doc-category-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .doc-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--color-gray-100);
 }
 
@@ -110,7 +110,7 @@
 }
 
 .document-upload-note {
-  margin: -2px 0 12px;
+  margin: -2px 0 16px;
   font-size: 12px;
   color: var(--color-gray-500);
 }
@@ -144,6 +144,10 @@
 }
 
 @media (max-width: 680px) {
+  .document-tabs-wrap {
+    margin-bottom: 20px;
+  }
+
   .document-tabs {
     justify-content: center;
     gap: 10px;

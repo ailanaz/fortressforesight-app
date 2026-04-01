@@ -266,6 +266,11 @@
 }
 
 @media (max-width: 680px) {
+  .readiness-tabs-wrap {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .readiness-tabs {
     justify-content: center;
     gap: 8px;
@@ -277,6 +282,7 @@
   }
 
   .readiness-note-button {
+    align-self: center;
     font-size: 11px;
   }
 }
