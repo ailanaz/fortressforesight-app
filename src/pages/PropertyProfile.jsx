@@ -70,6 +70,8 @@ const SUMMARY_CARD_ORDER = [
   'Response / Area Claims',
 ]
 
+const PENDING_SUMMARY_HINT = 'Search address to see Risk Summary'
+
 function orderSummaryCards(cards) {
   return [...cards].sort(
     (left, right) => SUMMARY_CARD_ORDER.indexOf(left.title) - SUMMARY_CARD_ORDER.indexOf(right.title),
@@ -416,9 +418,20 @@ function SummaryCard({ title, rows }) {
       <div className="summary-rows">
         {rows.map((row) => (
           <div key={`${title}-${row.label}`} className="summary-row">
-            <span className="summary-label">{row.label}</span>
+            <span className="summary-label-wrap">
+              <span className="summary-label">{row.label}</span>
+              {row.pending ? (
+                <span
+                  className="summary-label-info"
+                  title={PENDING_SUMMARY_HINT}
+                  aria-label={PENDING_SUMMARY_HINT}
+                >
+                  ⓘ
+                </span>
+              ) : null}
+            </span>
             <span className={`summary-value${row.pending ? ' summary-value-muted' : ''}`}>
-              {row.value}
+              {row.pending ? '--' : row.value}
             </span>
           </div>
         ))}
