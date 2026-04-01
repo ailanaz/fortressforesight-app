@@ -3,8 +3,8 @@
   align-items: center;
   gap: 14px;
   overflow: hidden;
-  padding: 10px 14px;
-  min-height: 46px;
+  padding: 8px 14px;
+  min-height: 40px;
   border: 1px solid rgba(7, 31, 105, 0.2);
   background: #071f69;
 }
@@ -89,7 +89,7 @@
     mask-image: none;
     border: 1px solid rgba(7, 31, 105, 0.2);
     background: #071f69;
-    padding: 10px 12px;
+    padding: 8px 12px;
   }
 
   .alert-ticker-marquee {
