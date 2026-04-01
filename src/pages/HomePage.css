@@ -316,8 +316,9 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 14px;
+  padding-top: 74px;
 }
 
 .home-journey-title {
