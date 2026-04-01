@@ -122,6 +122,205 @@ const SUMMARY_CARD_ORDER = [
 
 const PENDING_SUMMARY_HINT = 'Search address to see Risk Summary'
 
+const STATE_NAME_TO_CODE = Object.freeze({
+  alabama: 'AL',
+  alaska: 'AK',
+  arizona: 'AZ',
+  arkansas: 'AR',
+  california: 'CA',
+  colorado: 'CO',
+  connecticut: 'CT',
+  delaware: 'DE',
+  florida: 'FL',
+  georgia: 'GA',
+  hawaii: 'HI',
+  idaho: 'ID',
+  illinois: 'IL',
+  indiana: 'IN',
+  iowa: 'IA',
+  kansas: 'KS',
+  kentucky: 'KY',
+  louisiana: 'LA',
+  maine: 'ME',
+  maryland: 'MD',
+  massachusetts: 'MA',
+  michigan: 'MI',
+  minnesota: 'MN',
+  mississippi: 'MS',
+  missouri: 'MO',
+  montana: 'MT',
+  nebraska: 'NE',
+  nevada: 'NV',
+  'new hampshire': 'NH',
+  'new jersey': 'NJ',
+  'new mexico': 'NM',
+  'new york': 'NY',
+  'north carolina': 'NC',
+  'north dakota': 'ND',
+  ohio: 'OH',
+  oklahoma: 'OK',
+  oregon: 'OR',
+  pennsylvania: 'PA',
+  'rhode island': 'RI',
+  'south carolina': 'SC',
+  'south dakota': 'SD',
+  tennessee: 'TN',
+  texas: 'TX',
+  utah: 'UT',
+  vermont: 'VT',
+  virginia: 'VA',
+  washington: 'WA',
+  'west virginia': 'WV',
+  wisconsin: 'WI',
+  wyoming: 'WY',
+  'district of columbia': 'DC',
+})
+
+const FLOOD_PRIMARY_STATES = new Set(['AL', 'AR', 'CA', 'CT', 'DE', 'FL', 'GA', 'HI', 'IA', 'IL', 'KY', 'LA', 'MA', 'MD', 'ME', 'MO', 'MS', 'NC', 'NH', 'NJ', 'NY', 'OH', 'OR', 'PA', 'RI', 'SC', 'TN', 'TX', 'VA', 'VT', 'WA', 'WV'])
+const STORM_WIND_PRIMARY_STATES = new Set(['AL', 'AR', 'CT', 'DE', 'FL', 'GA', 'HI', 'IA', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'MI', 'MN', 'MO', 'MS', 'NC', 'ND', 'NE', 'NJ', 'NY', 'OH', 'OK', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'VA', 'WI'])
+const HAIL_PRIMARY_STATES = new Set(['CO', 'IA', 'IL', 'IN', 'KS', 'MN', 'MO', 'MT', 'ND', 'NE', 'NM', 'OK', 'SD', 'TX', 'WY'])
+const HAIL_SEASONAL_STATES = new Set(['AR', 'KY', 'OH', 'PA', 'TN'])
+const WILDFIRE_PRIMARY_STATES = new Set(['AZ', 'CA', 'CO', 'HI', 'ID', 'MT', 'NM', 'NV', 'OR', 'TX', 'UT', 'WA', 'WY'])
+const WILDFIRE_SEASONAL_STATES = new Set(['FL', 'GA', 'NC', 'OK', 'SC'])
+const FREEZE_PRIMARY_STATES = new Set(['AK', 'CO', 'CT', 'IA', 'ID', 'IL', 'IN', 'KS', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MT', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NY', 'OH', 'OK', 'PA', 'RI', 'SD', 'TX', 'UT', 'VT', 'WI', 'WV', 'WY'])
+const FREEZE_SEASONAL_STATES = new Set(['AZ', 'CA', 'KY', 'NC', 'NV', 'OR', 'TN', 'VA', 'WA'])
+const EARTHQUAKE_PRIMARY_STATES = new Set(['AK', 'AR', 'AZ', 'CA', 'CO', 'HI', 'ID', 'KY', 'MO', 'MT', 'NM', 'NV', 'OK', 'OR', 'SC', 'TN', 'UT', 'WA', 'WY'])
+const EARTHQUAKE_SEASONAL_STATES = new Set(['IL', 'MS', 'NC', 'VA'])
+
+const HAZARD_DEFINITIONS = [
+  {
+    id: 'flood',
+    title: 'Flood',
+    primaryStates: FLOOD_PRIMARY_STATES,
+    showEverywhere: true,
+    copy: 'Drainage, lower-level water entry, and recovery planning may need closer review.',
+    limitedCopy: 'Not a primary area concern here, but drainage and lower-level water entry can still vary by lot.',
+  },
+  {
+    id: 'storm-wind',
+    title: 'Storm / Wind',
+    primaryStates: STORM_WIND_PRIMARY_STATES,
+    showEverywhere: true,
+    copy: 'Roofing, windows, exterior materials, and nearby tree exposure may need closer review.',
+    limitedCopy: 'Not a primary area concern here, but roofing, windows, and tree exposure can still vary by site.',
+  },
+  {
+    id: 'hail',
+    title: 'Hail',
+    primaryStates: HAIL_PRIMARY_STATES,
+    seasonalStates: HAIL_SEASONAL_STATES,
+    copy: 'Shingles, gutters, skylights, and siding may be more exposed to damage.',
+    limitedCopy: 'Not commonly associated with this location, but exterior materials and glass may still vary by site.',
+  },
+  {
+    id: 'wildfire',
+    title: 'Wildfire',
+    primaryStates: WILDFIRE_PRIMARY_STATES,
+    seasonalStates: WILDFIRE_SEASONAL_STATES,
+    copy: 'Defensible space, vents, roofing materials, and exterior vulnerability may need closer review.',
+    limitedCopy: 'Not a primary area concern here, but vegetation and exterior materials can still shape exposure.',
+  },
+  {
+    id: 'freeze',
+    title: 'Freeze',
+    primaryStates: FREEZE_PRIMARY_STATES,
+    seasonalStates: FREEZE_SEASONAL_STATES,
+    copy: 'Exposed pipes, drainage, and seasonal protection points may need closer review.',
+    limitedCopy: 'Not commonly associated with this location, but exposed pipes and seasonal protection points can still vary by property.',
+  },
+  {
+    id: 'earthquake',
+    title: 'Earthquake',
+    primaryStates: EARTHQUAKE_PRIMARY_STATES,
+    seasonalStates: EARTHQUAKE_SEASONAL_STATES,
+    copy: 'Masonry, structural connections, water heater bracing, and shutoff access may need closer review.',
+    limitedCopy: 'Not a primary area concern here, but masonry and heavy mounted items may still be worth noting by property.',
+  },
+]
+
+function normalizeStateCode(state) {
+  if (!state) {
+    return ''
+  }
+
+  const trimmed = state.trim()
+
+  if (!trimmed) {
+    return ''
+  }
+
+  const upper = trimmed.toUpperCase()
+
+  if (upper.length === 2) {
+    return upper
+  }
+
+  return STATE_NAME_TO_CODE[trimmed.toLowerCase()] || ''
+}
+
+function getHazardLevel(definition, stateCode) {
+  if (!stateCode) {
+    return 'omit'
+  }
+
+  if (definition.primaryStates?.has(stateCode)) {
+    return 'primary'
+  }
+
+  if (definition.seasonalStates?.has(stateCode) || definition.showEverywhere) {
+    return 'seasonal'
+  }
+
+  if (definition.limitedStates?.has(stateCode)) {
+    return 'limited'
+  }
+
+  return 'omit'
+}
+
+function getHazardStatus(level) {
+  if (level === 'primary') {
+    return 'Area-based relevance noted'
+  }
+
+  if (level === 'seasonal') {
+    return 'May be relevant in this area'
+  }
+
+  return 'Limited area relevance'
+}
+
+function buildLocalHazards(property) {
+  const stateCode = normalizeStateCode(property?.address?.state)
+
+  if (!stateCode) {
+    return []
+  }
+
+  const evaluated = HAZARD_DEFINITIONS
+    .map((definition) => {
+      const level = getHazardLevel(definition, stateCode)
+
+      if (level === 'omit') {
+        return null
+      }
+
+      return {
+        id: definition.id,
+        title: definition.title,
+        level,
+        status: getHazardStatus(level),
+        copy: level === 'limited' ? definition.limitedCopy : definition.copy,
+      }
+    })
+    .filter(Boolean)
+
+  const relevantHazards = evaluated.filter((item) => item.level === 'primary' || item.level === 'seasonal')
+  const limitedHazards = evaluated.filter((item) => item.level === 'limited')
+
+  return [...relevantHazards, ...limitedHazards].slice(0, Math.max(3, relevantHazards.length))
+}
+
 function orderSummaryCards(cards) {
   return [...cards].sort(
     (left, right) => SUMMARY_CARD_ORDER.indexOf(left.title) - SUMMARY_CARD_ORDER.indexOf(right.title),
@@ -568,6 +767,35 @@ function SummaryCard({ title, rows }) {
   )
 }
 
+function LocalHazardConsiderations({ hazards, hasProperty }) {
+  return (
+    <article className="summary-card card local-hazards-card">
+      <div className="summary-card-header local-hazards-header">
+        <div>
+          <p className="summary-card-title">Local Hazard Considerations</p>
+          <p className="local-hazards-intro">
+            Area-based hazard context that may affect preparedness, maintenance, and recovery for this property.
+          </p>
+        </div>
+      </div>
+
+      {hasProperty && hazards.length ? (
+        <div className="local-hazards-grid">
+          {hazards.map((hazard) => (
+            <div key={hazard.id} className="local-hazard-item">
+              <p className="local-hazard-title">{hazard.title}</p>
+              <p className={`local-hazard-status local-hazard-status-${hazard.level}`}>{hazard.status}</p>
+              <p className="local-hazard-copy">{hazard.copy}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="local-hazards-empty">Search an address to see area-based hazard context.</p>
+      )}
+    </article>
+  )
+}
+
 function getGoogleEmbedSrc(property) {
   if (!property) {
     return ''
@@ -658,6 +886,7 @@ function PropertyProfile() {
   const orderedSummaryCards = orderSummaryCards(property?.summaryCards || EMPTY_SUMMARY_CARDS)
   const topSummaryCards = orderedSummaryCards.slice(0, 2)
   const remainingSummaryCards = orderedSummaryCards.slice(2)
+  const localHazards = buildLocalHazards(property)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -774,6 +1003,9 @@ function PropertyProfile() {
                     rows={card.rows}
                   />
                 ))}
+                <div className="summary-hazard-row">
+                  <LocalHazardConsiderations hazards={localHazards} hasProperty />
+                </div>
               </div>
             </>
           ) : (
@@ -792,6 +1024,9 @@ function PropertyProfile() {
                 {remainingSummaryCards.map((card) => (
                   <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
+                <div className="summary-hazard-row">
+                  <LocalHazardConsiderations hazards={[]} hasProperty={false} />
+                </div>
               </div>
             </div>
           )}
