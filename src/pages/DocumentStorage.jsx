@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
@@ -33,6 +34,7 @@ function inferDocType(file) {
 }
 
 function DocumentStorage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { activeHome } = useActiveHome()
   const [docs, setDocs] = useState(SAMPLE_DOCS)
   const [calendarTitle, setCalendarTitle] = useState('')
@@ -42,6 +44,10 @@ function DocumentStorage() {
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
   const otherDocs = normalizedDocs.filter((doc) => !BASE_DOC_TYPES.includes(doc.type))
   const homeTitle = getHomeTitle(activeHome)
+  const docTabs = [...BASE_DOC_TYPES, ...(otherDocs.length ? ['Other'] : [])]
+  const typeParam = searchParams.get('type')
+  const initialType = docTabs.includes(typeParam) ? typeParam : BASE_DOC_TYPES[0]
+  const [activeType, setActiveType] = useState(initialType)
 
   const addFiles = (files) => {
     const nextDocs = Array.from(files).map((file, index) => ({
@@ -89,6 +95,23 @@ function DocumentStorage() {
     }
   }
 
+  const handleTypeChange = (nextType) => {
+    setActiveType(nextType)
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      if (nextType === BASE_DOC_TYPES[0]) {
+        next.delete('type')
+      } else {
+        next.set('type', nextType)
+      }
+      return next
+    }, { replace: true })
+  }
+
+  const activeDocs = activeType === 'Other'
+    ? otherDocs
+    : normalizedDocs.filter((doc) => doc.type === activeType)
+
   return (
     <div className="page">
       <h1 className="page-title document-vault-title">Document Vault</h1>
@@ -106,6 +129,19 @@ function DocumentStorage() {
       </div>
 
       <h2 className="section-label">Documents</h2>
+
+      <div className="document-tabs">
+        {docTabs.map((type) => (
+          <button
+            key={type}
+            className={`document-tab${activeType === type ? ' active' : ''}`}
+            onClick={() => handleTypeChange(type)}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
       <input
         ref={fileInputRef}
         className="file-input-hidden"
@@ -115,54 +151,21 @@ function DocumentStorage() {
         onChange={handleFileChange}
       />
 
-      <div className="doc-category-grid">
-        {BASE_DOC_TYPES.map((type) => {
-          const typeDocs = normalizedDocs.filter((doc) => doc.type === type)
-
-          return (
-            <section key={type} className="doc-category-card card">
-              <h2 className="section-label doc-category-title">{type}</h2>
-              <div className="doc-category-list">
-                {typeDocs.length === 0 ? (
-                  <div className="empty-state doc-empty-state">No files yet.</div>
-                ) : (
-                  typeDocs.map((doc) => (
-                    <div key={doc.id} className="doc-card">
-                      <div className="doc-icon">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                        </svg>
-                      </div>
-                      <div className="doc-info">
-                        <span className="doc-name">{doc.name}</span>
-                        <span className="doc-meta">
-                          {doc.date} - {doc.size}
-                        </span>
-                      </div>
-                      <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
-                        <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <circle cx="18" cy="5" r="3" />
-                          <circle cx="6" cy="12" r="3" />
-                          <circle cx="18" cy="19" r="3" />
-                          <path d="M8.6 13.5l6.8 4" />
-                          <path d="M15.4 6.5l-6.8 4" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </section>
-          )
-        })}
+      <div className="section-header document-section-header">
+        <h3 className="section-label doc-category-title">{activeType}</h3>
+        <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
+          Upload
+        </button>
       </div>
 
-      {otherDocs.length ? (
-        <section className="doc-category-card doc-other-card card">
-          <h2 className="section-label doc-category-title">Other</h2>
-          <div className="doc-category-list">
-            {otherDocs.map((doc) => (
+      <div className="document-upload-note">PDF, JPG, JPEG, PNG</div>
+
+      <section className="doc-category-card card">
+        <div className="doc-category-list">
+          {activeDocs.length === 0 ? (
+            <div className="empty-state doc-empty-state">No files yet.</div>
+          ) : (
+            activeDocs.map((doc) => (
               <div key={doc.id} className="doc-card">
                 <div className="doc-icon">
                   <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -173,7 +176,7 @@ function DocumentStorage() {
                 <div className="doc-info">
                   <span className="doc-name">{doc.name}</span>
                   <span className="doc-meta">
-                    {doc.type} - {doc.date} - {doc.size}
+                    {activeType === 'Other' ? `${doc.type} - ${doc.date} - ${doc.size}` : `${doc.date} - ${doc.size}`}
                   </span>
                 </div>
                 <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
@@ -186,18 +189,10 @@ function DocumentStorage() {
                   </svg>
                 </button>
               </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      <div className="upload-area">
-        <p>{activeHome ? `Add files for ${homeTitle}.` : 'Upload files for the selected home.'}</p>
-        <p className="upload-note">PDF, JPG, JPEG, PNG</p>
-        <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
-          Upload
-        </button>
-      </div>
+            ))
+          )}
+        </div>
+      </section>
     </div>
   )
 }
