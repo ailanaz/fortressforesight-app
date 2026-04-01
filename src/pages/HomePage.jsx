@@ -47,7 +47,7 @@ const JOURNEY_SLIDES = [
     id: 'structure-records',
     label: 'Structure',
     title: 'Everything gets scattered',
-    text: 'FortressForesight keeps policies, inspections, warranties, receipts, and claim notes organized around one home.',
+    text: 'FortressForesight keeps policies, receipts, inspections, warranties, and claim notes tied to the home you searched.',
   },
   {
     id: 'structure-put-off',

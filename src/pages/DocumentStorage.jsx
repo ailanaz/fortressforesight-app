@@ -105,9 +105,6 @@ function DocumentStorage() {
           <div className="active-home-copy">
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
-            <span className="active-home-note">
-              Organize policies, receipts, inspections, and warranties for the home you just searched.
-            </span>
           </div>
         </div>
       ) : null}
