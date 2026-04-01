@@ -749,7 +749,7 @@ function PropertyProfile() {
       {error ? <p className="property-error">{error}</p> : null}
 
       <div className="property-workspace">
-        <section className="property-summary card">
+        <section className="property-summary">
           {property ? (
             <>
               <div className="property-sidebar-section">
@@ -802,7 +802,7 @@ function PropertyProfile() {
           )}
         </section>
 
-        <section className="property-map-card card">
+        <section className="property-map-card">
           <div className="property-map-toolbar">
             <div>
               <p className="property-map-kicker">Map</p>
