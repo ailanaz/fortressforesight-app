@@ -239,8 +239,10 @@ function HomePage() {
                   aria-hidden={index !== activeSlide}
                 >
                   <p className="home-journey-kicker">{slide.label}</p>
-                  <h2 className="home-journey-title">{slide.title}</h2>
-                  <p className="home-journey-text">{slide.text}</p>
+                  <div className="home-journey-body">
+                    <h2 className="home-journey-title">{slide.title}</h2>
+                    <p className="home-journey-text">{slide.text}</p>
+                  </div>
                 </section>
               ))}
             </div>
