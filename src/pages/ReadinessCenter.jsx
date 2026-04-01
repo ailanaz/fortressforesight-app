@@ -300,6 +300,109 @@ function Checklist({ checklist }) {
   )
 }
 
+function CustomChecklist({ checklist }) {
+  const [open, setOpen] = useState(true)
+  const [done, setDone] = useState({})
+  const [items, setItems] = useState(
+    checklist.items.map((text, index) => ({
+      id: `${checklist.id}-${index}`,
+      text,
+    })),
+  )
+  const [newItem, setNewItem] = useState('')
+
+  const toggleItem = (id) =>
+    setDone((previous) => ({ ...previous, [id]: !previous[id] }))
+
+  const removeItem = (id) => {
+    setItems((previous) => previous.filter((item) => item.id !== id))
+    setDone((previous) => {
+      const updated = { ...previous }
+      delete updated[id]
+      return updated
+    })
+  }
+
+  const addItem = () => {
+    const trimmed = newItem.trim()
+    if (!trimmed) return
+
+    setItems((previous) => [
+      ...previous,
+      {
+        id: `${checklist.id}-${Date.now()}`,
+        text: trimmed,
+      },
+    ])
+    setNewItem('')
+    setOpen(true)
+  }
+
+  const doneCount = items.filter((item) => done[item.id]).length
+
+  return (
+    <div className="checklist-card card">
+      <div className="checklist-header" onClick={() => setOpen((value) => !value)}>
+        <div>
+          <div className="checklist-title">{checklist.title}</div>
+        </div>
+        <div className="checklist-progress">
+          <span>
+            {doneCount}/{items.length}
+          </span>
+          <svg
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      </div>
+      {open && (
+        <>
+          <ul className="checklist-items">
+            {items.map((item) => (
+              <li key={item.id} className={`checklist-item${done[item.id] ? ' done' : ''}`}>
+                <button className="checklist-item-main" type="button" onClick={() => toggleItem(item.id)}>
+                  <span className="checklist-checkbox">
+                    {done[item.id] ? (
+                      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                    ) : null}
+                  </span>
+                  <span className="checklist-text">{item.text}</span>
+                </button>
+                <button className="checklist-remove" type="button" onClick={() => removeItem(item.id)}>
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="custom-checklist-add">
+            <input
+              className="page-input page-input-wide"
+              type="text"
+              value={newItem}
+              onChange={(event) => setNewItem(event.target.value)}
+              placeholder="Add item"
+              aria-label="Add custom checklist item"
+            />
+            <button className="btn-outline" type="button" onClick={addItem}>
+              Add
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 function ReadinessCenter() {
   const { activeHome } = useActiveHome()
   const homeTitle = getHomeTitle(activeHome)
@@ -390,7 +493,7 @@ function ReadinessCenter() {
           <h3 className="section-label readiness-group-label">Custom Checklists</h3>
           <div className="readiness-custom-content">
             {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
-              <Checklist key={checklist.id} checklist={checklist} />
+              <CustomChecklist key={checklist.id} checklist={checklist} />
             ))}
           </div>
           <div className="readiness-custom-actions">
