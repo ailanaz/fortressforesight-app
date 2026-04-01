@@ -33,7 +33,7 @@ function Login({ initialMode = 'login' }) {
           <div className="login-upgrade card">
             <h2 className="login-upgrade-title">Upgrade</h2>
             <p className="login-upgrade-copy">
-              Save properties, calendar events, documents, contacts, and recovery progress.
+              Save and organize your home in one place.
             </p>
             <div className="login-upgrade-list">
               <div className="login-upgrade-item">Save up to 2 properties</div>
