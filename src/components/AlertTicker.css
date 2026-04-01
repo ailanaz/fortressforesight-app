@@ -67,6 +67,10 @@
     gap: 10px;
   }
 
+  .alert-ticker-marquee {
+    animation-duration: 90s;
+  }
+
   .alert-ticker-line,
   .alert-ticker-static {
     font-size: 13px;
