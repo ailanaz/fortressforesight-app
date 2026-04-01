@@ -166,7 +166,7 @@ function RecoveryTracker() {
                 <>
                   <div className="section-header">
                     <h3 className="section-label">Expense Log</h3>
-                    <button className="btn-primary">+ Add Expense</button>
+                    <button className="btn-outline recovery-add-btn">+ Add Expense</button>
                   </div>
                   <div className="empty-room-state">
                     <p>No expenses logged yet.</p>
