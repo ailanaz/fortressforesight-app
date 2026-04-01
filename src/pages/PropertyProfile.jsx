@@ -30,31 +30,81 @@ const EMPTY_SUMMARY_CARDS = [
   {
     title: 'Soil & Geology',
     rows: [
-      { label: 'USDA soil survey', value: '\u2014', pending: true },
-      { label: 'EPA radon zone', value: '\u2014', pending: true },
-      { label: 'Karst / sinkhole', value: '\u2014', pending: true },
+      {
+        label: 'USDA soil survey',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'USDA', href: 'https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey' },
+      },
+      {
+        label: 'EPA radon zone',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'EPA', href: 'https://www.epa.gov/radon/epa-map-radon-zones-and-supplemental-information-0' },
+      },
+      {
+        label: 'Karst / sinkhole',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'USGS', href: 'https://pubs.usgs.gov/sir/2008/5023/pdf/SIR2008-5023.pdf' },
+      },
     ],
   },
   {
     title: 'Water / Drainage',
     rows: [
-      { label: 'FEMA flood zone', value: '\u2014', pending: true },
-      { label: 'Drainage / low basin', value: '\u2014', pending: true },
-      { label: 'Water table / wetlands', value: '\u2014', pending: true },
+      {
+        label: 'FEMA flood zone',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'FEMA', href: 'https://msc.fema.gov/portal/search' },
+      },
+      {
+        label: 'Drainage / low basin',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'USGS', href: 'https://www.usgs.gov/faqs/how-do-i-find-download-a-topographic-map' },
+      },
+      {
+        label: 'Water table / wetlands',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'EPA', href: 'https://www.epa.gov/wetlands/wetlands-monitoring-and-assessment' },
+      },
     ],
   },
   {
     title: 'Wildfire / Vegetation',
     rows: [
-      { label: 'Wildfire community map', value: '\u2014', pending: true },
-      { label: 'Defensible space review', value: '\u2014', pending: true },
-      { label: 'Brush / canopy check', value: '\u2014', pending: true },
+      {
+        label: 'Wildfire community map',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
+      },
+      {
+        label: 'Defensible space review',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
+      },
+      {
+        label: 'Brush / canopy check',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
+      },
     ],
   },
   {
     title: 'Response / Area Claims',
     rows: [
-      { label: 'Fire response class', value: '\u2014', pending: true },
+      {
+        label: 'Fire response class',
+        value: '\u2014',
+        pending: true,
+        source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
+      },
       { label: 'Hydrant / station review', value: '\u2014', pending: true },
       { label: 'Area claim pressure', value: '\u2014', pending: true },
     ],
@@ -71,24 +121,6 @@ const SUMMARY_CARD_ORDER = [
 ]
 
 const PENDING_SUMMARY_HINT = 'Search address to see Risk Summary'
-
-const RISK_SUMMARY_SOURCES = {
-  'Soil & Geology': [
-    { label: 'USDA Soil Survey', href: 'https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey' },
-    { label: 'EPA Radon', href: 'https://www.epa.gov/radon/epa-map-radon-zones-and-supplemental-information-0' },
-    { label: 'USGS Karst', href: 'https://pubs.usgs.gov/sir/2008/5023/pdf/SIR2008-5023.pdf' },
-  ],
-  'Water / Drainage': [
-    { label: 'FEMA Flood Maps', href: 'https://msc.fema.gov/portal/search' },
-    { label: 'EPA Wetlands', href: 'https://www.epa.gov/wetlands/wetlands-monitoring-and-assessment' },
-  ],
-  'Wildfire / Vegetation': [
-    { label: 'USDA Wildfire Risk', href: 'https://www.fs.usda.gov/es/node/231140' },
-  ],
-  'Response / Area Claims': [
-    { label: 'FEMA Risk Index', href: 'https://hazards.fema.gov/nri/' },
-  ],
-}
 
 function orderSummaryCards(cards) {
   return [...cards].sort(
@@ -180,36 +212,82 @@ function createStarterProfile(result) {
       },
       {
         title: 'Soil & Geology',
-        sources: RISK_SUMMARY_SOURCES['Soil & Geology'],
         rows: [
-          { label: 'USDA soil survey', value: 'Pending USDA source', pending: true },
-          { label: 'EPA radon zone', value: 'Pending EPA source', pending: true },
-          { label: 'Karst / sinkhole', value: 'Pending geology source', pending: true },
+          {
+            label: 'USDA soil survey',
+            value: 'Pending USDA source',
+            pending: true,
+            source: { label: 'USDA', href: 'https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey' },
+          },
+          {
+            label: 'EPA radon zone',
+            value: 'Pending EPA source',
+            pending: true,
+            source: { label: 'EPA', href: 'https://www.epa.gov/radon/epa-map-radon-zones-and-supplemental-information-0' },
+          },
+          {
+            label: 'Karst / sinkhole',
+            value: 'Pending geology source',
+            pending: true,
+            source: { label: 'USGS', href: 'https://pubs.usgs.gov/sir/2008/5023/pdf/SIR2008-5023.pdf' },
+          },
         ],
       },
       {
         title: 'Water / Drainage',
-        sources: RISK_SUMMARY_SOURCES['Water / Drainage'],
         rows: [
-          { label: 'FEMA flood zone', value: 'Pending FEMA source', pending: true },
-          { label: 'Drainage / low basin', value: 'Pending topography source', pending: true },
-          { label: 'Water table / wetlands', value: 'Pending wetlands source', pending: true },
+          {
+            label: 'FEMA flood zone',
+            value: 'Pending FEMA source',
+            pending: true,
+            source: { label: 'FEMA', href: 'https://msc.fema.gov/portal/search' },
+          },
+          {
+            label: 'Drainage / low basin',
+            value: 'Pending topography source',
+            pending: true,
+            source: { label: 'USGS', href: 'https://www.usgs.gov/faqs/how-do-i-find-download-a-topographic-map' },
+          },
+          {
+            label: 'Water table / wetlands',
+            value: 'Pending wetlands source',
+            pending: true,
+            source: { label: 'EPA', href: 'https://www.epa.gov/wetlands/wetlands-monitoring-and-assessment' },
+          },
         ],
       },
       {
         title: 'Wildfire / Vegetation',
-        sources: RISK_SUMMARY_SOURCES['Wildfire / Vegetation'],
         rows: [
-          { label: 'Wildfire community map', value: 'Pending wildfire source', pending: true },
-          { label: 'Defensible space review', value: 'Pending vegetation source', pending: true },
-          { label: 'Brush / canopy check', value: 'Pending vegetation source', pending: true },
+          {
+            label: 'Wildfire community map',
+            value: 'Pending wildfire source',
+            pending: true,
+            source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
+          },
+          {
+            label: 'Defensible space review',
+            value: 'Pending vegetation source',
+            pending: true,
+            source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
+          },
+          {
+            label: 'Brush / canopy check',
+            value: 'Pending vegetation source',
+            pending: true,
+            source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
+          },
         ],
       },
       {
         title: 'Response / Area Claims',
-        sources: RISK_SUMMARY_SOURCES['Response / Area Claims'],
         rows: [
-          { label: 'Fire response class', value: 'Pending local source', pending: true },
+          {
+            label: 'Fire response class',
+            value: 'Pending local source',
+            pending: true,
+            source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
+          },
           { label: 'Hydrant / station review', value: 'Pending local source', pending: true },
           { label: 'Area claim pressure', value: 'Pending claims source', pending: true },
         ],
@@ -455,7 +533,7 @@ async function lookupProperty(query, signal) {
   }
 }
 
-function SummaryCard({ title, rows, sources }) {
+function SummaryCard({ title, rows }) {
   return (
     <article className="summary-card card">
       <div className="summary-card-header">
@@ -473,24 +551,19 @@ function SummaryCard({ title, rows, sources }) {
             <span className={`summary-value${row.pending ? ' summary-value-muted' : ''}`}>
               {row.pending ? '--' : row.value}
             </span>
+            {row.source ? (
+              <a
+                className="summary-row-link"
+                href={row.source.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {row.source.label}
+              </a>
+            ) : null}
           </div>
         ))}
       </div>
-      {sources?.length ? (
-        <div className="summary-sources">
-          {sources.map((source) => (
-            <a
-              key={`${title}-${source.label}`}
-              className="summary-source-link"
-              href={source.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {source.label}
-            </a>
-          ))}
-        </div>
-      ) : null}
     </article>
   )
 }
