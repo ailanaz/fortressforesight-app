@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap');
+
 .home-page {
   display: flex;
   flex-direction: column;
@@ -121,6 +123,8 @@
 .home-title {
   max-width: 620px;
   margin-top: 8px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
   font-size: clamp(46px, 7vw, 84px);
   line-height: 0.94;
   letter-spacing: -0.04em;
