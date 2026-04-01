@@ -5,11 +5,7 @@ import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
 import './Page.css'
 import './DocumentStorage.css'
 
-const SAMPLE_DOCS = [
-  { id: 1, name: 'Home Insurance Policy 2024.pdf', type: 'Insurance Policy', date: '2024-01-15', size: '2.4 MB' },
-  { id: 2, name: 'Roof Inspection Report.pdf', type: 'Inspection', date: '2023-11-03', size: '1.1 MB' },
-  { id: 3, name: 'HVAC Warranty.pdf', type: 'Warranty', date: '2023-06-20', size: '340 KB' },
-]
+const SAMPLE_DOCS = []
 
 const BASE_DOC_TYPES = ['Insurance Policy', 'Warranty', 'Inspection', 'Receipts']
 
