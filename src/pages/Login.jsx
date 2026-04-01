@@ -29,21 +29,19 @@ function Login({ initialMode = 'login' }) {
           Clarity before disaster. Structure during crisis. Confidence through recovery.
         </p>
 
-        {mode === 'signup' ? (
-          <div className="login-upgrade card">
-            <h2 className="login-upgrade-title">Upgrade</h2>
-            <p className="login-upgrade-copy">
-              Save and organize your home in one place.
-            </p>
-            <div className="login-upgrade-list">
-              <div className="login-upgrade-item">Save up to 2 properties</div>
-              <div className="login-upgrade-item">Save checklist progress</div>
-              <div className="login-upgrade-item">Save notes and calendar events</div>
-              <div className="login-upgrade-item">Upload documents and photos</div>
-              <div className="login-upgrade-item">Track recovery in one place</div>
-            </div>
+        <div className="login-upgrade card">
+          <h2 className="login-upgrade-title">Upgrade</h2>
+          <p className="login-upgrade-copy">
+            Save and organize your home in one place.
+          </p>
+          <div className="login-upgrade-list">
+            <div className="login-upgrade-item">Save up to 2 properties</div>
+            <div className="login-upgrade-item">Save checklist progress</div>
+            <div className="login-upgrade-item">Save notes and calendar events</div>
+            <div className="login-upgrade-item">Upload documents and photos</div>
+            <div className="login-upgrade-item">Track recovery in one place</div>
           </div>
-        ) : null}
+        </div>
 
         <div className="login-tabs">
           <button
