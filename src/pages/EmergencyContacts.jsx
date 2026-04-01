@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useActiveHome } from '../context/HomeContext'
+import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './Page.css'
 import './EmergencyContacts.css'
 
@@ -10,7 +12,10 @@ const DEFAULT_CONTACTS = [
 ]
 
 function EmergencyContacts() {
+  const { activeHome } = useActiveHome()
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS)
+  const homeTitle = getHomeTitle(activeHome)
+  const homeLocation = getHomeLocation(activeHome)
 
   const updateContact = (id, field, value) => {
     setContacts((previous) =>
@@ -24,6 +29,15 @@ function EmergencyContacts() {
         <h1 className="page-title">Contacts</h1>
         <button className="btn-primary">+ Add</button>
       </div>
+
+      {activeHome ? (
+        <div className="active-home-card card">
+          <div className="active-home-copy">
+            <span className="active-home-title">{homeTitle}</span>
+            {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
+          </div>
+        </div>
+      ) : null}
 
       <div className="contacts-list">
         {contacts.map((contact) => (
