@@ -52,7 +52,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   background:
     linear-gradient(135deg, rgba(61, 100, 240, 0.08), transparent 44%),
     linear-gradient(180deg, rgba(248, 194, 0, 0.04), transparent 70%),
@@ -247,8 +247,10 @@
 .home-journey-track {
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
   flex: 1;
-  min-height: 168px;
+  min-height: 100%;
 }
 
 .home-journey-slide {
@@ -256,7 +258,8 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  gap: 14px;
   opacity: 0;
   transform: translateX(24px);
   pointer-events: none;
@@ -270,42 +273,17 @@
 }
 
 .home-journey-title {
-  max-width: 340px;
-  font-size: clamp(24px, 3vw, 34px);
-  line-height: 1.05;
+  max-width: 420px;
+  font-size: clamp(26px, 3vw, 36px);
+  line-height: 1.08;
   color: var(--color-gray-900);
 }
 
 .home-journey-text {
-  max-width: 420px;
-  font-size: 14px;
-  line-height: 1.6;
+  max-width: 470px;
+  font-size: 15px;
+  line-height: 1.65;
   color: var(--color-gray-700);
-}
-
-.home-journey-progress {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.home-journey-dot {
-  width: 28px;
-  height: 4px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  transition: background 0.25s ease, transform 0.25s ease;
-  padding: 0;
-}
-
-.home-journey-dot.active {
-  background: var(--color-yellow);
-  transform: scaleY(1.1);
 }
 
 @media (max-width: 980px) {
@@ -380,6 +358,6 @@
   }
 
   .home-journey-track {
-    min-height: 188px;
+    min-height: 220px;
   }
 }
