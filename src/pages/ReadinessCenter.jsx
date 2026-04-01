@@ -265,6 +265,15 @@ const CUSTOM_STARTER_CHECKLISTS = [
   },
 ]
 
+function createCustomChecklistDraft() {
+  return {
+    id: `custom-${Date.now()}`,
+    title: 'New Custom List',
+    items: [],
+    initiallyOpen: true,
+  }
+}
+
 function ChecklistItem({ text, done, onToggle }) {
   return (
     <li className={`checklist-item${done ? ' done' : ''}`} onClick={onToggle}>
@@ -329,7 +338,7 @@ function Checklist({ checklist }) {
 }
 
 function CustomChecklist({ checklist }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(!!checklist.initiallyOpen)
   const [title, setTitle] = useState(checklist.title)
   const [done, setDone] = useState({})
   const [items, setItems] = useState(
@@ -368,17 +377,16 @@ function CustomChecklist({ checklist }) {
   }
 
   const doneCount = items.filter((item) => done[item.id]).length
+  const progressLabel = items.length ? `${doneCount}/${items.length}` : '0 items'
 
   return (
     <div className="checklist-card card">
       <div className="checklist-header" onClick={() => setOpen((value) => !value)}>
         <div>
-          <div className="checklist-title">{title}</div>
+          <div className="checklist-title">{title || 'New Custom List'}</div>
         </div>
         <div className="checklist-progress">
-          <span>
-            {doneCount}/{items.length}
-          </span>
+          <span>{progressLabel}</span>
           <svg
             width="18"
             height="18"
@@ -448,6 +456,7 @@ function ReadinessCenter() {
   const homeTitle = getHomeTitle(activeHome)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
+  const [customChecklists, setCustomChecklists] = useState(CUSTOM_STARTER_CHECKLISTS)
   const sectionParam = searchParams.get('section')
   const initialSection = CHECKLIST_SECTIONS.some((section) => section.id === sectionParam)
     ? sectionParam
@@ -465,6 +474,10 @@ function ReadinessCenter() {
       }
       return next
     }, { replace: true })
+  }
+
+  const handleCreateCustomList = () => {
+    setCustomChecklists((current) => [createCustomChecklistDraft(), ...current])
   }
 
   const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section)
@@ -510,12 +523,12 @@ function ReadinessCenter() {
             <div className="readiness-group-note readiness-custom-note">
               Create a Custom Checklist for property and area specific needs.
             </div>
-            <button type="button" className="readiness-custom-text-link">
+            <button type="button" className="readiness-custom-text-link" onClick={handleCreateCustomList}>
               Create Custom List
             </button>
           </div>
           <div className="readiness-list">
-            {CUSTOM_STARTER_CHECKLISTS.map((checklist) => (
+            {customChecklists.map((checklist) => (
               <CustomChecklist key={checklist.id} checklist={checklist} />
             ))}
           </div>
