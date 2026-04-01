@@ -6,12 +6,49 @@ import { defaultCalendarDate } from '../utils/calendar'
 import './Page.css'
 import './RecoveryTracker.css'
 
+const RECOVERY_SECTIONS = [
+  {
+    id: 'damage-log',
+    label: 'Damage Log',
+    summary: 'Document damage by area, room, and exterior section.',
+  },
+  {
+    id: 'timeline',
+    label: 'Timeline',
+    summary: 'Track calls, updates, inspections, and claim events.',
+  },
+  {
+    id: 'expenses',
+    label: 'Expenses',
+    summary: 'Keep repair, hotel, meal, and supply costs together.',
+  },
+  {
+    id: 'claim-status',
+    label: 'Claim Status',
+    summary: 'See the status of the claim from filing through repairs.',
+  },
+]
+
+function getSectionTabClassName(sectionId, activeSection) {
+  const slug = sectionId.toLowerCase().replace(/\s+/g, '-')
+  return `recovery-filter-tab recovery-filter-tab-${slug}${activeSection === sectionId ? ' active' : ''}`
+}
+
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
   const [damageScope, setDamageScope] = useState('Interior')
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate(7))
+  const [activeSection, setActiveSection] = useState('damage-log')
+  const [openSection, setOpenSection] = useState('damage-log')
   const homeTitle = getHomeTitle(activeHome)
+
+  const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
+
+  const handleSelectSection = (sectionId) => {
+    setActiveSection(sectionId)
+    setOpenSection(sectionId)
+  }
 
   return (
     <div className="page">
@@ -34,85 +71,130 @@ function RecoveryTracker() {
         Document damage, log expenses, and track your claim from start to finish.
       </p>
 
-      <div className="recovery-sections-grid">
-        <section className="recovery-panel">
-          <h2 className="section-label">Damage Log</h2>
-          <div className="recovery-scope-tabs">
-            {['Interior', 'Exterior'].map((scope) => (
-              <button
-                key={scope}
-                type="button"
-                className={`recovery-scope-tab${damageScope === scope ? ' active' : ''}`}
-                onClick={() => setDamageScope(scope)}
-              >
-                {scope}
-              </button>
-            ))}
-          </div>
-          <div className="section-header">
-            <h3 className="section-label">
-              {damageScope === 'Interior' ? 'Damage by Room' : 'Exterior Damage'}
-            </h3>
-            <button className="btn-primary">
-              {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
-            </button>
-          </div>
-          <div className="empty-room-state">
-            <p>No damage logged yet.</p>
-            <p>
-              {damageScope === 'Interior'
-                ? 'Add a room to start documenting with photos and notes.'
-                : 'Add an exterior area to start documenting roof, siding, windows, yard, or other outside damage.'}
-            </p>
-          </div>
-          <div className="recovery-guide-block">
-            <h3 className="guide-title">Working with Adjusters</h3>
-            <ul className="guide-list">
-              <li>Photograph damage before any cleanup or repairs</li>
-              <li>If possible, keep damaged items until they are documented</li>
-              <li>Save the adjuster&apos;s name, company, license number, and phone</li>
-              <li>Ask for a written scope of loss after the inspection</li>
-              <li>Company adjusters work for the insurer; you can hire a public adjuster if needed</li>
-            </ul>
-          </div>
-        </section>
+      <div className="recovery-filter-tabs">
+        {RECOVERY_SECTIONS.map((section) => (
+          <button
+            key={section.id}
+            className={getSectionTabClassName(section.id, activeSection)}
+            onClick={() => handleSelectSection(section.id)}
+          >
+            {section.label}
+          </button>
+        ))}
+      </div>
 
-        <section className="recovery-panel">
-          <h2 className="section-label">Timeline</h2>
-          <div className="empty-room-state">
-            <p>Your claim timeline will appear here as you log events and updates.</p>
+      <div className="recovery-card-list">
+        <div className="recovery-card card">
+          <div
+            className="recovery-card-header"
+            onClick={() => setOpenSection((current) => (current === selectedSection.id ? '' : selectedSection.id))}
+          >
+            <div>
+              <span className="recovery-card-category">{selectedSection.label}</span>
+              <div className="recovery-card-title">{selectedSection.label}</div>
+              <div className="recovery-card-summary">{selectedSection.summary}</div>
+            </div>
+            <svg
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              style={{
+                transform: openSection === selectedSection.id ? 'rotate(180deg)' : 'none',
+                transition: 'transform 0.2s',
+                flexShrink: 0,
+              }}
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </div>
-        </section>
 
-        <section className="recovery-panel">
-          <div className="section-header">
-            <h2 className="section-label">Expenses</h2>
-            <button className="btn-primary">+ Add Expense</button>
-          </div>
-          <div className="empty-room-state">
-            <p>No expenses logged yet.</p>
-            <p>Log every cost with a receipt photo - hotels, meals, emergency repairs, supplies.</p>
-          </div>
-        </section>
+          {openSection === selectedSection.id ? (
+            <div className="recovery-card-body">
+              {selectedSection.id === 'damage-log' ? (
+                <>
+                  <div className="recovery-scope-tabs">
+                    {['Interior', 'Exterior'].map((scope) => (
+                      <button
+                        key={scope}
+                        type="button"
+                        className={`recovery-scope-tab${damageScope === scope ? ' active' : ''}`}
+                        onClick={() => setDamageScope(scope)}
+                      >
+                        {scope}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="section-header">
+                    <h3 className="section-label">
+                      {damageScope === 'Interior' ? 'Damage by Room' : 'Exterior Damage'}
+                    </h3>
+                    <button className="btn-primary">
+                      {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
+                    </button>
+                  </div>
+                  <div className="empty-room-state">
+                    <p>No damage logged yet.</p>
+                    <p>
+                      {damageScope === 'Interior'
+                        ? 'Add a room to start documenting with photos and notes.'
+                        : 'Add an exterior area to start documenting roof, siding, windows, yard, or other outside damage.'}
+                    </p>
+                  </div>
+                  <div className="recovery-guide-block">
+                    <h3 className="guide-title">Working with Adjusters</h3>
+                    <ul className="guide-list">
+                      <li>Photograph damage before any cleanup or repairs</li>
+                      <li>If possible, keep damaged items until they are documented</li>
+                      <li>Save the adjuster&apos;s name, company, license number, and phone</li>
+                      <li>Ask for a written scope of loss after the inspection</li>
+                      <li>Company adjusters work for the insurer; you can hire a public adjuster if needed</li>
+                    </ul>
+                  </div>
+                </>
+              ) : null}
 
-        <section className="recovery-panel">
-          <h2 className="section-label">Claim Status</h2>
-          <div className="claim-steps">
-            {[
-              { label: 'Claim Filed', done: false },
-              { label: 'Adjuster Assigned', done: false },
-              { label: 'Inspection Complete', done: false },
-              { label: 'Estimate Received', done: false },
-              { label: 'Payment Issued', done: false },
-              { label: 'Repairs Complete', done: false },
-            ].map((step) => (
-              <div key={step.label} className={`claim-step${step.done ? ' done' : ''}`}>
-                <div className="step-dot" />
-                <span>{step.label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+              {selectedSection.id === 'timeline' ? (
+                <div className="empty-room-state">
+                  <p>Your claim timeline will appear here as you log events and updates.</p>
+                </div>
+              ) : null}
+
+              {selectedSection.id === 'expenses' ? (
+                <>
+                  <div className="section-header">
+                    <h3 className="section-label">Expense Log</h3>
+                    <button className="btn-primary">+ Add Expense</button>
+                  </div>
+                  <div className="empty-room-state">
+                    <p>No expenses logged yet.</p>
+                    <p>Log every cost with a receipt photo - hotels, meals, emergency repairs, supplies.</p>
+                  </div>
+                </>
+              ) : null}
+
+              {selectedSection.id === 'claim-status' ? (
+                <div className="claim-steps">
+                  {[
+                    { label: 'Claim Filed', done: false },
+                    { label: 'Adjuster Assigned', done: false },
+                    { label: 'Inspection Complete', done: false },
+                    { label: 'Estimate Received', done: false },
+                    { label: 'Payment Issued', done: false },
+                    { label: 'Repairs Complete', done: false },
+                  ].map((step) => (
+                    <div key={step.label} className={`claim-step${step.done ? ' done' : ''}`}>
+                      <div className="step-dot" />
+                      <span>{step.label}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   )

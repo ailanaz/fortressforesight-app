@@ -6,28 +6,89 @@
   margin-bottom: 4px;
 }
 
-.recovery-sections-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+.recovery-filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
-.recovery-panel {
-  background: #f7f9fc;
-  border: 0;
-  box-shadow: none;
-  border-radius: var(--radius);
-  padding: 18px;
+.recovery-filter-tab {
+  background: #071f69;
+  border: 1px solid #071f69;
+  border-radius: 4px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-yellow);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
 }
 
-.recovery-panel .section-header .section-label {
-  margin-bottom: 0;
+.recovery-filter-tab.active {
+  background: var(--color-yellow);
+  border-color: #071f69;
+  color: #071f69;
 }
 
-.tab-content {
+.recovery-filter-tab:hover {
+  background: var(--color-yellow);
+  border-color: #071f69;
+  color: #071f69;
+  transform: translateY(-1px);
+}
+
+.recovery-filter-tab.active:hover {
+  background: var(--color-yellow);
+  color: #071f69;
+}
+
+.recovery-card-list {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+}
+
+.recovery-card {
+  cursor: pointer;
+}
+
+.recovery-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
+}
+
+.recovery-card-category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #071f69;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.recovery-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  color: #071f69;
+}
+
+.recovery-card-summary {
+  font-size: 13px;
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
+
+.recovery-card-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-gray-100);
 }
 
 .recovery-scope-tabs {
@@ -38,10 +99,10 @@
 }
 
 .recovery-scope-tab {
-  border: 1px solid rgba(61, 100, 240, 0.14);
-  background: #f8fbff;
-  color: var(--color-blue);
-  border-radius: 999px;
+  border: 1px solid rgba(7, 31, 105, 0.16);
+  background: #ffffff;
+  color: #071f69;
+  border-radius: 4px;
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
@@ -50,8 +111,8 @@
 
 .recovery-scope-tab.active {
   background: var(--color-yellow);
-  border-color: var(--color-yellow);
-  color: var(--color-black);
+  border-color: #071f69;
+  color: #071f69;
 }
 
 .empty-room-state {
@@ -130,14 +191,20 @@
   border-color: var(--color-blue);
 }
 
-@media (max-width: 980px) {
-  .recovery-sections-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 680px) {
-  .recovery-panel {
-    padding: 16px;
+  .recovery-filter-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .recovery-filter-tab {
+    width: 100%;
+    min-width: 0;
+    padding: 4px 6px;
+    font-size: 10px;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.15;
   }
 }
