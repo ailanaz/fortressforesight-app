@@ -111,7 +111,7 @@ function TopBar() {
             ) : null}
           </div>
         ) : null}
-        <Link className="topbar-account" aria-label="Account" to="/upgrade">
+        <Link className="topbar-account" aria-label="Account" to="/login">
           <svg
             width="24"
             height="24"
