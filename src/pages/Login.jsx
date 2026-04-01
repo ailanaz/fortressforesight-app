@@ -98,8 +98,8 @@ function Login({ initialMode = 'login' }) {
                   </p>
                   <div className="login-upgrade-list">
                     <div className="login-upgrade-item">Save up to 2 properties</div>
-                    <div className="login-upgrade-item">Save checklist progress</div>
-                    <div className="login-upgrade-item">Save notes and calendar events</div>
+                    <div className="login-upgrade-item">Save checklist progress and notes</div>
+                    <div className="login-upgrade-item">Set alerts with calendar events</div>
                     <div className="login-upgrade-item">Upload documents and photos</div>
                     <div className="login-upgrade-item">Track recovery and insurance claims</div>
                   </div>
