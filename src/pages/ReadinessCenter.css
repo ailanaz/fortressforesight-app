@@ -57,6 +57,10 @@
   flex-shrink: 0;
 }
 
+.readiness-section-spacer {
+  height: 22px;
+}
+
 .readiness-group-label {
   margin-bottom: 10px;
 }
@@ -74,35 +78,8 @@
   gap: 8px;
 }
 
-.readiness-custom-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
-}
-
-.readiness-custom-header .readiness-group-label {
-  margin-bottom: 0;
-}
-
-.readiness-custom-header-inline {
-  margin-bottom: 4px;
-}
-
 .readiness-custom-note {
   margin-top: 0;
-}
-
-.readiness-custom-button {
-  color: #071f69;
-  border-color: #071f69;
-  white-space: nowrap;
-}
-
-.readiness-custom-button:hover {
-  color: #071f69;
-  border-color: #071f69;
 }
 
 .checklist-card {
@@ -253,10 +230,6 @@
     flex-direction: column;
   }
 
-  .readiness-custom-header {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
 }
 
 @media (max-width: 680px) {

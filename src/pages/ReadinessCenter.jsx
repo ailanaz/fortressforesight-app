@@ -468,7 +468,6 @@ function ReadinessCenter() {
   }
 
   const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section)
-  const activeSectionLabel = CHECKLIST_SECTIONS.find((item) => item.id === section)?.label ?? 'Checklists'
 
   return (
     <div className="page">
@@ -506,10 +505,7 @@ function ReadinessCenter() {
 
       {section === 'custom' ? (
         <>
-          <div className="readiness-custom-header readiness-custom-header-inline">
-            <h3 className="section-label readiness-group-label">{activeSectionLabel}</h3>
-            <button className="btn-outline readiness-custom-button">Add Custom List</button>
-          </div>
+          <div className="readiness-section-spacer" aria-hidden="true" />
           <div className="readiness-group-note readiness-custom-note">
             Create a Custom Checklist for property and area specific needs.
           </div>
@@ -521,7 +517,7 @@ function ReadinessCenter() {
         </>
       ) : (
         <>
-          <h3 className="section-label readiness-group-label">{activeSectionLabel}</h3>
+          <div className="readiness-section-spacer" aria-hidden="true" />
           {section === 'disasters' ? (
             <p className="readiness-group-note">
               These cover the most common situations.
