@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { defaultCalendarDate, downloadCalendarInvite } from '../utils/calendar'
 import './Page.css'
 import './EmergencyContacts.css'
 
@@ -14,6 +15,8 @@ const DEFAULT_CONTACTS = [
 function EmergencyContacts() {
   const { activeHome } = useActiveHome()
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS)
+  const [calendarTitle, setCalendarTitle] = useState('')
+  const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
 
@@ -23,12 +26,23 @@ function EmergencyContacts() {
     )
   }
 
+  const addContact = () => {
+    setContacts((previous) => [
+      ...previous,
+      { id: Date.now(), name: '', phone: '', placeholder: 'Contact' },
+    ])
+  }
+
+  const handleSaveToCalendar = () => {
+    const title = calendarTitle.trim() || (homeTitle ? `Contact Reminder - ${homeTitle}` : 'Contact Reminder')
+    const details = homeTitle ? `Contact reminder for ${homeTitle} in FortressForesight.` : 'Contact reminder in FortressForesight.'
+
+    downloadCalendarInvite({ title, date: calendarDate, details })
+  }
+
   return (
     <div className="page">
-      <div className="section-header">
-        <h1 className="page-title">Contacts</h1>
-        <button className="btn-primary">+ Add</button>
-      </div>
+      <h1 className="page-title">Contacts</h1>
 
       {activeHome ? (
         <div className="active-home-card card">
@@ -38,6 +52,32 @@ function EmergencyContacts() {
           </div>
         </div>
       ) : null}
+
+      <div className="page-utility-bar">
+        <div className="page-calendar-actions">
+          <div className="page-event-field">
+            <input
+              className="page-input page-input-wide"
+              type="text"
+              value={calendarTitle}
+              onChange={(event) => setCalendarTitle(event.target.value)}
+              placeholder="Add calendar event"
+              aria-label="Calendar event"
+            />
+            <span className="page-paid-badge">Paid</span>
+          </div>
+          <input
+            className="page-input"
+            type="date"
+            value={calendarDate}
+            onChange={(event) => setCalendarDate(event.target.value)}
+            aria-label="Contact date"
+          />
+          <button className="btn-outline" type="button" onClick={handleSaveToCalendar}>
+            Save to Calendar
+          </button>
+        </div>
+      </div>
 
       <div className="contacts-list">
         {contacts.map((contact) => (
@@ -70,6 +110,12 @@ function EmergencyContacts() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="contacts-footer-actions">
+        <button className="btn-primary" type="button" onClick={addContact}>
+          + Add Contact
+        </button>
       </div>
     </div>
   )
