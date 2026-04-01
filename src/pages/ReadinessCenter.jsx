@@ -472,27 +472,7 @@ function ReadinessCenter() {
 
   return (
     <div className="page">
-      <div className="readiness-header-row">
-        <h1 className="page-title readiness-page-title">Readiness Center</h1>
-
-        <div className="readiness-header-actions">
-          <div className="readiness-tabs">
-            {CHECKLIST_SECTIONS.map((item) => (
-              <button
-                key={item.id}
-                className={`readiness-tab${section === item.id ? ' active' : ''}`}
-                onClick={() => handleSectionChange(item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          <button type="button" className="readiness-tab readiness-note-button">
-            Add a Note
-          </button>
-        </div>
-      </div>
+      <h1 className="page-title readiness-page-title">Readiness Center</h1>
 
       <div className="page-utility-bar">
         <CalendarEventBar
@@ -504,6 +484,24 @@ function ReadinessCenter() {
           details="Review your property readiness checklists in FortressForesight."
           dateAriaLabel="Readiness review date"
         />
+      </div>
+
+      <div className="readiness-tabs-wrap">
+        <div className="readiness-tabs">
+          {CHECKLIST_SECTIONS.map((item) => (
+            <button
+              key={item.id}
+              className={`readiness-tab${section === item.id ? ' active' : ''}`}
+              onClick={() => handleSectionChange(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        <button type="button" className="readiness-tab readiness-note-button">
+          Add a Note
+        </button>
       </div>
 
       {section === 'custom' ? (
