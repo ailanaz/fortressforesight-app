@@ -91,9 +91,9 @@ function Login({ initialMode = 'login' }) {
                 <div className="login-upgrade">
                   <h2 className="login-upgrade-title">Upgrade to Paid Access</h2>
                   <p className="login-upgrade-copy">
-                    Paid access gives you a signed-in account so your property details,
-                    progress, notes, files, and recovery information stay organized in one
-                    place and are there when you come back.
+                    With paid access, your information is saved to your account so
+                    everything stays connected, organized, and easy to come back to
+                    when you need it.
                   </p>
                   <div className="login-upgrade-list">
                     <div className="login-upgrade-item">Save up to 2 properties</div>
