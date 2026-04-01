@@ -10,23 +10,6 @@
   margin-bottom: 16px;
 }
 
-.documents-section-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  align-items: center;
-  min-height: 32px;
-}
-
-.documents-section-label {
-  color: #071f69;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  text-align: center;
-}
-
 .file-input-hidden {
   display: none;
 }
@@ -169,11 +152,6 @@
     margin-bottom: 20px;
   }
 
-  .documents-section-row {
-    gap: 8px;
-    min-height: 28px;
-  }
-
   .document-tab {
     width: 100%;
     min-width: 0;
@@ -190,10 +168,5 @@
 
   .document-tab-label-mobile {
     display: inline;
-  }
-
-  .documents-section-label {
-    font-size: 10px;
-    line-height: 1.2;
   }
 }

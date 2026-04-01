@@ -149,12 +149,11 @@ function DocumentStorage() {
         ))}
       </div>
 
-      <div className="documents-section-row" aria-hidden="true">
-        {BASE_DOC_TYPES.map((type) => (
-          <span key={type} className="documents-section-label">
-            {type}
-          </span>
-        ))}
+      <div className="section-header document-section-header">
+        <h3 className="section-label doc-category-title">{activeType}</h3>
+        <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
+          Upload
+        </button>
       </div>
 
       <input
@@ -165,13 +164,6 @@ function DocumentStorage() {
         multiple
         onChange={handleFileChange}
       />
-
-      <div className="section-header document-section-header">
-        <h3 className="section-label doc-category-title">{activeType}</h3>
-        <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
-          Upload
-        </button>
-      </div>
 
       <div className="document-upload-note">PDF, JPG, JPEG, PNG</div>
 
