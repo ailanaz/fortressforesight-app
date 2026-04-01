@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   min-width: max-content;
-  animation: alertTickerScroll 82s linear infinite;
+  animation: alertTickerScroll 88s linear infinite;
 }
 
 .alert-ticker-line {
@@ -93,11 +93,11 @@
   }
 
   .alert-ticker-marquee {
-    animation-duration: 90s;
+    animation-duration: 96s;
   }
 
   .alert-ticker-line,
   .alert-ticker-static {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
