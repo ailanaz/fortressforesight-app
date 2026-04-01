@@ -63,7 +63,8 @@ function Login({ initialMode = 'login' }) {
                 <div className="login-upgrade">
                   <h2 className="login-upgrade-title">Welcome back</h2>
                   <p className="login-upgrade-copy">
-                    Sign in to access your saved properties, documents, and recovery workspace.
+                    Sign in to access your saved properties, documents, and recovery
+                    workspace, and pick up where you left off.
                   </p>
                 </div>
 
