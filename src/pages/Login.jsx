@@ -56,59 +56,10 @@ function Login({ initialMode = 'login' }) {
           </button>
         </div>
 
-        <div className="login-panel card">
-          {mode === 'login' ? (
-            <form className="login-form login-form-inline" onSubmit={handleSubmit}>
-              <input
-                className="login-input"
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
-              <input
-                className="login-input"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
-              <button className="login-submit" type="submit">
-                Sign In
-              </button>
-
-              <div className="login-actions">
-                <button
-                  className="login-secondary-link"
-                  type="button"
-                  onClick={() => setShowPassword((value) => !value)}
-                >
-                  {showPassword ? 'Hide password' : 'Show password'}
-                </button>
-                <button className="login-secondary-link" type="button">
-                  Forgot password?
-                </button>
-              </div>
-            </form>
-          ) : (
-            <>
-              <div className="login-upgrade">
-                <h2 className="login-upgrade-title">Upgrade</h2>
-                <p className="login-upgrade-copy">
-                  Save and organize your home in one place.
-                </p>
-                <div className="login-upgrade-list">
-                  <div className="login-upgrade-item">Save up to 2 properties</div>
-                  <div className="login-upgrade-item">Save checklist progress</div>
-                  <div className="login-upgrade-item">Save notes and calendar events</div>
-                  <div className="login-upgrade-item">Upload documents and photos</div>
-                  <div className="login-upgrade-item">Track recovery in one place</div>
-                </div>
-              </div>
-
-              <form className="login-form" onSubmit={handleSubmit}>
+        <form className="login-shell-form" onSubmit={handleSubmit}>
+          <div className="login-panel card">
+            {mode === 'login' ? (
+              <div className="login-form login-form-inline">
                 <input
                   className="login-input"
                   type="email"
@@ -125,23 +76,66 @@ function Login({ initialMode = 'login' }) {
                   onChange={(event) => setPassword(event.target.value)}
                   required
                 />
-                <button className="login-submit" type="submit">
-                  Create Account
-                </button>
-              </form>
-
-              <div className="login-actions login-actions-single">
-                <button
-                  className="login-secondary-link"
-                  type="button"
-                  onClick={() => setShowPassword((value) => !value)}
-                >
-                  {showPassword ? 'Hide password' : 'Show password'}
-                </button>
               </div>
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <div className="login-upgrade">
+                  <h2 className="login-upgrade-title">Upgrade</h2>
+                  <p className="login-upgrade-copy">
+                    Save and organize your home in one place.
+                  </p>
+                  <div className="login-upgrade-list">
+                    <div className="login-upgrade-item">Save up to 2 properties</div>
+                    <div className="login-upgrade-item">Save checklist progress</div>
+                    <div className="login-upgrade-item">Save notes and calendar events</div>
+                    <div className="login-upgrade-item">Upload documents and photos</div>
+                    <div className="login-upgrade-item">Track recovery in one place</div>
+                  </div>
+                </div>
+
+                <div className="login-form">
+                  <input
+                    className="login-input"
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                  <input
+                    className="login-input"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className={`login-actions${mode === 'signup' ? ' login-actions-single' : ''}`}>
+            <button
+              className="login-secondary-link"
+              type="button"
+              onClick={() => setShowPassword((value) => !value)}
+            >
+              {showPassword ? 'Hide password' : 'Show password'}
+            </button>
+            <button className="login-submit login-submit-inline" type="submit">
+              {mode === 'login' ? 'Sign In' : 'Create Account'}
+            </button>
+          </div>
+
+          {mode === 'login' ? (
+            <div className="login-utility-row">
+              <button className="login-secondary-link" type="button">
+                Forgot password?
+              </button>
+            </div>
+          ) : null}
+        </form>
       </div>
     </div>
   )

@@ -102,6 +102,11 @@
   gap: 8px;
 }
 
+.login-shell-form {
+  display: flex;
+  flex-direction: column;
+}
+
 .login-tab {
   flex: 1;
   background: #ffffff;
@@ -172,6 +177,10 @@
   border-color: #071f69;
 }
 
+.login-submit-inline {
+  min-width: 148px;
+}
+
 .login-actions {
   display: flex;
   align-items: center;
@@ -194,6 +203,10 @@
 
 .login-secondary-link:hover {
   color: #071f69;
+}
+
+.login-utility-row {
+  margin-top: 10px;
 }
 
 @media (max-width: 520px) {
