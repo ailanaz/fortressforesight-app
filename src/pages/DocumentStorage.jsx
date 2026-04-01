@@ -149,7 +149,13 @@ function DocumentStorage() {
         ))}
       </div>
 
-      <div className="documents-header-spacer" aria-hidden="true" />
+      <div className="documents-section-row" aria-hidden="true">
+        {BASE_DOC_TYPES.map((type) => (
+          <span key={type} className="documents-section-label">
+            {type}
+          </span>
+        ))}
+      </div>
 
       <input
         ref={fileInputRef}
