@@ -244,40 +244,57 @@
   filter: none;
 }
 
+.home-journey-stage-nav {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.home-journey-stage {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+  transition: color 0.2s ease;
+}
+
+.home-journey-stage.active {
+  color: var(--color-yellow);
+}
+
 .home-journey-track {
   position: relative;
   z-index: 1;
-  display: flex;
-  width: 100%;
-  transition: transform 0.55s ease;
+  flex: 1;
+  min-height: 168px;
 }
 
 .home-journey-slide {
-  min-width: 100%;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  opacity: 0;
+  transform: translateX(24px);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.home-journey-slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 .home-journey-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.home-journey-step {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 38px;
-  height: 24px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: rgba(61, 100, 240, 0.18);
-  color: var(--color-blue);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
 }
 
 .home-journey-label {
@@ -305,17 +322,21 @@
 .home-journey-progress {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   gap: 8px;
   margin-top: 18px;
 }
 
 .home-journey-dot {
+  width: 28px;
   height: 4px;
+  border: 0;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.18);
   transition: background 0.25s ease, transform 0.25s ease;
+  padding: 0;
 }
 
 .home-journey-dot.active {
@@ -394,8 +415,11 @@
     font-size: 14px;
   }
 
-  .home-pathway-title {
-    margin-top: 24px;
-    font-size: 24px;
+  .home-journey-track {
+    min-height: 188px;
+  }
+
+  .home-journey-stage-nav {
+    gap: 8px;
   }
 }
