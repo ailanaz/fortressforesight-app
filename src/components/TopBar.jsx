@@ -37,7 +37,7 @@ function TopBar() {
           {showPlanPill ? (
             <div className="topbar-home-pill topbar-plan-pill">
               <span className="topbar-home-title">Saved Properties</span>
-              <span className="topbar-home-meta">Upgrade for more</span>
+              <span className="topbar-home-meta">Upgrade to save properties.</span>
             </div>
           ) : null}
         </div>
