@@ -36,9 +36,6 @@ function RecoveryTracker() {
           <div className="active-home-copy">
             <span className="active-home-title">{homeTitle}</span>
             {homeLocation ? <span className="active-home-meta">{homeLocation}</span> : null}
-            <span className="active-home-note">
-              Damage logs, receipts, and claim milestones now stay centered on the home you searched.
-            </span>
           </div>
         </div>
       ) : null}
