@@ -53,10 +53,16 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: pointer;
   background:
     linear-gradient(135deg, rgba(61, 100, 240, 0.08), transparent 44%),
     linear-gradient(180deg, rgba(248, 194, 0, 0.04), transparent 70%),
     var(--color-surface);
+}
+
+.home-stage-panel:focus-visible {
+  outline: 2px solid var(--color-yellow);
+  outline-offset: 2px;
 }
 
 .home-stage-main::before,

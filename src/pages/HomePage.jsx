@@ -62,9 +62,13 @@ function HomePage() {
   const [activeSlide, setActiveSlide] = useState(0)
   const navigate = useNavigate()
 
+  const goToNextSlide = () => {
+    setActiveSlide((current) => (current + 1) % JOURNEY_SLIDES.length)
+  }
+
   useEffect(() => {
     const intervalId = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % JOURNEY_SLIDES.length)
+      goToNextSlide()
     }, 4200)
 
     return () => window.clearInterval(intervalId)
@@ -141,7 +145,19 @@ function HomePage() {
             </form>
           </article>
 
-          <article className="home-stage-panel card">
+          <article
+            className="home-stage-panel card"
+            onClick={goToNextSlide}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                goToNextSlide()
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="Show next story"
+          >
             <div className="home-journey-track">
               {JOURNEY_SLIDES.map((slide, index) => (
                 <section
