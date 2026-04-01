@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
@@ -36,11 +37,14 @@ function getSectionTabClassName(sectionId, activeSection) {
 
 function RecoveryTracker() {
   const { activeHome } = useActiveHome()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [damageScope, setDamageScope] = useState('Interior')
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate(7))
-  const [activeSection, setActiveSection] = useState('damage-log')
-  const [openSection, setOpenSection] = useState('damage-log')
+  const sectionParam = searchParams.get('section')
+  const initialSection = RECOVERY_SECTIONS.some((section) => section.id === sectionParam) ? sectionParam : 'damage-log'
+  const [activeSection, setActiveSection] = useState(initialSection)
+  const [openSection, setOpenSection] = useState(initialSection)
   const homeTitle = getHomeTitle(activeHome)
 
   const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
@@ -48,6 +52,15 @@ function RecoveryTracker() {
   const handleSelectSection = (sectionId) => {
     setActiveSection(sectionId)
     setOpenSection(sectionId)
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      next.set('section', sectionId)
+      return next
+    }, { replace: true })
+  }
+
+  const handleToggleSection = () => {
+    setOpenSection((current) => (current === selectedSection.id ? '' : selectedSection.id))
   }
 
   return (
@@ -87,7 +100,7 @@ function RecoveryTracker() {
         <div className="recovery-card card">
           <div
             className="recovery-card-header"
-            onClick={() => setOpenSection((current) => (current === selectedSection.id ? '' : selectedSection.id))}
+            onClick={handleToggleSection}
           >
             <div>
               <span className="recovery-card-category">{selectedSection.label}</span>
