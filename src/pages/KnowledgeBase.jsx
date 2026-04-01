@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import './Page.css'
 import './KnowledgeBase.css'
 
@@ -161,8 +162,24 @@ function Article({ article }) {
 }
 
 function KnowledgeBase() {
-  const [category, setCategory] = useState('All')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const categoryParam = searchParams.get('category')
+  const initialCategory = CATEGORIES.includes(categoryParam) ? categoryParam : 'All'
+  const [category, setCategory] = useState(initialCategory)
   const filtered = category === 'All' ? ARTICLES : ARTICLES.filter((article) => article.category === category)
+
+  const handleCategoryChange = (nextCategory) => {
+    setCategory(nextCategory)
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      if (nextCategory === 'All') {
+        next.delete('category')
+      } else {
+        next.set('category', nextCategory)
+      }
+      return next
+    }, { replace: true })
+  }
 
   return (
     <div className="page">
@@ -174,7 +191,7 @@ function KnowledgeBase() {
           <button
             key={item}
             className={getCategoryClassName(item, category)}
-            onClick={() => setCategory(item)}
+            onClick={() => handleCategoryChange(item)}
           >
             {item}
           </button>
