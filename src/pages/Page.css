@@ -5,7 +5,7 @@
 .page-title {
   font-size: 24px;
   font-weight: 700;
-  color: var(--color-blue);
+  color: #071f69;
   margin-bottom: 6px;
 }
 
@@ -157,7 +157,7 @@
 .active-home-title {
   font-size: 18px;
   font-weight: 700;
-  color: var(--color-blue);
+  color: #071f69;
 }
 
 .active-home-meta {
