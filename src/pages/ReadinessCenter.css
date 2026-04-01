@@ -18,19 +18,20 @@
 .readiness-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .readiness-group-card {
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
-  min-height: 560px;
-  max-height: 560px;
+  min-height: 500px;
+  max-height: 500px;
   overflow: hidden;
   background: #f7f9fc;
   border: 0;
   box-shadow: none;
+  padding: 14px 14px 12px;
 }
 
 .readiness-group-label {
@@ -45,9 +46,9 @@
 }
 
 .readiness-group-content {
-  max-height: 520px;
+  max-height: 454px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 2px;
 }
 
 .readiness-custom-card {
@@ -67,10 +68,10 @@
 }
 
 .readiness-custom-content {
-  margin-top: 4px;
+  margin-top: 2px;
   flex: 1;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 2px;
 }
 
 .readiness-custom-button {
@@ -85,7 +86,8 @@
 }
 
 .checklist-card {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  padding: 12px 14px;
 }
 
 .checklist-header {
@@ -93,7 +95,7 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  gap: 12px;
+  gap: 10px;
 }
 
 .checklist-title {
@@ -118,12 +120,12 @@
 
 .checklist-items {
   list-style: none;
-  margin-top: 14px;
+  margin-top: 10px;
   border-top: 1px solid var(--color-gray-100);
-  padding-top: 12px;
+  padding-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 
 .checklist-item {
@@ -131,7 +133,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 4px;
+  padding: 6px 2px;
   border-radius: 4px;
   transition: background 0.1s;
 }
@@ -175,7 +177,7 @@
 
 .checklist-text {
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .checklist-remove {
