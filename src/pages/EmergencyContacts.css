@@ -92,7 +92,7 @@
 .contact-remove-btn {
   border: 0;
   background: transparent;
-  color: var(--color-gray-500);
+  color: #071f69;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -100,7 +100,7 @@
 }
 
 .contact-remove-btn:hover {
-  color: var(--color-blue);
+  color: #071f69;
 }
 
 @media (max-width: 680px) {
