@@ -753,12 +753,7 @@ function PropertyProfile() {
           {property ? (
             <>
               <div className="property-sidebar-section">
-                <div className="property-sidebar-header">
-                  <div>
-                    <p className="property-sidebar-kicker">Risk Summary</p>
-                    <h2 className="property-sidebar-title">{property.query}</h2>
-                  </div>
-                </div>
+                <p className="property-sidebar-kicker">Risk Summary</p>
               </div>
 
               <div className="summary-stack">
