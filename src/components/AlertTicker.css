@@ -67,6 +67,11 @@
     gap: 10px;
   }
 
+  .alert-ticker-line,
+  .alert-ticker-static {
+    font-size: 13px;
+  }
+
   .alert-ticker-track {
     width: 100%;
     mask-image: none;
