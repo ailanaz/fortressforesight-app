@@ -59,24 +59,33 @@ function Login({ initialMode = 'login' }) {
         <form className="login-shell-form" onSubmit={handleSubmit}>
           <div className="login-panel card">
             {mode === 'login' ? (
-              <div className="login-form login-form-inline">
-                <input
-                  className="login-input"
-                  type="email"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  required
-                />
-                <input
-                  className="login-input"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                />
-              </div>
+              <>
+                <div className="login-upgrade">
+                  <h2 className="login-upgrade-title">Welcome back</h2>
+                  <p className="login-upgrade-copy">
+                    Sign in to access your saved properties, documents, and recovery workspace.
+                  </p>
+                </div>
+
+                <div className="login-form login-form-inline">
+                  <input
+                    className="login-input"
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                  <input
+                    className="login-input"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
+                </div>
+              </>
             ) : (
               <>
                 <div className="login-upgrade">
@@ -115,7 +124,13 @@ function Login({ initialMode = 'login' }) {
             )}
           </div>
 
-          <div className={`login-actions${mode === 'signup' ? ' login-actions-single' : ''}`}>
+          <div className="login-actions login-actions-centered">
+            <button className="login-submit login-submit-inline" type="submit">
+              {mode === 'login' ? 'Sign In' : 'Sign Up'}
+            </button>
+          </div>
+
+          <div className="login-utility-row login-utility-row-centered">
             <button
               className="login-secondary-link"
               type="button"
@@ -123,18 +138,7 @@ function Login({ initialMode = 'login' }) {
             >
               {showPassword ? 'Hide password' : 'Show password'}
             </button>
-            <button className="login-submit login-submit-inline" type="submit">
-              {mode === 'login' ? 'Sign In' : 'Create Account'}
-            </button>
           </div>
-
-          {mode === 'login' ? (
-            <div className="login-utility-row">
-              <button className="login-secondary-link" type="button">
-                Forgot password?
-              </button>
-            </div>
-          ) : null}
         </form>
       </div>
     </div>

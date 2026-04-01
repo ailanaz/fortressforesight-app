@@ -69,6 +69,7 @@
   flex-direction: column;
   gap: 0;
   margin-bottom: 18px;
+  min-height: 92px;
 }
 
 .login-upgrade-title {
@@ -189,7 +190,8 @@
   margin-top: 12px;
 }
 
-.login-actions-single {
+.login-actions-single,
+.login-actions-centered {
   justify-content: center;
 }
 
@@ -207,6 +209,11 @@
 
 .login-utility-row {
   margin-top: 10px;
+}
+
+.login-utility-row-centered {
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 520px) {
