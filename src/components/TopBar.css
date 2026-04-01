@@ -37,7 +37,7 @@
 .topbar-logo-image {
   display: block;
   width: auto;
-  height: 84px;
+  height: 96px;
 }
 
 .topbar-home-pill {
@@ -96,7 +96,7 @@
   }
 
   .topbar-logo-image {
-    height: 64px;
+    height: 72px;
   }
 
   .topbar-home-pill {
