@@ -107,7 +107,7 @@
 
 .checklist-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 8px 4px;
   cursor: pointer;
@@ -140,6 +140,7 @@
 
 .checklist-text {
   font-size: 14px;
+  line-height: 1.45;
 }
 
 .checklist-item.done .checklist-text {
