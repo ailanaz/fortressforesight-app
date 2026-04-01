@@ -18,20 +18,21 @@
 .readiness-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  column-gap: 12px;
+  row-gap: 8px;
 }
 
 .readiness-group-card {
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
-  min-height: 500px;
-  max-height: 500px;
+  min-height: 448px;
+  max-height: 448px;
   overflow: hidden;
   background: #f7f9fc;
   border: 0;
   box-shadow: none;
-  padding: 14px 14px 12px;
+  padding: 12px;
 }
 
 .readiness-group-label {
@@ -46,7 +47,7 @@
 }
 
 .readiness-group-content {
-  max-height: 454px;
+  max-height: 404px;
   overflow-y: auto;
   padding-right: 2px;
 }
