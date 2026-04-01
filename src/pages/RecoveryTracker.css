@@ -6,6 +6,20 @@
   margin-bottom: 4px;
 }
 
+.recovery-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  gap: 16px;
+}
+
+.recovery-panel {
+  background: #f7f9fc;
+  border: 0;
+  box-shadow: none;
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
 .recovery-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -40,24 +54,6 @@
   background: var(--color-yellow);
 }
 
-@media (max-width: 680px) {
-  .recovery-tabs {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-  }
-
-  .recovery-tab {
-    width: 100%;
-    min-width: 0;
-    padding: 4px 6px;
-    font-size: 10px;
-    text-align: center;
-    white-space: normal;
-    line-height: 1.15;
-  }
-}
-
 .tab-content {
   display: flex;
   flex-direction: column;
@@ -67,6 +63,7 @@
 .recovery-scope-tabs {
   display: flex;
   gap: 8px;
+  margin-bottom: 14px;
 }
 
 .recovery-scope-tab {
@@ -90,22 +87,19 @@
   text-align: center;
   color: var(--color-gray-500);
   font-size: 14px;
-  padding: 32px 16px;
+  padding: 32px 16px 24px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.adjuster-guide {
-  background: #f8fbff;
-  border: 1px solid rgba(61, 100, 240, 0.14);
-}
-
 .guide-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  margin-bottom: 10px;
-  color: var(--color-blue);
+  margin-bottom: 12px;
+  color: #071f69;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .guide-list {
@@ -125,7 +119,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 8px 16px;
+  padding: 4px 0 0;
 }
 
 .claim-step {
@@ -157,4 +151,32 @@
 .claim-step.done .step-dot {
   background: var(--color-blue);
   border-color: var(--color-blue);
+}
+
+@media (max-width: 980px) {
+  .recovery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .recovery-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .recovery-tab {
+    width: 100%;
+    min-width: 0;
+    padding: 4px 6px;
+    font-size: 10px;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.15;
+  }
+
+  .recovery-panel {
+    padding: 16px;
+  }
 }
