@@ -322,6 +322,7 @@
 
 .home-journey-title {
   max-width: none;
+  min-height: calc(1em * 1.06);
   font-size: clamp(20px, 2vw, 26px);
   line-height: 1.06;
   letter-spacing: -0.02em;
