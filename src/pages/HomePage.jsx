@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 import './Page.css'
 import './HomePage.css'
 
@@ -24,9 +24,39 @@ const RAIL_ITEMS = [
   },
 ]
 
+const JOURNEY_SLIDES = [
+  {
+    step: '01',
+    label: 'Clarity',
+    title: 'Search the property',
+    text: 'See the location, first-glance risk fields, and what to review first.',
+  },
+  {
+    step: '02',
+    label: 'Structure',
+    title: 'Prepare the home',
+    text: 'Build checklists, documents, and reminders around one address.',
+  },
+  {
+    step: '03',
+    label: 'Confidence',
+    title: 'Move through recovery',
+    text: 'Track damage, documents, and next steps with less chaos.',
+  },
+]
+
 function HomePage() {
   const [address, setAddress] = useState('')
+  const [activeSlide, setActiveSlide] = useState(0)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % JOURNEY_SLIDES.length)
+    }, 4200)
+
+    return () => window.clearInterval(intervalId)
+  }, [])
 
   const handleSearchSubmit = (event) => {
     event.preventDefault()
@@ -99,7 +129,29 @@ function HomePage() {
             </form>
           </article>
 
-          <article className="home-stage-panel card" aria-hidden="true" />
+          <article className="home-stage-panel card">
+            <div className="home-journey-track" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+              {JOURNEY_SLIDES.map((slide) => (
+                <section key={slide.step} className="home-journey-slide" aria-hidden={slide.step !== JOURNEY_SLIDES[activeSlide].step}>
+                  <div className="home-journey-head">
+                    <span className="home-journey-step">{slide.step}</span>
+                    <span className="home-journey-label">{slide.label}</span>
+                  </div>
+                  <h2 className="home-journey-title">{slide.title}</h2>
+                  <p className="home-journey-text">{slide.text}</p>
+                </section>
+              ))}
+            </div>
+
+            <div className="home-journey-progress" aria-hidden="true">
+              {JOURNEY_SLIDES.map((slide, index) => (
+                <span
+                  key={slide.step}
+                  className={`home-journey-dot${index === activeSlide ? ' active' : ''}`}
+                />
+              ))}
+            </div>
+          </article>
         </div>
       </section>
     </div>
