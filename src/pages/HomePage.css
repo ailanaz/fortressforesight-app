@@ -244,7 +244,7 @@
 
 .home-side-card-link:hover {
   border-color: rgba(61, 100, 240, 0.18);
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 .home-side-label {
