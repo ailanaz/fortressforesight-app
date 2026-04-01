@@ -884,8 +884,12 @@ function PropertyProfile() {
 
   const googleEmbedSrc = getGoogleEmbedSrc(property)
   const orderedSummaryCards = orderSummaryCards(property?.summaryCards || EMPTY_SUMMARY_CARDS)
-  const topSummaryCards = orderedSummaryCards.slice(0, 2)
-  const remainingSummaryCards = orderedSummaryCards.slice(2)
+  const topSummaryCards = orderedSummaryCards.filter(
+    (card) => card.title === 'Property Information' || card.title === 'Zoning / Future Use',
+  )
+  const remainingSummaryCards = orderedSummaryCards.filter(
+    (card) => card.title !== 'Property Information' && card.title !== 'Zoning / Future Use',
+  )
   const localHazards = buildLocalHazards(property)
 
   const handleSubmit = async (event) => {
@@ -985,7 +989,7 @@ function PropertyProfile() {
                 <p className="property-sidebar-kicker">Risk Summary</p>
               </div>
 
-              <div className="summary-stack">
+              <div className="summary-top-row">
                 {topSummaryCards.map((card) => (
                   <SummaryCard
                     key={card.title}
@@ -993,6 +997,9 @@ function PropertyProfile() {
                     rows={card.rows}
                   />
                 ))}
+              </div>
+
+              <div className="summary-stack">
                 <div className="summary-alert-row">
                   <AlertTicker />
                 </div>
@@ -1014,10 +1021,13 @@ function PropertyProfile() {
                 <p className="property-sidebar-kicker">Risk Summary</p>
               </div>
 
-              <div className="summary-stack">
+              <div className="summary-top-row">
                 {topSummaryCards.map((card) => (
                   <SummaryCard key={card.title} title={card.title} rows={card.rows} />
                 ))}
+              </div>
+
+              <div className="summary-stack">
                 <div className="summary-alert-row">
                   <AlertTicker />
                 </div>
