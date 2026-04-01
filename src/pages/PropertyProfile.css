@@ -20,6 +20,18 @@
   border-color: #071f69;
 }
 
+.property-page .btn-primary {
+  background: #071f69;
+  border-color: #071f69;
+  color: var(--color-yellow);
+}
+
+.property-page .btn-primary:hover {
+  background: var(--color-yellow);
+  border-color: #071f69;
+  color: #071f69;
+}
+
 .property-heading {
   display: flex;
   align-items: flex-end;
