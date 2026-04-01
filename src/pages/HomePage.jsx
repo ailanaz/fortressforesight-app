@@ -26,19 +26,22 @@ const RAIL_ITEMS = [
 
 const JOURNEY_SLIDES = [
   {
+    id: 'clarity-search',
     label: 'Clarity',
-    title: 'Before the keys change hands',
-    text: 'An address comes into view. The risks, the location, and the questions worth asking are clearer before the decision is made.',
+    title: 'You search an address',
+    text: 'You find out it sits in a flood zone, a wildfire corridor, and has radon risk. You know this before you sign anything.',
   },
   {
+    id: 'structure-ready',
     label: 'Structure',
-    title: 'A home starts to feel ready',
-    text: 'The address becomes a place with documents, checklists, and a plan that stays organized before something goes wrong.',
+    title: 'Everything starts to stay in one place',
+    text: 'Your policy is uploaded. Your maintenance checklist is running. Your contractor number is saved. Nothing is lost in a drawer.',
   },
   {
+    id: 'confidence-recover',
     label: 'Confidence',
-    title: 'When the unexpected happens',
-    text: 'The next step is easier to find. Recovery feels more steady when the groundwork is already there.',
+    title: 'The storm hits',
+    text: 'You open the app. Your documents are there, your recovery tracker is ready, and you know what to do next.',
   },
 ]
 
@@ -130,7 +133,7 @@ function HomePage() {
             <div className="home-journey-stage-nav" aria-hidden="true">
               {JOURNEY_SLIDES.map((slide, index) => (
                 <span
-                  key={slide.label}
+                  key={slide.id}
                   className={`home-journey-stage${index === activeSlide ? ' active' : ''}`}
                 >
                   {slide.label}
@@ -141,7 +144,7 @@ function HomePage() {
             <div className="home-journey-track">
               {JOURNEY_SLIDES.map((slide, index) => (
                 <section
-                  key={slide.label}
+                  key={slide.id}
                   className={`home-journey-slide${index === activeSlide ? ' active' : ''}`}
                   aria-hidden={index !== activeSlide}
                 >
@@ -157,10 +160,10 @@ function HomePage() {
             <div className="home-journey-progress">
               {JOURNEY_SLIDES.map((slide, index) => (
                 <button
-                  key={slide.label}
+                  key={slide.id}
                   type="button"
                   className={`home-journey-dot${index === activeSlide ? ' active' : ''}`}
-                  aria-label={`Show ${slide.label}`}
+                  aria-label={`Show ${slide.title}`}
                   aria-pressed={index === activeSlide}
                   onClick={() => setActiveSlide(index)}
                 />
