@@ -260,7 +260,7 @@
   text-transform: uppercase;
   color: var(--color-yellow);
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(61, 100, 240, 0.14);
   backdrop-filter: blur(6px);

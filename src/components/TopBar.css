@@ -46,7 +46,7 @@
   gap: 2px;
   min-width: 0;
   padding: 8px 12px;
-  border-radius: 14px;
+  border-radius: 6px;
   border: 1px solid rgba(61, 100, 240, 0.16);
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);

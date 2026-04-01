@@ -30,7 +30,7 @@
   z-index: 20;
   width: min(320px, calc(100vw - 32px));
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--color-gray-100);
   background: #ffffff;
 }
@@ -53,7 +53,7 @@
   width: 32px;
   height: 32px;
   border: 1px solid var(--color-gray-100);
-  border-radius: 8px;
+  border-radius: 6px;
   background: #ffffff;
   color: var(--color-blue);
   font-size: 22px;
@@ -87,7 +87,7 @@
 .calendar-day {
   aspect-ratio: 1;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 6px;
   background: transparent;
   color: var(--color-gray-900);
   font: inherit;
