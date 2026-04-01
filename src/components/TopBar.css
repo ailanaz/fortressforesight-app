@@ -74,7 +74,7 @@
 .topbar-account {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(61, 100, 240, 0.16);
-  color: var(--color-blue);
+  color: #071f69;
   display: flex;
   align-items: center;
   justify-content: center;
