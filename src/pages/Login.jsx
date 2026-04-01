@@ -101,7 +101,7 @@ function Login({ initialMode = 'login' }) {
                     <div className="login-upgrade-item">Save checklist progress</div>
                     <div className="login-upgrade-item">Save notes and calendar events</div>
                     <div className="login-upgrade-item">Upload documents and photos</div>
-                    <div className="login-upgrade-item">Track recovery in one place</div>
+                    <div className="login-upgrade-item">Track recovery and insurance claims</div>
                   </div>
                 </div>
 
