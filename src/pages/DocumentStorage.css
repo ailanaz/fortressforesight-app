@@ -1,4 +1,8 @@
 .document-tabs-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
   margin-bottom: 18px;
 }
 
@@ -6,15 +10,12 @@
   margin-bottom: 16px;
 }
 
-.file-input-hidden {
-  display: none;
+.documents-header-spacer {
+  height: 32px;
 }
 
-.document-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  margin-bottom: 0;
+.file-input-hidden {
+  display: none;
 }
 
 .document-tab {
@@ -145,12 +146,9 @@
 
 @media (max-width: 680px) {
   .document-tabs-wrap {
-    margin-bottom: 20px;
-  }
-
-  .document-tabs {
     justify-content: center;
     gap: 14px;
+    margin-bottom: 20px;
   }
 
   .document-tab {

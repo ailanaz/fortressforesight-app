@@ -140,7 +140,7 @@ function DocumentStorage() {
         ))}
       </div>
 
-      <h2 className="section-label">Documents</h2>
+      <div className="documents-header-spacer" aria-hidden="true" />
 
       <input
         ref={fileInputRef}
