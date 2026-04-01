@@ -158,6 +158,19 @@ function HomePage() {
             tabIndex={0}
             aria-label="Show next story"
           >
+            <div className="home-stage-panel-media" aria-hidden="true">
+              <video
+                className="home-stage-panel-video"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+              >
+                <source src="/branding/home/story-background.mp4" type="video/mp4" />
+              </video>
+              <div className="home-stage-panel-overlay" />
+            </div>
             <div className="home-journey-track">
               {JOURNEY_SLIDES.map((slide, index) => (
                 <section
