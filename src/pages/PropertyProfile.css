@@ -119,10 +119,10 @@
 .property-map-kicker,
 .property-sidebar-kicker {
   color: #071f69;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.5px;
   margin-bottom: 6px;
 }
 
