@@ -11,6 +11,14 @@ const SAMPLE_DOCS = []
 
 const BASE_DOC_TYPES = ['Insurance Policy', 'Warranty', 'Inspection', 'Receipts']
 
+const MOBILE_DOC_TAB_LABELS = {
+  'Insurance Policy': 'Policy',
+  Warranty: 'Warranty',
+  Inspection: 'Inspection',
+  Receipts: 'Receipts',
+  Other: 'Other',
+}
+
 function formatFileSize(bytes) {
   if (!bytes) return '0 KB'
   if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
@@ -135,7 +143,8 @@ function DocumentStorage() {
             className={`document-tab${activeType === type ? ' active' : ''}`}
             onClick={() => handleTypeChange(type)}
           >
-            {type}
+            <span className="document-tab-label-full">{type}</span>
+            <span className="document-tab-label-mobile">{MOBILE_DOC_TAB_LABELS[type] || type}</span>
           </button>
         ))}
       </div>
