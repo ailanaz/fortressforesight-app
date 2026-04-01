@@ -273,7 +273,7 @@
 }
 
 .home-journey-title {
-  max-width: 420px;
+  max-width: 520px;
   font-size: clamp(26px, 3vw, 36px);
   line-height: 1.08;
   color: var(--color-gray-900);
