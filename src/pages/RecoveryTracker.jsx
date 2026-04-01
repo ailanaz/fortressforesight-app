@@ -41,16 +41,7 @@ function RecoveryTracker() {
             </span>
           </div>
         </div>
-      ) : (
-        <div className="active-home-card active-home-empty card">
-          <div className="active-home-copy">
-            <span className="active-home-title">Add a home to start</span>
-            <span className="active-home-note">
-              Search an address first so recovery details stay tied to one property instead of a generic claim shell.
-            </span>
-          </div>
-        </div>
-      )}
+      ) : null}
 
       <div className="page-utility-bar recovery-utility-bar">
         <div className="page-calendar-actions">
