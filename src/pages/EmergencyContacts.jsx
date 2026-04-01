@@ -7,21 +7,21 @@ import './Page.css'
 import './EmergencyContacts.css'
 
 const DEFAULT_CONTACTS = [
-  { id: 1, name: '', phone: '', placeholder: 'Insurance agent' },
-  { id: 2, name: '', phone: '', placeholder: 'Contractor' },
-  { id: 3, name: '', phone: '', placeholder: 'Plumber' },
-  { id: 4, name: '', phone: '', placeholder: 'Electrician' },
+  { id: 1, name: '', phone: '', placeholder: 'Suggested: Insurance agent' },
+  { id: 2, name: '', phone: '', placeholder: 'Suggested: Contractor' },
+  { id: 3, name: '', phone: '', placeholder: 'Suggested: Plumber' },
+  { id: 4, name: '', phone: '', placeholder: 'Suggested: Electrician' },
 ]
 
 const CONTACT_PLACEHOLDERS = [
-  'Insurance agent',
-  'Contractor',
-  'Plumber',
-  'Electrician',
-  'Roofer',
-  'HVAC',
-  'Restoration company',
-  'Utility company',
+  'Suggested: Insurance agent',
+  'Suggested: Contractor',
+  'Suggested: Plumber',
+  'Suggested: Electrician',
+  'Suggested: Roofer',
+  'Suggested: HVAC',
+  'Suggested: Restoration company',
+  'Suggested: Utility company',
 ]
 
 function EmergencyContacts() {
