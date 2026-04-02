@@ -188,11 +188,17 @@
 }
 
 .timeline-col-time {
-  width: 12%;
+  width: 8%;
 }
 
 .timeline-col-details {
-  width: 54%;
+  width: 58%;
+}
+
+.timeline-sheet th:nth-child(2),
+.timeline-sheet td:nth-child(2) input {
+  padding-left: 2px;
+  padding-right: 4px;
 }
 
 .empty-room-state {
