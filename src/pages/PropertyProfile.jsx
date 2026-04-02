@@ -262,6 +262,50 @@ function getUsfsWildfireStatus(stateCode) {
   return getHazardStatus(getHazardLevel(wildfireDefinition, stateCode))
 }
 
+function getHazardOrganizationLabel(hazardId) {
+  if (hazardId === 'flood') {
+    return 'FEMA flood zone'
+  }
+
+  if (hazardId === 'storm-wind') {
+    return 'NOAA active alerts'
+  }
+
+  if (hazardId === 'wildfire') {
+    return 'USFS wildfire context'
+  }
+
+  if (hazardId === 'earthquake') {
+    return 'USGS area context'
+  }
+
+  return 'Source'
+}
+
+function getHazardResultValue(hazardId, property) {
+  const summaryCards = normalizeSummaryCards(property?.summaryCards)
+  const landAndWaterCard = summaryCards.find((card) => card.title === 'Land and Water Conditions')
+  const areaResponseCard = summaryCards.find((card) => card.title === 'Area Response Context')
+
+  if (hazardId === 'flood') {
+    return landAndWaterCard?.rows?.find((row) => row.label === 'FEMA flood zone')?.value || 'Not returned'
+  }
+
+  if (hazardId === 'storm-wind') {
+    return areaResponseCard?.rows?.find((row) => row.label === 'NOAA active alerts')?.value || 'Not returned'
+  }
+
+  if (hazardId === 'wildfire') {
+    return areaResponseCard?.rows?.find((row) => row.label === 'USFS wildfire context')?.value || 'Not returned'
+  }
+
+  if (hazardId === 'earthquake') {
+    return getHazardStatus(getHazardLevel(HAZARD_DEFINITIONS.find((definition) => definition.id === 'earthquake'), normalizeStateCode(property?.address?.state)))
+  }
+
+  return 'Not returned'
+}
+
 function buildLocalHazards(property) {
   const stateCode = normalizeStateCode(property?.address?.state)
 
@@ -270,6 +314,7 @@ function buildLocalHazards(property) {
   }
 
   const evaluated = HAZARD_DEFINITIONS
+    .filter((definition) => ['flood', 'storm-wind', 'wildfire', 'earthquake'].includes(definition.id))
     .map((definition) => {
       const level = getHazardLevel(definition, stateCode)
 
@@ -283,15 +328,14 @@ function buildLocalHazards(property) {
         level,
         status: getHazardStatus(level),
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
+        organizationLabel: getHazardOrganizationLabel(definition.id),
+        resultValue: getHazardResultValue(definition.id, property),
         source: definition.source,
       }
     })
     .filter(Boolean)
 
-  const relevantHazards = evaluated.filter((item) => item.level === 'primary' || item.level === 'seasonal')
-  const limitedHazards = evaluated.filter((item) => item.level === 'limited')
-
-  return [...relevantHazards, ...limitedHazards].slice(0, Math.max(3, relevantHazards.length))
+  return evaluated
 }
 
 function orderSummaryCards(cards) {
@@ -1154,8 +1198,11 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
         <div className="local-hazards-grid">
           {hazards.map((hazard) => (
             <div key={hazard.id} className="local-hazard-item">
+              <p className="local-hazard-label">Hazard</p>
               <p className="local-hazard-title">{hazard.title}</p>
-              <p className={`local-hazard-status local-hazard-status-${hazard.level}`}>{hazard.status}</p>
+              <p className="local-hazard-label">Organization</p>
+              <p className={`local-hazard-status local-hazard-status-${hazard.level}`}>{hazard.organizationLabel}</p>
+              <p className="local-hazard-result">{hazard.resultValue}</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
               {hazard.source ? (
                 <a
