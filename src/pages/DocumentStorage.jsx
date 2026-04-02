@@ -151,9 +151,6 @@ function DocumentStorage() {
 
       <div className="section-header document-section-header">
         <h3 className="section-label doc-category-title">{activeType}</h3>
-        <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
-          Upload
-        </button>
       </div>
 
       <input
@@ -164,8 +161,6 @@ function DocumentStorage() {
         multiple
         onChange={handleFileChange}
       />
-
-      <div className="document-upload-note">PDF, JPG, JPEG, PNG</div>
 
       <section className="doc-category-card card">
         <div className="doc-category-list">
@@ -200,6 +195,15 @@ function DocumentStorage() {
           )}
         </div>
       </section>
+
+      <div className="document-bottom-action">
+        <div className="document-upload-block">
+          <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
+            Upload
+          </button>
+          <p className="document-upload-note">Add JPG, PNG, PDF, Word</p>
+        </div>
+      </div>
     </div>
   )
 }
