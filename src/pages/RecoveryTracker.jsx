@@ -165,9 +165,6 @@ function RecoveryTracker() {
                     <h3 className="section-label">
                       {damageScope === 'Interior' ? 'Interior Damage' : 'Exterior Damage'}
                     </h3>
-                    <button className="btn-outline recovery-add-btn">
-                      {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
-                    </button>
                   </div>
                   <div className="expense-sheet-wrap">
                     <div className="expense-sheet-scroll">
@@ -198,6 +195,11 @@ function RecoveryTracker() {
                         </tbody>
                       </table>
                     </div>
+                  </div>
+                  <div className="recovery-bottom-action">
+                    <button className="btn-outline recovery-add-btn">
+                      {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
+                    </button>
                   </div>
                   <div className="recovery-guide-block">
                     <h3 className="guide-title">Working with Adjusters</h3>

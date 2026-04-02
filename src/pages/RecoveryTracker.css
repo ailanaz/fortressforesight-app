@@ -112,6 +112,12 @@
   border-color: #071f69;
 }
 
+.recovery-bottom-action {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 12px;
+}
+
 .expense-sheet-wrap {
   padding-top: 4px;
 }
