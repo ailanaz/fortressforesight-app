@@ -98,6 +98,7 @@
   line-height: 1.4;
   padding: 0;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .readiness-custom-text-link:hover {
@@ -115,6 +116,10 @@
   justify-content: space-between;
   cursor: pointer;
   gap: 10px;
+}
+
+.checklist-card.is-locked .checklist-header {
+  cursor: default;
 }
 
 .checklist-title {
@@ -135,6 +140,16 @@
   font-size: 13px;
   color: var(--color-gray-500);
   flex-shrink: 0;
+}
+
+.checklist-upgrade-link {
+  color: #071f69;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.checklist-upgrade-link:hover {
+  text-decoration: underline;
 }
 
 .checklist-items {

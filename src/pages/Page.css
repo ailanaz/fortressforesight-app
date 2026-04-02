@@ -24,6 +24,10 @@
   font-size: 14px;
   font-weight: 600;
   box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   transition: background 0.15s, border-color 0.15s;
 }
 
@@ -40,6 +44,10 @@
   padding: 11px 20px;
   font-size: 14px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
@@ -103,6 +111,12 @@
 .page-input:focus {
   border-color: var(--color-blue);
   box-shadow: 0 0 0 3px rgba(61, 100, 240, 0.12);
+}
+
+.page-input:disabled {
+  background: #f7f8fc;
+  color: var(--color-gray-500);
+  cursor: not-allowed;
 }
 
 .page-input::placeholder {
@@ -173,6 +187,17 @@
 .page-upgrade-hint:focus-within .page-upgrade-tooltip,
 .page-upgrade-hint.is-open .page-upgrade-tooltip {
   opacity: 1;
+}
+
+.page-locked-link {
+  color: #071f69;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.page-locked-link:hover {
+  text-decoration: underline;
 }
 
 .active-home-card {

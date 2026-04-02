@@ -38,6 +38,7 @@
   font-weight: 600;
   cursor: pointer;
   padding: 0;
+  text-decoration: none;
 }
 
 .contact-save-btn:hover {
@@ -80,6 +81,12 @@
   box-shadow: 0 0 0 3px rgba(61, 100, 240, 0.12);
 }
 
+.contact-input:disabled {
+  background: #f7f8fc;
+  color: var(--color-gray-500);
+  cursor: not-allowed;
+}
+
 .contact-input::placeholder {
   color: rgba(7, 31, 105, 0.28);
 }
@@ -116,6 +123,7 @@
   font-weight: 600;
   cursor: pointer;
   padding: 0;
+  text-decoration: none;
 }
 
 .contact-remove-btn:hover {

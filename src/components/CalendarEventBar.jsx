@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { defaultCalendarDate, downloadCalendarInvite, formatDateInput } from '../utils/calendar'
 import './CalendarEventBar.css'
 
@@ -54,6 +56,7 @@ function CalendarEventBar({
   details,
   dateAriaLabel,
 }) {
+  const { isAuthenticated } = useAuth()
   const [open, setOpen] = useState(false)
   const [hintOpen, setHintOpen] = useState(false)
   const pickerRef = useRef(null)
@@ -117,6 +120,7 @@ function CalendarEventBar({
           onChange={(event) => setTitle(event.target.value)}
           placeholder="Add calendar event"
           aria-label="Calendar event"
+          disabled={!isAuthenticated}
         />
         <span className={`page-upgrade-hint${hintOpen ? ' is-open' : ''}`}>
           <button
@@ -138,31 +142,43 @@ function CalendarEventBar({
       </div>
 
       <div className="calendar-picker" ref={pickerRef}>
-        <button
-          className={`page-date-trigger${open ? ' is-open' : ''}`}
-          type="button"
-          aria-label={dateAriaLabel}
-          aria-haspopup="dialog"
-          aria-expanded={open}
-          onClick={() => {
-            if (open) {
-              setOpen(false)
-              return
-            }
+        {isAuthenticated ? (
+          <button
+            className={`page-date-trigger${open ? ' is-open' : ''}`}
+            type="button"
+            aria-label={dateAriaLabel}
+            aria-haspopup="dialog"
+            aria-expanded={open}
+            onClick={() => {
+              if (open) {
+                setOpen(false)
+                return
+              }
 
-            openPicker()
-          }}
-        >
-          <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <path d="M16 2v4" />
-            <path d="M8 2v4" />
-            <path d="M3 10h18" />
-          </svg>
-          <span>{formatDisplayDate(date)}</span>
-        </button>
+              openPicker()
+            }}
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4" />
+              <path d="M8 2v4" />
+              <path d="M3 10h18" />
+            </svg>
+            <span>{formatDisplayDate(date)}</span>
+          </button>
+        ) : (
+          <Link className="page-date-trigger" aria-label={dateAriaLabel} to="/upgrade">
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4" />
+              <path d="M8 2v4" />
+              <path d="M3 10h18" />
+            </svg>
+            <span>Save date</span>
+          </Link>
+        )}
 
-        {open ? (
+        {isAuthenticated && open ? (
           <div className="calendar-popover" role="dialog" aria-label="Choose date">
             <div className="calendar-popover-header">
               <button

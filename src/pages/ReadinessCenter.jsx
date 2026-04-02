@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
+import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
@@ -289,7 +290,7 @@ function ChecklistItem({ text, done, onToggle }) {
   )
 }
 
-function Checklist({ checklist }) {
+function Checklist({ checklist, locked = false }) {
   const [open, setOpen] = useState(false)
   const [done, setDone] = useState({})
 
@@ -299,15 +300,25 @@ function Checklist({ checklist }) {
   const doneCount = Object.values(done).filter(Boolean).length
 
   return (
-    <div className="checklist-card card">
-      <div className="checklist-header" onClick={() => setOpen((value) => !value)}>
+    <div className={`checklist-card card${locked ? ' is-locked' : ''}`}>
+      <div className="checklist-header" onClick={() => {
+        if (!locked) {
+          setOpen((value) => !value)
+        }
+      }}>
         <div>
           <div className="checklist-title">{checklist.title}</div>
         </div>
         <div className="checklist-progress">
-          <span>
-            {doneCount}/{checklist.items.length}
-          </span>
+          {locked ? (
+            <Link className="checklist-upgrade-link" to="/upgrade">
+              Upgrade
+            </Link>
+          ) : (
+            <span>
+              {doneCount}/{checklist.items.length}
+            </span>
+          )}
           <svg
             width="18"
             height="18"
@@ -315,13 +326,13 @@ function Checklist({ checklist }) {
             stroke="currentColor"
             strokeWidth="2"
             viewBox="0 0 24 24"
-            style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
+            style={{ transform: !locked && open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
           >
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </div>
       </div>
-      {open && (
+      {!locked && open && (
         <ul className="checklist-items">
           {checklist.items.map((item, index) => (
             <ChecklistItem
@@ -337,7 +348,7 @@ function Checklist({ checklist }) {
   )
 }
 
-function CustomChecklist({ checklist, onDelete }) {
+function CustomChecklist({ checklist, onDelete, locked = false }) {
   const [open, setOpen] = useState(!!checklist.initiallyOpen)
   const [title, setTitle] = useState(checklist.title)
   const [editingTitle, setEditingTitle] = useState(!!checklist.initiallyOpen)
@@ -386,13 +397,23 @@ function CustomChecklist({ checklist, onDelete }) {
   const progressLabel = items.length ? `${doneCount}/${items.length}` : '0 items'
 
   return (
-    <div className="checklist-card card">
-      <div className="checklist-header" onClick={() => setOpen((value) => !value)}>
+    <div className={`checklist-card card${locked ? ' is-locked' : ''}`}>
+      <div className="checklist-header" onClick={() => {
+        if (!locked) {
+          setOpen((value) => !value)
+        }
+      }}>
         <div>
           <div className="checklist-title">{title || 'New Custom List'}</div>
         </div>
         <div className="checklist-progress">
-          <span>{progressLabel}</span>
+          {locked ? (
+            <Link className="checklist-upgrade-link" to="/upgrade">
+              Upgrade
+            </Link>
+          ) : (
+            <span>{progressLabel}</span>
+          )}
           <svg
             width="18"
             height="18"
@@ -400,13 +421,13 @@ function CustomChecklist({ checklist, onDelete }) {
             stroke="currentColor"
             strokeWidth="2"
             viewBox="0 0 24 24"
-            style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
+            style={{ transform: !locked && open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
           >
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </div>
       </div>
-      {open && (
+      {!locked && open && (
         <>
           {editingTitle ? (
             <div className="custom-checklist-title-edit">
@@ -476,6 +497,7 @@ function CustomChecklist({ checklist, onDelete }) {
 
 function ReadinessCenter() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { isAuthenticated } = useAuth()
   const { activeHome } = useActiveHome()
   const homeTitle = getHomeTitle(activeHome)
   const [calendarTitle, setCalendarTitle] = useState('')
@@ -539,9 +561,15 @@ function ReadinessCenter() {
           ))}
         </div>
 
-        <button type="button" className="readiness-tab readiness-note-button">
-          Add a Note
-        </button>
+        {isAuthenticated ? (
+          <button type="button" className="readiness-tab readiness-note-button">
+            Add a Note
+          </button>
+        ) : (
+          <Link className="readiness-tab readiness-note-button" to="/upgrade">
+            Add a Note
+          </Link>
+        )}
       </div>
 
       {section === 'custom' ? (
@@ -551,13 +579,24 @@ function ReadinessCenter() {
             <div className="readiness-group-note readiness-custom-note">
               Create a Custom Checklist for property and area specific needs.
             </div>
-            <button type="button" className="readiness-custom-text-link" onClick={handleCreateCustomList}>
-              Create Custom List
-            </button>
+            {isAuthenticated ? (
+              <button type="button" className="readiness-custom-text-link" onClick={handleCreateCustomList}>
+                Create Custom List
+              </button>
+            ) : (
+              <Link className="readiness-custom-text-link" to="/upgrade">
+                Create Custom List
+              </Link>
+            )}
           </div>
           <div className="readiness-list">
             {customChecklists.map((checklist) => (
-              <CustomChecklist key={checklist.id} checklist={checklist} onDelete={handleDeleteCustomList} />
+              <CustomChecklist
+                key={checklist.id}
+                checklist={checklist}
+                onDelete={handleDeleteCustomList}
+                locked={!isAuthenticated}
+              />
             ))}
           </div>
         </>
@@ -571,7 +610,7 @@ function ReadinessCenter() {
           ) : null}
           <div className="readiness-list">
             {sectionChecklists.map((checklist) => (
-              <Checklist key={checklist.id} checklist={checklist} />
+              <Checklist key={checklist.id} checklist={checklist} locked={!isAuthenticated} />
             ))}
           </div>
         </>

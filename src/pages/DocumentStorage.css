@@ -108,6 +108,7 @@
   padding: 4px;
   flex-shrink: 0;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .upload-single-btn,

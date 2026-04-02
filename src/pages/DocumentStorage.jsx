@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
+import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
@@ -43,6 +44,7 @@ function inferDocType(file) {
 
 function DocumentStorage() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { isAuthenticated } = useAuth()
   const { activeHome } = useActiveHome()
   const [docs, setDocs] = useState(SAMPLE_DOCS)
   const [calendarTitle, setCalendarTitle] = useState('')
@@ -181,15 +183,27 @@ function DocumentStorage() {
                     {activeType === 'Other' ? `${doc.type} - ${doc.date} - ${doc.size}` : `${doc.date} - ${doc.size}`}
                   </span>
                 </div>
-                <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <circle cx="18" cy="5" r="3" />
-                    <circle cx="6" cy="12" r="3" />
-                    <circle cx="18" cy="19" r="3" />
-                    <path d="M8.6 13.5l6.8 4" />
-                    <path d="M15.4 6.5l-6.8 4" />
-                  </svg>
-                </button>
+                {isAuthenticated ? (
+                  <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <path d="M8.6 13.5l6.8 4" />
+                      <path d="M15.4 6.5l-6.8 4" />
+                    </svg>
+                  </button>
+                ) : (
+                  <Link className="doc-action" aria-label={`Upgrade to share ${doc.name}`} to="/upgrade">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <path d="M8.6 13.5l6.8 4" />
+                      <path d="M15.4 6.5l-6.8 4" />
+                    </svg>
+                  </Link>
+                )}
               </div>
             ))
           )}
@@ -198,9 +212,15 @@ function DocumentStorage() {
 
       <div className="document-bottom-action">
         <div className="document-upload-block">
-          <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
-            Upload
-          </button>
+          {isAuthenticated ? (
+            <button className="btn-outline upload-single-btn" onClick={() => fileInputRef.current?.click()}>
+              Upload
+            </button>
+          ) : (
+            <Link className="btn-outline upload-single-btn" to="/upgrade">
+              Upload
+            </Link>
+          )}
           <p className="document-upload-note">Add JPG, PNG, PDF, Word</p>
         </div>
       </div>

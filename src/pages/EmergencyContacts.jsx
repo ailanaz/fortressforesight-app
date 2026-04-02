@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
+import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
@@ -25,6 +27,7 @@ const CONTACT_PLACEHOLDERS = [
 ]
 
 function EmergencyContacts() {
+  const { isAuthenticated } = useAuth()
   const { activeHome } = useActiveHome()
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS)
   const [calendarTitle, setCalendarTitle] = useState('')
@@ -88,6 +91,7 @@ function EmergencyContacts() {
                 placeholder={contact.placeholder || 'Contact'}
                 value={contact.name}
                 onChange={(event) => updateContact(contact.id, 'name', event.target.value)}
+                disabled={!isAuthenticated}
               />
               <div className="contact-phone-row">
                 <input
@@ -96,6 +100,7 @@ function EmergencyContacts() {
                   placeholder="Phone"
                   value={contact.phone}
                   onChange={(event) => updateContact(contact.id, 'phone', event.target.value)}
+                  disabled={!isAuthenticated}
                 />
                 {contact.phone && (
                   <a href={`tel:${contact.phone}`} className="call-btn">
@@ -108,21 +113,39 @@ function EmergencyContacts() {
               </div>
             </div>
             <div className="contact-card-actions">
-              <button className={`contact-save-btn${contact.isSaved ? ' is-saved' : ''}`} type="button" onClick={() => saveContact(contact.id)}>
-                {contact.isSaved ? 'Saved' : 'Save'}
-              </button>
-              <button className="contact-remove-btn" type="button" onClick={() => removeContact(contact.id)}>
-                Remove
-              </button>
+              {isAuthenticated ? (
+                <button className={`contact-save-btn${contact.isSaved ? ' is-saved' : ''}`} type="button" onClick={() => saveContact(contact.id)}>
+                  {contact.isSaved ? 'Saved' : 'Save'}
+                </button>
+              ) : (
+                <Link className="contact-save-btn" to="/upgrade">
+                  Save
+                </Link>
+              )}
+              {isAuthenticated ? (
+                <button className="contact-remove-btn" type="button" onClick={() => removeContact(contact.id)}>
+                  Remove
+                </button>
+              ) : (
+                <Link className="contact-remove-btn" to="/upgrade">
+                  Remove
+                </Link>
+              )}
             </div>
           </div>
         ))}
       </div>
 
       <div className="contacts-footer-actions">
-        <button className="btn-outline contact-add-btn" type="button" onClick={addContact}>
-          + Add Contact
-        </button>
+        {isAuthenticated ? (
+          <button className="btn-outline contact-add-btn" type="button" onClick={addContact}>
+            + Add Contact
+          </button>
+        ) : (
+          <Link className="btn-outline contact-add-btn" to="/upgrade">
+            + Add Contact
+          </Link>
+        )}
       </div>
     </div>
   )

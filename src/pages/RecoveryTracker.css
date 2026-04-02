@@ -130,6 +130,7 @@
   line-height: 1.4;
   padding: 0;
   align-self: flex-start;
+  text-decoration: none;
 }
 
 .recovery-add-link:hover {
@@ -188,6 +189,11 @@
   font-size: 14px;
   color: #071f69;
   outline: none;
+}
+
+.expense-sheet input:disabled {
+  color: var(--color-gray-500);
+  cursor: not-allowed;
 }
 
 .expense-sheet input::placeholder {
@@ -341,6 +347,10 @@
   font: inherit;
 }
 
+.claim-step-main:disabled {
+  cursor: not-allowed;
+}
+
 .claim-checkbox {
   width: 20px;
   height: 20px;
@@ -389,6 +399,11 @@
 
 .claim-step-note:focus {
   border-bottom-color: #071f69;
+}
+
+.claim-step-note:disabled {
+  color: var(--color-gray-500);
+  cursor: not-allowed;
 }
 
 @media (max-width: 680px) {

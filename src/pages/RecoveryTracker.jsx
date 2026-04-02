@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
+import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
@@ -60,6 +61,7 @@ function getSectionTabClassName(sectionId, activeSection) {
 }
 
 function RecoveryTracker() {
+  const { isAuthenticated } = useAuth()
   const { activeHome } = useActiveHome()
   const [searchParams, setSearchParams] = useSearchParams()
   const [damageScope, setDamageScope] = useState('Interior')
@@ -254,6 +256,7 @@ function RecoveryTracker() {
                                     placeholder={rowIndex === 0 ? getDamagePlaceholderRow(damageScope)[cellIndex] : ''}
                                     onChange={(event) => updateDamageCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS[cellIndex] : EXTERIOR_DAMAGE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                    disabled={!isAuthenticated}
                                   />
                                 </td>
                               ))}
@@ -264,13 +267,25 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="recovery-add-link" type="button" onClick={addDamageRow}>
-                      {damageScope === 'Interior' ? '→ Add new room' : '→ Add new area'}
-                    </button>
-                    <div className="recovery-upload-block">
-                      <button className="btn-outline recovery-add-btn">
-                        Upload
+                    {isAuthenticated ? (
+                      <button className="recovery-add-link" type="button" onClick={addDamageRow}>
+                        {damageScope === 'Interior' ? '→ Add new room' : '→ Add new area'}
                       </button>
+                    ) : (
+                      <Link className="recovery-add-link" to="/upgrade">
+                        {damageScope === 'Interior' ? '→ Add new room' : '→ Add new area'}
+                      </Link>
+                    )}
+                    <div className="recovery-upload-block">
+                      {isAuthenticated ? (
+                        <button className="btn-outline recovery-add-btn">
+                          Upload
+                        </button>
+                      ) : (
+                        <Link className="btn-outline recovery-add-btn" to="/upgrade">
+                          Upload
+                        </Link>
+                      )}
                       <p className="recovery-upload-note">Add photos, receipts, etc.<br />JPG, PNG, PDF, Word</p>
                     </div>
                   </div>
@@ -315,6 +330,7 @@ function RecoveryTracker() {
                                     placeholder={rowIndex === 0 ? TIME_LOG_PLACEHOLDER_ROW[cellIndex] : ''}
                                     onChange={(event) => updateTimelineCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${TIME_LOG_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                    disabled={!isAuthenticated}
                                   />
                                 </td>
                               ))}
@@ -325,9 +341,15 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="recovery-add-link" type="button" onClick={addTimelineRow}>
-                      → Add new row
-                    </button>
+                    {isAuthenticated ? (
+                      <button className="recovery-add-link" type="button" onClick={addTimelineRow}>
+                        → Add new row
+                      </button>
+                    ) : (
+                      <Link className="recovery-add-link" to="/upgrade">
+                        → Add new row
+                      </Link>
+                    )}
                   </div>
                 </>
               ) : null}
@@ -361,6 +383,7 @@ function RecoveryTracker() {
                                     placeholder={rowIndex === 0 ? EXPENSE_PLACEHOLDER_ROW[cellIndex] : ''}
                                     onChange={(event) => updateExpenseCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${EXPENSE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                    disabled={!isAuthenticated}
                                   />
                                 </td>
                               ))}
@@ -371,13 +394,25 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="recovery-add-link" type="button" onClick={addExpenseRow}>
-                      → Add new row
-                    </button>
-                    <div className="recovery-upload-block">
-                      <button className="btn-outline recovery-add-btn">
-                        Upload
+                    {isAuthenticated ? (
+                      <button className="recovery-add-link" type="button" onClick={addExpenseRow}>
+                        → Add new row
                       </button>
+                    ) : (
+                      <Link className="recovery-add-link" to="/upgrade">
+                        → Add new row
+                      </Link>
+                    )}
+                    <div className="recovery-upload-block">
+                      {isAuthenticated ? (
+                        <button className="btn-outline recovery-add-btn">
+                          Upload
+                        </button>
+                      ) : (
+                        <Link className="btn-outline recovery-add-btn" to="/upgrade">
+                          Upload
+                        </Link>
+                      )}
                       <p className="recovery-upload-note">Add photos, receipts, etc.<br />JPG, PNG, PDF, Word</p>
                     </div>
                   </div>
@@ -392,6 +427,7 @@ function RecoveryTracker() {
                         type="button"
                         className="claim-step-main"
                         onClick={() => toggleClaimStep(step.label)}
+                        disabled={!isAuthenticated}
                       >
                         <span className="claim-checkbox">
                           {step.done ? (
@@ -409,9 +445,17 @@ function RecoveryTracker() {
                         placeholder="Add note"
                         onChange={(event) => updateClaimStepNote(step.label, event.target.value)}
                         aria-label={`${step.label} note`}
+                        disabled={!isAuthenticated}
                       />
                     </div>
                   ))}
+                  {!isAuthenticated ? (
+                    <div className="recovery-bottom-action">
+                      <Link className="recovery-add-link" to="/upgrade">
+                        → Upgrade to update claim status
+                      </Link>
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
             </div>
