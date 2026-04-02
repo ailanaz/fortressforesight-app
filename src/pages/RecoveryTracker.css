@@ -259,7 +259,7 @@
 .claim-steps {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 10px;
   padding: 6px 0 0;
 }
 
@@ -267,31 +267,34 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--color-gray-100);
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(7, 31, 105, 0.18);
+  background: #ffffff;
+  border-radius: 4px;
   font-size: 14px;
-  color: var(--color-gray-500);
-}
-
-.claim-step:last-child {
-  border-bottom: none;
+  color: #071f69;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .claim-step.done {
-  color: var(--color-blue);
+  color: #071f69;
+  background: rgba(7, 31, 105, 0.08);
+  border-color: #071f69;
 }
 
 .step-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid var(--color-gray-200);
+  border: 2px solid rgba(7, 31, 105, 0.32);
   flex-shrink: 0;
 }
 
 .claim-step.done .step-dot {
-  background: var(--color-blue);
-  border-color: var(--color-blue);
+  background: #071f69;
+  border-color: #071f69;
 }
 
 @media (max-width: 680px) {

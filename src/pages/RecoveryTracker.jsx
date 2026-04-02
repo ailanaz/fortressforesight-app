@@ -26,6 +26,15 @@ const RECOVERY_SECTIONS = [
   },
 ]
 
+const CLAIM_STATUS_STEPS = [
+  'Claim Filed',
+  'Adjuster Assigned',
+  'Inspection Complete',
+  'Estimate Received',
+  'Payment Issued',
+  'Repairs Complete',
+]
+
 const EXPENSE_COLUMNS = ['Date', 'Details', 'Uploads', 'Amount']
 const EXPENSE_PLACEHOLDER_ROW = ['04/02/2026', '2 nights at Hilton Hotel', 'Receipt, image, doc, none', '245.00']
 
@@ -64,6 +73,7 @@ function RecoveryTracker() {
   const [exteriorDamageRows, setExteriorDamageRows] = useState(() => createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
   const [expenseRows, setExpenseRows] = useState(() => createBlankRows(EXPENSE_COLUMNS.length))
   const [timelineRows, setTimelineRows] = useState(() => createBlankRows(TIME_LOG_COLUMNS.length))
+  const [claimSteps, setClaimSteps] = useState(() => CLAIM_STATUS_STEPS.map((label) => ({ label, done: false })))
   const homeTitle = getHomeTitle(activeHome)
 
   const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
@@ -115,6 +125,14 @@ function RecoveryTracker() {
 
   const addTimelineRow = () => {
     setTimelineRows((current) => [...current, Array(TIME_LOG_COLUMNS.length).fill('')])
+  }
+
+  const toggleClaimStep = (label) => {
+    setClaimSteps((current) => current.map((step) => (
+      step.label === label
+        ? { ...step, done: !step.done }
+        : step
+    )))
   }
 
   return (
@@ -345,18 +363,16 @@ function RecoveryTracker() {
 
               {selectedSection.id === 'claim-status' ? (
                 <div className="claim-steps">
-                  {[
-                    { label: 'Claim Filed', done: false },
-                    { label: 'Adjuster Assigned', done: false },
-                    { label: 'Inspection Complete', done: false },
-                    { label: 'Estimate Received', done: false },
-                    { label: 'Payment Issued', done: false },
-                    { label: 'Repairs Complete', done: false },
-                  ].map((step) => (
-                    <div key={step.label} className={`claim-step${step.done ? ' done' : ''}`}>
+                  {claimSteps.map((step) => (
+                    <button
+                      key={step.label}
+                      type="button"
+                      className={`claim-step${step.done ? ' done' : ''}`}
+                      onClick={() => toggleClaimStep(step.label)}
+                    >
                       <div className="step-dot" />
                       <span>{step.label}</span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               ) : null}
