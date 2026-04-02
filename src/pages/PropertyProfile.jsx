@@ -1322,7 +1322,6 @@ function PropertyProfile() {
   const googleEmbedSrc = getGoogleEmbedSrc(property)
   const orderedSummaryCards = orderSummaryCards(normalizeSummaryCards(property?.summaryCards))
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
-  const zoningCard = orderedSummaryCards.find((card) => card.title === 'Zoning / Future Use')
   const localHazards = buildLocalHazards(property)
 
   const handleSubmit = async (event) => {
@@ -1442,13 +1441,6 @@ function PropertyProfile() {
                     />
                   </div>
                 </article>
-                {zoningCard ? (
-                  <SummaryCard
-                    key={zoningCard.title}
-                    title={zoningCard.title}
-                    rows={zoningCard.rows}
-                  />
-                ) : null}
               </div>
 
               <div className="summary-stack">
@@ -1479,9 +1471,6 @@ function PropertyProfile() {
                     <div className="property-map-placeholder">Search address to load the map.</div>
                   </div>
                 </article>
-                {zoningCard ? (
-                  <SummaryCard key={zoningCard.title} title={zoningCard.title} rows={zoningCard.rows} />
-                ) : null}
               </div>
 
               <div className="summary-stack">
