@@ -176,6 +176,22 @@
   color: var(--color-gray-500);
 }
 
+.timeline-sheet {
+  min-width: 520px;
+}
+
+.timeline-col-date {
+  width: 28%;
+}
+
+.timeline-col-time {
+  width: 18%;
+}
+
+.timeline-col-details {
+  width: 54%;
+}
+
 .empty-room-state {
   text-align: left;
   color: var(--color-gray-500);

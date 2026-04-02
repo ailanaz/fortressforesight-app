@@ -220,7 +220,12 @@ function RecoveryTracker() {
               {selectedSection.id === 'timeline' ? (
                 <div className="expense-sheet-wrap">
                   <div className="expense-sheet-scroll">
-                    <table className="expense-sheet">
+                    <table className="expense-sheet timeline-sheet">
+                      <colgroup>
+                        <col className="timeline-col-date" />
+                        <col className="timeline-col-time" />
+                        <col className="timeline-col-details" />
+                      </colgroup>
                       <thead>
                         <tr>
                           {TIME_LOG_COLUMNS.map((column) => (
