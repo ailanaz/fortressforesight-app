@@ -329,8 +329,9 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  flex: 0 1 auto;
-  min-width: fit-content;
+  flex: 0 0 248px;
+  width: 248px;
+  min-width: 248px;
   padding: 0;
   border: 0;
   background: transparent;
