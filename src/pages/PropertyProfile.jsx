@@ -6,6 +6,7 @@ import './Page.css'
 import './PropertyProfile.css'
 
 const GOOGLE_MAPS_EMBED_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+const FEMA_FLOOD_ZONE_QUERY_URL = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query'
 
 const EMPTY_DETAIL_ROWS = [
   { label: 'Address', value: '\u2014' },
@@ -515,6 +516,131 @@ function createAbortError() {
   return error
 }
 
+function formatFemaZoneLabel(attributes) {
+  const zone = attributes?.FLD_ZONE?.trim()
+  const subtype = attributes?.ZONE_SUBTY?.trim()
+  const base = [zone ? `Zone ${zone}` : '', subtype].filter(Boolean).join(' ').trim()
+
+  if (!base) {
+    return 'Mapped in FEMA layer'
+  }
+
+  if (attributes?.SFHA_TF === 'T') {
+    return `${base} (SFHA)`
+  }
+
+  return base
+}
+
+async function fetchFemaFloodZone(result, signal) {
+  if (!Number.isFinite(result?.lat) || !Number.isFinite(result?.lon)) {
+    return null
+  }
+
+  const params = new URLSearchParams({
+    f: 'json',
+    geometryType: 'esriGeometryPoint',
+    geometry: JSON.stringify({
+      x: Number(result.lon),
+      y: Number(result.lat),
+      spatialReference: { wkid: 4326 },
+    }),
+    inSR: '4326',
+    spatialRel: 'esriSpatialRelIntersects',
+    returnGeometry: 'false',
+    outFields: 'FLD_ZONE,ZONE_SUBTY,SFHA_TF,STATIC_BFE,DEPTH',
+  })
+
+  const response = await fetch(`${FEMA_FLOOD_ZONE_QUERY_URL}?${params.toString()}`, {
+    signal,
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('FEMA flood lookup failed.')
+  }
+
+  const payload = await response.json()
+  const features = Array.isArray(payload?.features) ? payload.features : []
+  const match = features.find((feature) => feature?.attributes?.FLD_ZONE) || features[0]
+
+  if (!match?.attributes) {
+    return {
+      value: 'No FEMA zone returned',
+      pending: false,
+    }
+  }
+
+  return {
+    value: formatFemaZoneLabel(match.attributes),
+    pending: false,
+  }
+}
+
+function applyFemaFloodZone(summaryCards, floodZone) {
+  if (!Array.isArray(summaryCards) || !floodZone) {
+    return summaryCards
+  }
+
+  return summaryCards.map((card) => {
+    if (card.title !== 'Land and Water Conditions') {
+      return card
+    }
+
+    return {
+      ...card,
+      rows: card.rows.map((row) => (
+        row.label === 'FEMA flood zone'
+          ? {
+              ...row,
+              ...floodZone,
+            }
+          : row
+      )),
+    }
+  })
+}
+
+function needsFemaFloodZone(summaryCards) {
+  const landAndWaterCard = Array.isArray(summaryCards)
+    ? summaryCards.find((card) => card.title === 'Land and Water Conditions')
+    : null
+  const floodRow = landAndWaterCard?.rows?.find((row) => row.label === 'FEMA flood zone')
+
+  if (!floodRow) {
+    return false
+  }
+
+  return floodRow.pending || !floodRow.value || floodRow.value === '—'
+}
+
+async function enrichPropertyWithFema(property, signal) {
+  if (!property || !needsFemaFloodZone(property.summaryCards)) {
+    return property
+  }
+
+  try {
+    const floodZone = await fetchFemaFloodZone(property, signal)
+
+    if (!floodZone) {
+      return property
+    }
+
+    return {
+      ...property,
+      summaryCards: applyFemaFloodZone(property.summaryCards, floodZone),
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw error
+    }
+
+    return property
+  }
+}
+
 function buildCensusRoad(components) {
   return [
     components.preDirection,
@@ -730,12 +856,13 @@ async function geocodeAddress(query, signal) {
 async function lookupProperty(query, signal) {
   const result = await geocodeAddress(query, signal)
   const starterProfile = createStarterProfile(result)
-
-  return {
+  const property = {
     ...result,
     ...starterProfile,
     query,
   }
+
+  return enrichPropertyWithFema(property, signal)
 }
 
 function SummaryCard({ title, rows }) {
@@ -839,11 +966,16 @@ function PropertyProfile() {
   const [property, setProperty] = useState(activeHome)
   const requestRef = useRef(null)
   const autoSearchRef = useRef('')
+  const femaBackfillRef = useRef(null)
 
   useEffect(() => {
     return () => {
       if (requestRef.current) {
         requestRef.current.abort()
+      }
+
+      if (femaBackfillRef.current) {
+        femaBackfillRef.current.abort()
       }
     }
   }, [])
@@ -852,6 +984,42 @@ function PropertyProfile() {
     setProperty(activeHome ?? null)
     setQuery((currentValue) => currentValue || activeHome?.query || '')
   }, [activeHome])
+
+  useEffect(() => {
+    if (!property || !needsFemaFloodZone(property.summaryCards)) {
+      return
+    }
+
+    if (femaBackfillRef.current) {
+      femaBackfillRef.current.abort()
+    }
+
+    const controller = new AbortController()
+    femaBackfillRef.current = controller
+
+    ;(async () => {
+      try {
+        const nextProperty = await enrichPropertyWithFema(property, controller.signal)
+
+        if (!controller.signal.aborted && nextProperty !== property) {
+          setProperty(nextProperty)
+          saveActiveHome(nextProperty)
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          // Ignore background FEMA backfill errors and leave the existing placeholder in place.
+        }
+      } finally {
+        if (femaBackfillRef.current === controller) {
+          femaBackfillRef.current = null
+        }
+      }
+    })()
+
+    return () => {
+      controller.abort()
+    }
+  }, [property, saveActiveHome])
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search)
