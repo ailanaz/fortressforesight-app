@@ -1,15 +1,31 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useAuth } from './AuthContext'
 import { persistHome, readStoredHome } from '../utils/homeStorage'
 
 const HomeContext = createContext(null)
 
 export function HomeProvider({ children }) {
+  const { isAuthenticated, loading } = useAuth()
   const [activeHome, setActiveHome] = useState(() => readStoredHome())
+
+  useEffect(() => {
+    if (loading) {
+      return
+    }
+
+    if (!isAuthenticated) {
+      setActiveHome(null)
+      persistHome(null)
+    }
+  }, [isAuthenticated, loading])
 
   const saveActiveHome = (home) => {
     setActiveHome(home)
-    persistHome(home)
+
+    if (isAuthenticated) {
+      persistHome(home)
+    }
   }
 
   const clearActiveHome = () => {
