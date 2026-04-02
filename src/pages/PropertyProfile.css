@@ -458,7 +458,7 @@
 .local-hazard-copy {
   font-size: 13px;
   line-height: 1.55;
-  color: var(--color-red);
+  color: #071f69;
 }
 
 .local-hazards-empty {
