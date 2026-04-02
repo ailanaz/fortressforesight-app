@@ -176,7 +176,7 @@
 }
 
 .expense-sheet input::placeholder {
-  color: var(--color-gray-500);
+  color: rgba(7, 31, 105, 0.28);
 }
 
 .timeline-sheet {
