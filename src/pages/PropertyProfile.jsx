@@ -242,11 +242,11 @@ function getHazardLevel(definition, stateCode) {
 
 function getHazardStatus(level) {
   if (level === 'primary') {
-    return 'Area-based relevance noted'
+    return 'Primary area relevance'
   }
 
   if (level === 'seasonal') {
-    return 'May be relevant in this area'
+    return 'Seasonal area relevance'
   }
 
   return 'Limited area relevance'
