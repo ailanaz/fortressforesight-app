@@ -305,7 +305,7 @@
 .claim-step {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
   width: 100%;
   padding: 6px 2px;
   border: 0;
@@ -329,8 +329,8 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  flex: 1;
-  min-width: 0;
+  flex: 0 1 auto;
+  min-width: fit-content;
   padding: 0;
   border: 0;
   background: transparent;
