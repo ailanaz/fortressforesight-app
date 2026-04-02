@@ -35,13 +35,13 @@ const EXPENSE_ROWS = [
   ['', '', '', '', '', ''],
 ]
 
-const TIME_LOG_COLUMNS = ['Date', 'Time', 'Type', 'Contact / Company', 'Details', 'Next Step']
+const TIME_LOG_COLUMNS = ['Date', 'Time', 'Details']
 const TIME_LOG_ROWS = [
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', ''],
 ]
 
 const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Damage Type', 'Severity', 'Photos', 'Notes', 'Next Step']
