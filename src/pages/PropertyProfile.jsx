@@ -287,6 +287,7 @@ function buildLocalHazards(property) {
         level,
         status: getHazardStatus(level),
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
+        source: definition.source,
       }
     })
     .filter(Boolean)
