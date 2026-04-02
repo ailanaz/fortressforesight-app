@@ -44,6 +44,16 @@ const TIME_LOG_ROWS = [
   ['', '', '', '', '', ''],
 ]
 
+const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Damage Type', 'Severity', 'Photos', 'Notes', 'Next Step']
+const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Damage Type', 'Severity', 'Photos', 'Notes', 'Next Step']
+const DAMAGE_LOG_ROWS = [
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+]
+
 function getSectionTabClassName(sectionId, activeSection) {
   const slug = sectionId.toLowerCase().replace(/\s+/g, '-')
   return `recovery-filter-tab recovery-filter-tab-${slug}${activeSection === sectionId ? ' active' : ''}`
@@ -159,8 +169,35 @@ function RecoveryTracker() {
                       {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
                     </button>
                   </div>
-                  <div className="empty-room-state">
-                    <p>No damage logged yet.</p>
+                  <div className="expense-sheet-wrap">
+                    <div className="expense-sheet-scroll">
+                      <table className="expense-sheet">
+                        <thead>
+                          <tr>
+                            {(damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS : EXTERIOR_DAMAGE_COLUMNS).map((column) => (
+                              <th key={column}>{column}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DAMAGE_LOG_ROWS.map((row, rowIndex) => (
+                            <tr key={`damage-row-${damageScope}-${rowIndex}`}>
+                              {row.map((cell, cellIndex) => (
+                                <td key={`damage-cell-${damageScope}-${rowIndex}-${cellIndex}`}>
+                                  <input
+                                    type="text"
+                                    value={cell}
+                                    readOnly
+                                    placeholder=""
+                                    aria-label={`${damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS[cellIndex] : EXTERIOR_DAMAGE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <div className="recovery-guide-block">
                     <h3 className="guide-title">Working with Adjusters</h3>
