@@ -14,7 +14,7 @@ function Login({ initialMode = 'login' }) {
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
-  const { user, loading, isAuthenticated, signIn, signOut, signUp, hasFirebaseConfig } = useAuth()
+  const { user, loading, isAuthenticated, signIn, signOut, signUp, deleteAccount, hasFirebaseConfig } = useAuth()
 
   const changeMode = (nextMode) => {
     setMode(nextMode)
@@ -190,16 +190,33 @@ function Login({ initialMode = 'login' }) {
 
           <div className="login-utility-row login-utility-row-centered">
             {isAuthenticated ? (
-              <button
-                className="login-secondary-link"
-                type="button"
-                onClick={async () => {
-                  await signOut()
-                  setError('')
-                }}
-              >
-                Sign out
-              </button>
+              <div className="login-account-links">
+                <button
+                  className="login-secondary-link"
+                  type="button"
+                  onClick={async () => {
+                    await signOut()
+                    setError('')
+                  }}
+                >
+                  Sign out
+                </button>
+                <button
+                  className="login-secondary-link login-danger-link"
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await deleteAccount()
+                      setError('')
+                      navigate('/home')
+                    } catch (authError) {
+                      setError(authError?.message || 'We could not delete the account right now.')
+                    }
+                  }}
+                >
+                  Delete account
+                </button>
+              </div>
             ) : (
               <button
                 className="login-secondary-link"

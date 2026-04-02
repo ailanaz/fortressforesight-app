@@ -232,6 +232,16 @@
   justify-content: center;
 }
 
+.login-account-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-danger-link {
+  color: #b42318;
+}
+
 @media (max-width: 520px) {
   .login-panel {
     min-height: 0;

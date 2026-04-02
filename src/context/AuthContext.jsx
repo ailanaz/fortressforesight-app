@@ -3,12 +3,13 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   browserLocalPersistence,
   createUserWithEmailAndPassword,
+  deleteUser,
   onAuthStateChanged,
   setPersistence,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from 'firebase/auth'
-import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
+import { deleteDoc, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
 import { firebaseAuth, firebaseDb, hasFirebaseConfig } from '../firebase'
 
 const AuthContext = createContext(null)
@@ -113,6 +114,24 @@ export function AuthProvider({ children }) {
     await firebaseSignOut(firebaseAuth)
   }
 
+  const deleteAccount = async () => {
+    if (!firebaseAuth || !hasFirebaseConfig || !firebaseAuth.currentUser) {
+      throw createConfigError()
+    }
+
+    const currentUser = firebaseAuth.currentUser
+
+    if (firebaseDb) {
+      try {
+        await deleteDoc(doc(firebaseDb, 'users', currentUser.uid))
+      } catch (error) {
+        console.warn('User profile delete is not ready yet.', error)
+      }
+    }
+
+    await deleteUser(currentUser)
+  }
+
   const value = useMemo(
     () => ({
       user,
@@ -124,6 +143,7 @@ export function AuthProvider({ children }) {
       signIn,
       signUp,
       signOut,
+      deleteAccount,
       hasFirebaseConfig,
     }),
     [loading, profile, user],
