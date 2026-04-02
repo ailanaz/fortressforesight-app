@@ -37,6 +37,14 @@ async function ensureUserProfile(user) {
   )
 }
 
+async function syncUserProfile(user) {
+  try {
+    await ensureUserProfile(user)
+  } catch (error) {
+    console.warn('User profile sync is not ready yet.', error)
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
@@ -82,7 +90,7 @@ export function AuthProvider({ children }) {
 
     await setPersistence(firebaseAuth, browserLocalPersistence)
     const credential = await signInWithEmailAndPassword(firebaseAuth, email, password)
-    await ensureUserProfile(credential.user)
+    await syncUserProfile(credential.user)
     return credential.user
   }
 
@@ -93,7 +101,7 @@ export function AuthProvider({ children }) {
 
     await setPersistence(firebaseAuth, browserLocalPersistence)
     const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password)
-    await ensureUserProfile(credential.user)
+    await syncUserProfile(credential.user)
     return credential.user
   }
 
