@@ -6,20 +6,23 @@ import './HomePage.css'
 const RAIL_ITEMS = [
   {
     label: 'Clarity',
-    alt: 'Clarity before disaster',
-    src: '/branding/home/clarity.mp4?v=20260401-1',
-    to: '/readiness',
+    title: 'See the property clearly',
+    text: 'Go to Search to review the map, Risk Summary, and local hazard context for one address.',
+    cta: 'Open Search',
+    to: '/search',
   },
   {
     label: 'Structure',
-    alt: 'Structure during crisis',
-    src: '/branding/home/structure.mp4?v=20260401-1',
+    title: 'Get organized before you need to',
+    text: 'Go to Documents to keep policies, warranties, inspections, and receipts tied to the home.',
+    cta: 'Open Documents',
     to: '/documents',
   },
   {
     label: 'Confidence',
-    alt: 'Confidence through recovery',
-    src: '/branding/home/confidence.mp4?v=20260401-1',
+    title: 'Keep recovery in one place',
+    text: 'Go to Recovery to track damage, expenses, claim steps, and what needs to happen next.',
+    cta: 'Open Recovery',
     to: '/recovery',
   },
 ]
@@ -154,37 +157,21 @@ function HomePage() {
         <aside className="home-stage-side">
           {RAIL_ITEMS.map((item) => (
             item.to ? (
-              <Link key={item.alt} className="home-side-card home-side-card-link card" to={item.to}>
+              <Link key={item.label} className="home-side-card home-side-card-link card" to={item.to}>
                 <p className="home-side-label">{item.label}</p>
-                <div className="home-side-media">
-                  <video
-                    className="home-side-video"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    aria-label={item.alt}
-                  >
-                    <source src={item.src} type="video/mp4" />
-                  </video>
+                <div className="home-side-content">
+                  <h2 className="home-side-title">{item.title}</h2>
+                  <p className="home-side-text">{item.text}</p>
+                  <span className="home-side-cta">{item.cta}</span>
                 </div>
               </Link>
             ) : (
-              <article key={item.alt} className="home-side-card card">
+              <article key={item.label} className="home-side-card card">
                 <p className="home-side-label">{item.label}</p>
-                <div className="home-side-media">
-                  <video
-                    className="home-side-video"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    aria-label={item.alt}
-                  >
-                    <source src={item.src} type="video/mp4" />
-                  </video>
+                <div className="home-side-content">
+                  <h2 className="home-side-title">{item.title}</h2>
+                  <p className="home-side-text">{item.text}</p>
+                  <span className="home-side-cta">{item.cta}</span>
                 </div>
               </article>
             )
