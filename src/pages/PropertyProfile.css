@@ -365,7 +365,7 @@
 
 .summary-row-link {
   width: fit-content;
-  color: #071f69;
+  color: var(--color-red);
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;
@@ -377,7 +377,7 @@
 
 .summary-row-source {
   width: fit-content;
-  color: var(--color-gray-500);
+  color: var(--color-red);
   font-size: 12px;
   font-weight: 600;
 }
@@ -440,7 +440,12 @@
   color: var(--color-red);
 }
 
-.local-hazard-copy,
+.local-hazard-copy {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-red);
+}
+
 .local-hazards-empty {
   font-size: 13px;
   line-height: 1.55;
@@ -452,7 +457,7 @@
   margin-top: 2px;
   font-size: 12px;
   font-weight: 700;
-  color: #071f69;
+  color: var(--color-red);
   text-decoration: none;
 }
 
