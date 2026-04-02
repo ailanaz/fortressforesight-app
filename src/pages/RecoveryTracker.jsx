@@ -27,35 +27,22 @@ const RECOVERY_SECTIONS = [
 ]
 
 const EXPENSE_COLUMNS = ['Date', 'Category', 'Vendor', 'Amount', 'Notes', 'Receipt']
-const EXPENSE_ROWS = [
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-]
+const EXPENSE_PLACEHOLDER_ROW = ['04/02/2026', 'Hotel', 'Hilton', '245.00', '2 nights after storm', 'Receipt, image, doc, none']
 
-const TIME_LOG_COLUMNS = ['Date', 'Time', 'Details']
-const TIME_LOG_ROWS = [
-  ['', '', ''],
-  ['', '', ''],
-  ['', '', ''],
-  ['', '', ''],
-  ['', '', ''],
-]
+const TIME_LOG_COLUMNS = ['Date', 'Time', 'Notes']
+const TIME_LOG_PLACEHOLDER_ROW = ['04/02/2026', '8:30 AM', 'Called insurer and opened claim']
 
-const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Damage Type', 'Severity', 'Photos', 'Notes', 'Next Step']
-const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Damage Type', 'Severity', 'Photos', 'Notes', 'Next Step']
-const DAMAGE_LOG_ROWS = [
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-  ['', '', '', '', '', ''],
-]
+const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Notes', 'Uploads']
+const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Notes', 'Uploads']
+const INTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Kitchen', 'Ceiling stain and wall damage', 'Receipt, image, doc, none']
+const EXTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Roof', 'Missing shingles and gutter damage', 'Receipt, image, doc, none']
 
 function createBlankRows(columns, count = 5) {
   return Array.from({ length: count }, () => Array(columns).fill(''))
+}
+
+function getDamagePlaceholderRow(scope) {
+  return scope === 'Interior' ? INTERIOR_DAMAGE_PLACEHOLDER_ROW : EXTERIOR_DAMAGE_PLACEHOLDER_ROW
 }
 
 function getSectionTabClassName(sectionId, activeSection) {
@@ -104,12 +91,6 @@ function RecoveryTracker() {
         ? row.map((cell, innerIndex) => (innerIndex === cellIndex ? value : cell))
         : row
     )))
-  }
-
-  const addDamageRow = () => {
-    const setter = damageScope === 'Interior' ? setInteriorDamageRows : setExteriorDamageRows
-    const width = damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS.length : EXTERIOR_DAMAGE_COLUMNS.length
-    setter((current) => [...current, Array(width).fill('')])
   }
 
   const updateExpenseCell = (rowIndex, cellIndex, value) => {
@@ -233,7 +214,7 @@ function RecoveryTracker() {
                                   <input
                                     type="text"
                                     value={cell}
-                                    placeholder=""
+                                    placeholder={rowIndex === 0 ? getDamagePlaceholderRow(damageScope)[cellIndex] : ''}
                                     onChange={(event) => updateDamageCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS[cellIndex] : EXTERIOR_DAMAGE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
                                   />
@@ -246,9 +227,6 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="btn-outline recovery-add-btn" onClick={addDamageRow}>
-                      {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
-                    </button>
                     <div className="recovery-upload-block">
                       <button className="btn-outline recovery-add-btn">
                         Upload
@@ -294,7 +272,7 @@ function RecoveryTracker() {
                                   <input
                                     type="text"
                                     value={cell}
-                                    placeholder=""
+                                    placeholder={rowIndex === 0 ? TIME_LOG_PLACEHOLDER_ROW[cellIndex] : ''}
                                     onChange={(event) => updateTimelineCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${TIME_LOG_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
                                   />
@@ -334,7 +312,7 @@ function RecoveryTracker() {
                                   <input
                                     type="text"
                                     value={cell}
-                                    placeholder=""
+                                    placeholder={rowIndex === 0 ? EXPENSE_PLACEHOLDER_ROW[cellIndex] : ''}
                                     onChange={(event) => updateExpenseCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${EXPENSE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
                                   />
