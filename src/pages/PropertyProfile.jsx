@@ -1211,9 +1211,6 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
       <div className="summary-card-header local-hazards-header">
         <div>
           <p className="summary-card-title">Hazard Considerations</p>
-          <p className="local-hazards-intro">
-            Area-based hazard context that may affect preparedness, maintenance, and recovery for this property.
-          </p>
         </div>
       </div>
 
@@ -1221,7 +1218,6 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
         <div className="local-hazards-grid">
           {hazards.map((hazard) => (
             <div key={hazard.id} className="local-hazard-item">
-              <p className="local-hazard-label">Hazard</p>
               <p className="local-hazard-title">{hazard.title}</p>
               <p className="local-hazard-label">Organization</p>
               <p className="local-hazard-organization">{hazard.organizationLabel}</p>
