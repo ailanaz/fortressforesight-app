@@ -1263,7 +1263,7 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
                   ))}
                 </div>
               ) : null}
-              <p className="local-hazard-label">Description</p>
+              <p className="local-hazard-label">Considerations</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
             </div>
           ))}
