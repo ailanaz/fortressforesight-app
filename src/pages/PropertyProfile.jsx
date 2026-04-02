@@ -7,6 +7,8 @@ import './PropertyProfile.css'
 
 const GOOGLE_MAPS_EMBED_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const FEMA_FLOOD_ZONE_QUERY_URL = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query'
+const NOAA_POINTS_API_URL = 'https://api.weather.gov/points'
+const NOAA_ALERTS_API_URL = 'https://api.weather.gov/alerts/active'
 
 const EMPTY_DETAIL_ROWS = [
   { label: 'Address', value: '\u2014' },
@@ -78,8 +80,8 @@ const EMPTY_SUMMARY_CARDS = [
         pending: true,
         source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
       },
-      { label: 'Hydrant / station review', value: '\u2014', pending: true, source: { label: 'Local / State' } },
-      { label: 'Area claim pressure', value: '\u2014', pending: true, source: { label: 'Local / State' } },
+      { label: 'NOAA active alerts', value: '\u2014', pending: true, source: { label: 'NOAA', href: 'https://www.weather.gov/' } },
+      { label: 'NWS forecast office', value: '\u2014', pending: true, source: { label: 'NOAA', href: 'https://www.weather.gov/' } },
     ],
   },
 ]
@@ -309,6 +311,18 @@ function mergeCardRows(...cards) {
   return cards.flatMap((card) => card?.rows || [])
 }
 
+function getAreaResponseRowByLabel(rows, label) {
+  return rows?.find((row) => row.label === label) || null
+}
+
+function normalizeAreaResponseRows(rows) {
+  return [
+    getAreaResponseRowByLabel(rows, 'Fire response class') || EMPTY_SUMMARY_CARDS[3].rows[0],
+    getAreaResponseRowByLabel(rows, 'NOAA active alerts') || EMPTY_SUMMARY_CARDS[3].rows[1],
+    getAreaResponseRowByLabel(rows, 'NWS forecast office') || EMPTY_SUMMARY_CARDS[3].rows[2],
+  ]
+}
+
 function normalizeSummaryCards(cards) {
   if (!Array.isArray(cards) || !cards.length) {
     return EMPTY_SUMMARY_CARDS
@@ -333,9 +347,17 @@ function normalizeSummaryCards(cards) {
     },
     existingAreaResponseCard || {
       title: 'Area Response Context',
-      rows: responseCard?.rows?.length ? responseCard.rows : EMPTY_SUMMARY_CARDS[3].rows,
+      rows: responseCard?.rows?.length ? normalizeAreaResponseRows(responseCard.rows) : EMPTY_SUMMARY_CARDS[3].rows,
     },
   ]
+    .map((card) => (
+      card.title === 'Area Response Context'
+        ? {
+            ...card,
+            rows: normalizeAreaResponseRows(card.rows),
+          }
+        : card
+    ))
 }
 
 function PendingSummaryInfo() {
@@ -489,14 +511,24 @@ function createStarterProfile(result) {
         title: 'Area Response Context',
         rows: [
           {
-        label: 'Fire response class',
-        value: 'Pending local source',
-        pending: true,
-        source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
-      },
-      { label: 'Hydrant / station review', value: 'Pending local source', pending: true, source: { label: 'Local / State' } },
-      { label: 'Area claim pressure', value: 'Pending claims source', pending: true, source: { label: 'Local / State' } },
-    ],
+            label: 'Fire response class',
+            value: 'Pending local source',
+            pending: true,
+            source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
+          },
+          {
+            label: 'NOAA active alerts',
+            value: 'Pending NOAA source',
+            pending: true,
+            source: { label: 'NOAA', href: 'https://www.weather.gov/' },
+          },
+          {
+            label: 'NWS forecast office',
+            value: 'Pending NOAA source',
+            pending: true,
+            source: { label: 'NOAA', href: 'https://www.weather.gov/' },
+          },
+        ],
       },
       {
         title: 'Zoning / Future Use',
@@ -639,6 +671,174 @@ async function enrichPropertyWithFema(property, signal) {
 
     return property
   }
+}
+
+function getNoaaAlertLabel(features) {
+  const events = features
+    .map((feature) => feature?.properties?.event?.trim())
+    .filter(Boolean)
+
+  if (!events.length) {
+    return 'None active at time of lookup'
+  }
+
+  if (events.length === 1) {
+    return events[0]
+  }
+
+  return `${events.length} active alerts`
+}
+
+async function fetchNoaaContext(result, signal) {
+  if (!Number.isFinite(result?.lat) || !Number.isFinite(result?.lon)) {
+    return null
+  }
+
+  const lat = Number(result.lat).toFixed(4)
+  const lon = Number(result.lon).toFixed(4)
+  const pointsResponse = await fetch(`${NOAA_POINTS_API_URL}/${lat},${lon}`, {
+    signal,
+    headers: {
+      Accept: 'application/geo+json',
+    },
+  })
+
+  if (!pointsResponse.ok) {
+    throw new Error('NOAA points lookup failed.')
+  }
+
+  const pointsPayload = await pointsResponse.json()
+  const properties = pointsPayload?.properties ?? {}
+  let officeLabel = properties.cwa || properties.gridId || 'Not returned'
+
+  if (properties.forecastOffice) {
+    try {
+      const officeResponse = await fetch(properties.forecastOffice, {
+        signal,
+        headers: {
+          Accept: 'application/geo+json',
+        },
+      })
+
+      if (officeResponse.ok) {
+        const officePayload = await officeResponse.json()
+        officeLabel = officePayload?.name || officeLabel
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        throw error
+      }
+    }
+  }
+
+  const alertsParams = new URLSearchParams({
+    point: `${lat},${lon}`,
+  })
+
+  const alertsResponse = await fetch(`${NOAA_ALERTS_API_URL}?${alertsParams.toString()}`, {
+    signal,
+    headers: {
+      Accept: 'application/geo+json',
+    },
+  })
+
+  if (!alertsResponse.ok) {
+    throw new Error('NOAA alerts lookup failed.')
+  }
+
+  const alertsPayload = await alertsResponse.json()
+  const features = Array.isArray(alertsPayload?.features) ? alertsPayload.features : []
+
+  return {
+    officeLabel,
+    alertsLabel: getNoaaAlertLabel(features),
+  }
+}
+
+function applyNoaaContext(summaryCards, noaaContext) {
+  if (!Array.isArray(summaryCards) || !noaaContext) {
+    return summaryCards
+  }
+
+  return summaryCards.map((card) => {
+    if (card.title !== 'Area Response Context') {
+      return card
+    }
+
+    const rows = normalizeAreaResponseRows(card.rows).map((row) => {
+      if (row.label === 'NOAA active alerts') {
+        return {
+          ...row,
+          value: noaaContext.alertsLabel,
+          pending: false,
+        }
+      }
+
+      if (row.label === 'NWS forecast office') {
+        return {
+          ...row,
+          value: noaaContext.officeLabel,
+          pending: false,
+        }
+      }
+
+      return row
+    })
+
+    return {
+      ...card,
+      rows,
+    }
+  })
+}
+
+function needsNoaaContext(summaryCards) {
+  const areaResponseCard = Array.isArray(summaryCards)
+    ? summaryCards.find((card) => card.title === 'Area Response Context')
+    : null
+  const activeAlertsRow = areaResponseCard?.rows?.find((row) => row.label === 'NOAA active alerts')
+  const officeRow = areaResponseCard?.rows?.find((row) => row.label === 'NWS forecast office')
+
+  return Boolean(
+    !activeAlertsRow ||
+    !officeRow ||
+    activeAlertsRow.pending ||
+    officeRow.pending ||
+    !activeAlertsRow.value ||
+    !officeRow.value ||
+    activeAlertsRow.value === '—' ||
+    officeRow.value === '—',
+  )
+}
+
+async function enrichPropertyWithNoaa(property, signal) {
+  if (!property || !needsNoaaContext(property.summaryCards)) {
+    return property
+  }
+
+  try {
+    const noaaContext = await fetchNoaaContext(property, signal)
+
+    if (!noaaContext) {
+      return property
+    }
+
+    return {
+      ...property,
+      summaryCards: applyNoaaContext(property.summaryCards, noaaContext),
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw error
+    }
+
+    return property
+  }
+}
+
+async function enrichPropertyWithSearchSources(property, signal) {
+  const withFema = await enrichPropertyWithFema(property, signal)
+  return enrichPropertyWithNoaa(withFema, signal)
 }
 
 function buildCensusRoad(components) {
@@ -862,7 +1062,7 @@ async function lookupProperty(query, signal) {
     query,
   }
 
-  return enrichPropertyWithFema(property, signal)
+  return enrichPropertyWithSearchSources(property, signal)
 }
 
 function SummaryCard({ title, rows }) {
@@ -966,7 +1166,7 @@ function PropertyProfile() {
   const [property, setProperty] = useState(activeHome)
   const requestRef = useRef(null)
   const autoSearchRef = useRef('')
-  const femaBackfillRef = useRef(null)
+  const sourceBackfillRef = useRef(null)
 
   useEffect(() => {
     return () => {
@@ -974,8 +1174,8 @@ function PropertyProfile() {
         requestRef.current.abort()
       }
 
-      if (femaBackfillRef.current) {
-        femaBackfillRef.current.abort()
+      if (sourceBackfillRef.current) {
+        sourceBackfillRef.current.abort()
       }
     }
   }, [])
@@ -986,20 +1186,20 @@ function PropertyProfile() {
   }, [activeHome])
 
   useEffect(() => {
-    if (!property || !needsFemaFloodZone(property.summaryCards)) {
+    if (!property || (!needsFemaFloodZone(property.summaryCards) && !needsNoaaContext(property.summaryCards))) {
       return
     }
 
-    if (femaBackfillRef.current) {
-      femaBackfillRef.current.abort()
+    if (sourceBackfillRef.current) {
+      sourceBackfillRef.current.abort()
     }
 
     const controller = new AbortController()
-    femaBackfillRef.current = controller
+    sourceBackfillRef.current = controller
 
     ;(async () => {
       try {
-        const nextProperty = await enrichPropertyWithFema(property, controller.signal)
+        const nextProperty = await enrichPropertyWithSearchSources(property, controller.signal)
 
         if (!controller.signal.aborted && nextProperty !== property) {
           setProperty(nextProperty)
@@ -1007,11 +1207,11 @@ function PropertyProfile() {
         }
       } catch (error) {
         if (error.name !== 'AbortError') {
-          // Ignore background FEMA backfill errors and leave the existing placeholder in place.
+          // Ignore background source backfill errors and leave the existing placeholders in place.
         }
       } finally {
-        if (femaBackfillRef.current === controller) {
-          femaBackfillRef.current = null
+        if (sourceBackfillRef.current === controller) {
+          sourceBackfillRef.current = null
         }
       }
     })()
