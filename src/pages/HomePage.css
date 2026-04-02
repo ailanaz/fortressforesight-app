@@ -164,17 +164,18 @@
 .home-search-form {
   display: block;
   align-items: center;
-  margin-top: 2px;
+  margin-top: 8px;
   margin-bottom: 1.5%;
 }
 
 .home-stage-search-label {
   margin-top: 12px;
+  margin-bottom: 0;
 }
 
 @media (min-width: 981px) {
   .home-search-form {
-    transform: translateY(-9%);
+    transform: none;
   }
 }
 
@@ -289,7 +290,11 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-yellow);
+  color: #071f69;
+}
+
+.home-side-cta::after {
+  content: ' \2192';
 }
 
 .home-journey-track {
