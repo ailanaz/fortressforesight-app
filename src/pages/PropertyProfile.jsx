@@ -74,14 +74,9 @@ const EMPTY_SUMMARY_CARDS = [
   {
     title: 'Area Response Context',
     rows: [
-      {
-        label: 'Fire response class',
-        value: '\u2014',
-        pending: true,
-        source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
-      },
       { label: 'NOAA active alerts', value: '\u2014', pending: true, source: { label: 'NOAA', href: 'https://www.weather.gov/' } },
       { label: 'NWS forecast office', value: '\u2014', pending: true, source: { label: 'NOAA', href: 'https://www.weather.gov/' } },
+      { label: 'USFS wildfire context', value: '\u2014', pending: true, source: { label: 'USFS', href: 'https://www.fs.usda.gov/' } },
     ],
   },
 ]
@@ -269,6 +264,16 @@ function getHazardStatus(level) {
   return 'Limited area relevance'
 }
 
+function getUsfsWildfireStatus(stateCode) {
+  const wildfireDefinition = HAZARD_DEFINITIONS.find((definition) => definition.id === 'wildfire')
+
+  if (!wildfireDefinition || !stateCode) {
+    return 'Limited area relevance'
+  }
+
+  return getHazardStatus(getHazardLevel(wildfireDefinition, stateCode))
+}
+
 function buildLocalHazards(property) {
   const stateCode = normalizeStateCode(property?.address?.state)
 
@@ -317,9 +322,9 @@ function getAreaResponseRowByLabel(rows, label) {
 
 function normalizeAreaResponseRows(rows) {
   return [
-    getAreaResponseRowByLabel(rows, 'Fire response class') || EMPTY_SUMMARY_CARDS[3].rows[0],
-    getAreaResponseRowByLabel(rows, 'NOAA active alerts') || EMPTY_SUMMARY_CARDS[3].rows[1],
-    getAreaResponseRowByLabel(rows, 'NWS forecast office') || EMPTY_SUMMARY_CARDS[3].rows[2],
+    getAreaResponseRowByLabel(rows, 'NOAA active alerts') || EMPTY_SUMMARY_CARDS[3].rows[0],
+    getAreaResponseRowByLabel(rows, 'NWS forecast office') || EMPTY_SUMMARY_CARDS[3].rows[1],
+    getAreaResponseRowByLabel(rows, 'USFS wildfire context') || EMPTY_SUMMARY_CARDS[3].rows[2],
   ]
 }
 
@@ -511,12 +516,6 @@ function createStarterProfile(result) {
         title: 'Area Response Context',
         rows: [
           {
-            label: 'Fire response class',
-            value: 'Pending local source',
-            pending: true,
-            source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
-          },
-          {
             label: 'NOAA active alerts',
             value: 'Pending NOAA source',
             pending: true,
@@ -527,6 +526,12 @@ function createStarterProfile(result) {
             value: 'Pending NOAA source',
             pending: true,
             source: { label: 'NOAA', href: 'https://www.weather.gov/' },
+          },
+          {
+            label: 'USFS wildfire context',
+            value: 'Pending USFS source',
+            pending: true,
+            source: { label: 'USFS', href: 'https://www.fs.usda.gov/' },
           },
         ],
       },
@@ -836,9 +841,62 @@ async function enrichPropertyWithNoaa(property, signal) {
   }
 }
 
+function needsUsfsWildfireContext(summaryCards) {
+  const areaResponseCard = Array.isArray(summaryCards)
+    ? summaryCards.find((card) => card.title === 'Area Response Context')
+    : null
+  const wildfireRow = areaResponseCard?.rows?.find((row) => row.label === 'USFS wildfire context')
+
+  return Boolean(
+    !wildfireRow ||
+    wildfireRow.pending ||
+    !wildfireRow.value ||
+    wildfireRow.value === '—',
+  )
+}
+
+function applyUsfsWildfireContext(summaryCards, wildfireValue) {
+  if (!Array.isArray(summaryCards) || !wildfireValue) {
+    return summaryCards
+  }
+
+  return summaryCards.map((card) => {
+    if (card.title !== 'Area Response Context') {
+      return card
+    }
+
+    return {
+      ...card,
+      rows: normalizeAreaResponseRows(card.rows).map((row) => (
+        row.label === 'USFS wildfire context'
+          ? {
+              ...row,
+              value: wildfireValue,
+              pending: false,
+            }
+          : row
+      )),
+    }
+  })
+}
+
+async function enrichPropertyWithUsfs(property) {
+  if (!property || !needsUsfsWildfireContext(property.summaryCards)) {
+    return property
+  }
+
+  const stateCode = normalizeStateCode(property?.address?.state)
+
+  return {
+    ...property,
+    summaryCards: applyUsfsWildfireContext(property.summaryCards, getUsfsWildfireStatus(stateCode)),
+  }
+}
+
 async function enrichPropertyWithSearchSources(property, signal) {
   const withFema = await enrichPropertyWithFema(property, signal)
-  return enrichPropertyWithNoaa(withFema, signal)
+  const withNoaa = await enrichPropertyWithNoaa(withFema, signal)
+  return enrichPropertyWithUsfs(withNoaa)
 }
 
 function buildCensusRoad(components) {
@@ -1186,7 +1244,7 @@ function PropertyProfile() {
   }, [activeHome])
 
   useEffect(() => {
-    if (!property || (!needsFemaFloodZone(property.summaryCards) && !needsNoaaContext(property.summaryCards))) {
+    if (!property || (!needsFemaFloodZone(property.summaryCards) && !needsNoaaContext(property.summaryCards) && !needsUsfsWildfireContext(property.summaryCards))) {
       return
     }
 

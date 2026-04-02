@@ -356,7 +356,7 @@
 .summary-value {
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-gray-900);
+  color: var(--color-red);
 }
 
 .summary-value-muted {
@@ -425,19 +425,19 @@
 .local-hazard-status {
   font-size: 13px;
   font-weight: 600;
-  color: #071f69;
+  color: var(--color-red);
 }
 
 .local-hazard-status-primary {
-  color: #071f69;
+  color: var(--color-red);
 }
 
 .local-hazard-status-seasonal {
-  color: #29469f;
+  color: var(--color-red);
 }
 
 .local-hazard-status-limited {
-  color: var(--color-gray-500);
+  color: var(--color-red);
 }
 
 .local-hazard-copy,
