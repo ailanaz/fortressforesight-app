@@ -35,6 +35,15 @@ const EXPENSE_ROWS = [
   ['', '', '', '', '', ''],
 ]
 
+const TIME_LOG_COLUMNS = ['Date', 'Time', 'Type', 'Contact / Company', 'Details', 'Next Step']
+const TIME_LOG_ROWS = [
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+  ['', '', '', '', '', ''],
+]
+
 function getSectionTabClassName(sectionId, activeSection) {
   const slug = sectionId.toLowerCase().replace(/\s+/g, '-')
   return `recovery-filter-tab recovery-filter-tab-${slug}${activeSection === sectionId ? ' active' : ''}`
@@ -167,8 +176,35 @@ function RecoveryTracker() {
               ) : null}
 
               {selectedSection.id === 'timeline' ? (
-                <div className="empty-room-state">
-                  <p>No timeline events logged yet.</p>
+                <div className="expense-sheet-wrap">
+                  <div className="expense-sheet-scroll">
+                    <table className="expense-sheet">
+                      <thead>
+                        <tr>
+                          {TIME_LOG_COLUMNS.map((column) => (
+                            <th key={column}>{column}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {TIME_LOG_ROWS.map((row, rowIndex) => (
+                          <tr key={`timeline-row-${rowIndex}`}>
+                            {row.map((cell, cellIndex) => (
+                              <td key={`timeline-cell-${rowIndex}-${cellIndex}`}>
+                                <input
+                                  type="text"
+                                  value={cell}
+                                  readOnly
+                                  placeholder=""
+                                  aria-label={`${TIME_LOG_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                />
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ) : null}
 
