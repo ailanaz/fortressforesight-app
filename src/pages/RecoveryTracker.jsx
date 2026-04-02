@@ -54,6 +54,10 @@ const DAMAGE_LOG_ROWS = [
   ['', '', '', '', '', ''],
 ]
 
+function createBlankRows(columns, count = 5) {
+  return Array.from({ length: count }, () => Array(columns).fill(''))
+}
+
 function getSectionTabClassName(sectionId, activeSection) {
   const slug = sectionId.toLowerCase().replace(/\s+/g, '-')
   return `recovery-filter-tab recovery-filter-tab-${slug}${activeSection === sectionId ? ' active' : ''}`
@@ -69,6 +73,10 @@ function RecoveryTracker() {
   const initialSection = RECOVERY_SECTIONS.some((section) => section.id === sectionParam) ? sectionParam : 'damage-log'
   const [activeSection, setActiveSection] = useState(initialSection)
   const [openSection, setOpenSection] = useState(initialSection)
+  const [interiorDamageRows, setInteriorDamageRows] = useState(() => createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
+  const [exteriorDamageRows, setExteriorDamageRows] = useState(() => createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
+  const [expenseRows, setExpenseRows] = useState(() => createBlankRows(EXPENSE_COLUMNS.length))
+  const [timelineRows, setTimelineRows] = useState(() => createBlankRows(TIME_LOG_COLUMNS.length))
   const homeTitle = getHomeTitle(activeHome)
 
   const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
@@ -85,6 +93,47 @@ function RecoveryTracker() {
 
   const handleToggleSection = () => {
     setOpenSection((current) => (current === selectedSection.id ? '' : selectedSection.id))
+  }
+
+  const currentDamageRows = damageScope === 'Interior' ? interiorDamageRows : exteriorDamageRows
+
+  const updateDamageCell = (rowIndex, cellIndex, value) => {
+    const setter = damageScope === 'Interior' ? setInteriorDamageRows : setExteriorDamageRows
+    setter((current) => current.map((row, index) => (
+      index === rowIndex
+        ? row.map((cell, innerIndex) => (innerIndex === cellIndex ? value : cell))
+        : row
+    )))
+  }
+
+  const addDamageRow = () => {
+    const setter = damageScope === 'Interior' ? setInteriorDamageRows : setExteriorDamageRows
+    const width = damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS.length : EXTERIOR_DAMAGE_COLUMNS.length
+    setter((current) => [...current, Array(width).fill('')])
+  }
+
+  const updateExpenseCell = (rowIndex, cellIndex, value) => {
+    setExpenseRows((current) => current.map((row, index) => (
+      index === rowIndex
+        ? row.map((cell, innerIndex) => (innerIndex === cellIndex ? value : cell))
+        : row
+    )))
+  }
+
+  const addExpenseRow = () => {
+    setExpenseRows((current) => [...current, Array(EXPENSE_COLUMNS.length).fill('')])
+  }
+
+  const updateTimelineCell = (rowIndex, cellIndex, value) => {
+    setTimelineRows((current) => current.map((row, index) => (
+      index === rowIndex
+        ? row.map((cell, innerIndex) => (innerIndex === cellIndex ? value : cell))
+        : row
+    )))
+  }
+
+  const addTimelineRow = () => {
+    setTimelineRows((current) => [...current, Array(TIME_LOG_COLUMNS.length).fill('')])
   }
 
   return (
@@ -177,15 +226,15 @@ function RecoveryTracker() {
                           </tr>
                         </thead>
                         <tbody>
-                          {DAMAGE_LOG_ROWS.map((row, rowIndex) => (
+                          {currentDamageRows.map((row, rowIndex) => (
                             <tr key={`damage-row-${damageScope}-${rowIndex}`}>
                               {row.map((cell, cellIndex) => (
                                 <td key={`damage-cell-${damageScope}-${rowIndex}-${cellIndex}`}>
                                   <input
                                     type="text"
                                     value={cell}
-                                    readOnly
                                     placeholder=""
+                                    onChange={(event) => updateDamageCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS[cellIndex] : EXTERIOR_DAMAGE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
                                   />
                                 </td>
@@ -197,6 +246,9 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
+                    <button className="btn-outline recovery-add-btn" onClick={addDamageRow}>
+                      {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
+                    </button>
                     <div className="recovery-upload-block">
                       <button className="btn-outline recovery-add-btn">
                         Upload
@@ -218,41 +270,48 @@ function RecoveryTracker() {
               ) : null}
 
               {selectedSection.id === 'timeline' ? (
-                <div className="expense-sheet-wrap">
-                  <div className="expense-sheet-scroll">
-                    <table className="expense-sheet timeline-sheet">
-                      <colgroup>
-                        <col className="timeline-col-date" />
-                        <col className="timeline-col-time" />
-                        <col className="timeline-col-details" />
-                      </colgroup>
-                      <thead>
-                        <tr>
-                          {TIME_LOG_COLUMNS.map((column) => (
-                            <th key={column}>{column}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {TIME_LOG_ROWS.map((row, rowIndex) => (
-                          <tr key={`timeline-row-${rowIndex}`}>
-                            {row.map((cell, cellIndex) => (
-                              <td key={`timeline-cell-${rowIndex}-${cellIndex}`}>
-                                <input
-                                  type="text"
-                                  value={cell}
-                                  readOnly
-                                  placeholder=""
-                                  aria-label={`${TIME_LOG_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
-                                />
-                              </td>
+                <>
+                  <div className="expense-sheet-wrap">
+                    <div className="expense-sheet-scroll">
+                      <table className="expense-sheet timeline-sheet">
+                        <colgroup>
+                          <col className="timeline-col-date" />
+                          <col className="timeline-col-time" />
+                          <col className="timeline-col-details" />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            {TIME_LOG_COLUMNS.map((column) => (
+                              <th key={column}>{column}</th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {timelineRows.map((row, rowIndex) => (
+                            <tr key={`timeline-row-${rowIndex}`}>
+                              {row.map((cell, cellIndex) => (
+                                <td key={`timeline-cell-${rowIndex}-${cellIndex}`}>
+                                  <input
+                                    type="text"
+                                    value={cell}
+                                    placeholder=""
+                                    onChange={(event) => updateTimelineCell(rowIndex, cellIndex, event.target.value)}
+                                    aria-label={`${TIME_LOG_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
+                  <div className="recovery-bottom-action">
+                    <button className="btn-outline recovery-add-btn" onClick={addTimelineRow}>
+                      + Add Row
+                    </button>
+                  </div>
+                </>
               ) : null}
 
               {selectedSection.id === 'expenses' ? (
@@ -268,15 +327,15 @@ function RecoveryTracker() {
                           </tr>
                         </thead>
                         <tbody>
-                          {EXPENSE_ROWS.map((row, rowIndex) => (
+                          {expenseRows.map((row, rowIndex) => (
                             <tr key={`expense-row-${rowIndex}`}>
                               {row.map((cell, cellIndex) => (
                                 <td key={`expense-cell-${rowIndex}-${cellIndex}`}>
                                   <input
                                     type="text"
                                     value={cell}
-                                    readOnly
                                     placeholder=""
+                                    onChange={(event) => updateExpenseCell(rowIndex, cellIndex, event.target.value)}
                                     aria-label={`${EXPENSE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
                                   />
                                 </td>
@@ -288,6 +347,9 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
+                    <button className="btn-outline recovery-add-btn" onClick={addExpenseRow}>
+                      + Add Row
+                    </button>
                     <div className="recovery-upload-block">
                       <button className="btn-outline recovery-add-btn">
                         Upload
