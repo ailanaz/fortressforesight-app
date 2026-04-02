@@ -22,10 +22,7 @@ export function HomeProvider({ children }) {
 
   const saveActiveHome = (home) => {
     setActiveHome(home)
-
-    if (isAuthenticated) {
-      persistHome(home)
-    }
+    persistHome(home, { persistent: isAuthenticated })
   }
 
   const clearActiveHome = () => {
