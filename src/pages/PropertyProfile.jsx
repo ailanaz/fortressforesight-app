@@ -1527,30 +1527,6 @@ function PropertyProfile() {
           )}
         </section>
 
-        <form className="property-searchbar property-searchbar-secondary property-searchbar-bottom" onSubmit={handleSubmit}>
-          <label className="sr-only" htmlFor="property-address-search-secondary">
-            Property address
-          </label>
-          <input
-            id="property-address-search-secondary"
-            className="property-search-input"
-            type="text"
-            placeholder="Enter address, city, state ZIP"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <button className="btn-primary property-search-button" type="submit">
-            {status === 'loading' ? 'Searching...' : 'Search'}
-          </button>
-          <button
-            className="btn-outline property-search-button"
-            type="button"
-            onClick={resetSearch}
-            disabled={!query && !property}
-          >
-            Reset
-          </button>
-        </form>
       </div>
     </div>
   )
