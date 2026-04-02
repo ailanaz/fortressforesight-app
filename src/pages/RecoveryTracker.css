@@ -213,8 +213,9 @@
 
 .timeline-sheet th:nth-child(2),
 .timeline-sheet td:nth-child(2) input {
-  padding-left: 2px;
+  padding-left: 0;
   padding-right: 4px;
+  transform: translateX(-42px);
 }
 
 .empty-room-state {
