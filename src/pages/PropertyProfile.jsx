@@ -1187,7 +1187,7 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
     <article className="summary-card card local-hazards-card">
       <div className="summary-card-header local-hazards-header">
         <div>
-          <p className="summary-card-title">Local Hazard Considerations</p>
+          <p className="summary-card-title">Hazard Considerations</p>
           <p className="local-hazards-intro">
             Area-based hazard context that may affect preparedness, maintenance, and recovery for this property.
           </p>
@@ -1489,8 +1489,10 @@ function PropertyProfile() {
                 <div className="summary-alert-row">
                   <AlertTicker />
                 </div>
-                <div className="summary-context-row">
+                <div className="summary-hazard-row">
                   <LocalHazardConsiderations hazards={localHazards} hasProperty />
+                </div>
+                <div className="summary-lower-row">
                   {landAndWaterCard ? (
                     <SummaryCard
                       key={landAndWaterCard.title}
@@ -1536,8 +1538,10 @@ function PropertyProfile() {
                 <div className="summary-alert-row">
                   <AlertTicker />
                 </div>
-                <div className="summary-context-row">
+                <div className="summary-hazard-row">
                   <LocalHazardConsiderations hazards={[]} hasProperty={false} />
+                </div>
+                <div className="summary-lower-row">
                   {landAndWaterCard ? (
                     <SummaryCard key={landAndWaterCard.title} title={landAndWaterCard.title} rows={landAndWaterCard.rows} />
                   ) : null}

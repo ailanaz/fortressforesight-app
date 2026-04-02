@@ -250,9 +250,9 @@
   margin-bottom: 0;
 }
 
-.summary-context-row {
+.summary-lower-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -551,7 +551,7 @@
     min-height: 320px;
   }
 
-  .summary-context-row {
+  .summary-lower-row {
     grid-template-columns: 1fr;
   }
 
@@ -577,7 +577,8 @@
   .property-searchbar-bottom,
   .summary-stack,
   .summary-alert-row,
-  .summary-context-row {
+  .summary-hazard-row,
+  .summary-lower-row {
     min-width: 0;
   }
 
@@ -611,7 +612,7 @@
   }
 
   .summary-top-row,
-  .summary-context-row {
+  .summary-lower-row {
     grid-template-columns: 1fr;
   }
 
