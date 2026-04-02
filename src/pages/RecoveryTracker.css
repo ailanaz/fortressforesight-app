@@ -177,15 +177,15 @@
 }
 
 .timeline-sheet {
-  min-width: 520px;
+  min-width: 460px;
 }
 
 .timeline-col-date {
-  width: 28%;
+  width: 34%;
 }
 
 .timeline-col-time {
-  width: 18%;
+  width: 12%;
 }
 
 .timeline-col-details {
