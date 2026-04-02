@@ -414,25 +414,11 @@
   background: #fcfdff;
 }
 
-.local-hazard-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-gray-500);
-}
-
 .local-hazard-title {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #071f69;
-}
-
-.local-hazard-organization {
-  font-size: 13px;
-  font-weight: 600;
   color: #071f69;
 }
 
@@ -466,57 +452,6 @@
 
 .local-hazard-source:hover {
   text-decoration: underline;
-}
-
-.local-hazard-details {
-  display: grid;
-  gap: 8px;
-  margin-top: 2px;
-}
-
-.local-hazard-detail {
-  display: grid;
-  gap: 3px;
-}
-
-.local-hazard-detail-label-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.local-hazard-detail-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-gray-500);
-}
-
-.local-hazard-detail-value {
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--color-red);
-}
-
-.local-hazard-detail-value-muted {
-  color: var(--color-gray-500);
-}
-
-.local-hazard-detail-source {
-  width: fit-content;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-red);
-  text-decoration: none;
-}
-
-.local-hazard-detail-source:hover {
-  text-decoration: underline;
-}
-
-.local-hazard-detail-source-muted {
-  text-decoration: none;
 }
 
 @media (max-width: 1100px) {

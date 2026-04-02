@@ -262,26 +262,6 @@ function getUsfsWildfireStatus(stateCode) {
   return getHazardStatus(getHazardLevel(wildfireDefinition, stateCode))
 }
 
-function getHazardOrganizationLabel(hazardId) {
-  if (hazardId === 'flood') {
-    return 'FEMA flood zone'
-  }
-
-  if (hazardId === 'storm-wind') {
-    return 'NOAA area context'
-  }
-
-  if (hazardId === 'wildfire') {
-    return 'USFS wildfire context'
-  }
-
-  if (hazardId === 'earthquake') {
-    return 'USGS area context'
-  }
-
-  return 'Source'
-}
-
 function getHazardResultValue(hazardId, property, level) {
   const summaryCards = normalizeSummaryCards(property?.summaryCards)
   const landAndWaterCard = summaryCards.find((card) => card.title === 'Land and Water Conditions')
@@ -306,33 +286,6 @@ function getHazardResultValue(hazardId, property, level) {
   return 'Not returned'
 }
 
-function getHazardDetails(hazardId, property) {
-  const summaryCards = normalizeSummaryCards(property?.summaryCards)
-  const landAndWaterCard = summaryCards.find((card) => card.title === 'Land and Water Conditions')
-  const areaResponseCard = summaryCards.find((card) => card.title === 'Area Response Context')
-
-  if (hazardId === 'flood') {
-    return [
-      landAndWaterCard?.rows?.find((row) => row.label === 'Drainage / low basin'),
-      landAndWaterCard?.rows?.find((row) => row.label === 'Water table / wetlands'),
-    ].filter(Boolean)
-  }
-
-  if (hazardId === 'storm-wind') {
-    return [
-      areaResponseCard?.rows?.find((row) => row.label === 'NWS forecast office'),
-    ].filter(Boolean)
-  }
-
-  if (hazardId === 'earthquake') {
-    return [
-      landAndWaterCard?.rows?.find((row) => row.label === 'Karst / sinkhole'),
-    ].filter(Boolean)
-  }
-
-  return []
-}
-
 function buildLocalHazards(property) {
   const stateCode = normalizeStateCode(property?.address?.state)
 
@@ -351,9 +304,7 @@ function buildLocalHazards(property) {
         title: definition.title,
         level,
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
-        organizationLabel: getHazardOrganizationLabel(definition.id),
         resultValue: getHazardResultValue(definition.id, property, level),
-        details: getHazardDetails(definition.id, property),
         source: definition.source,
       }
     })
@@ -1219,9 +1170,8 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
           {hazards.map((hazard) => (
             <div key={hazard.id} className="local-hazard-item">
               <p className="local-hazard-title">{hazard.title}</p>
-              <p className="local-hazard-label">Organization</p>
-              <p className="local-hazard-organization">{hazard.organizationLabel}</p>
               <p className="local-hazard-result">{hazard.resultValue}</p>
+              <p className="local-hazard-copy">{hazard.copy}</p>
               {hazard.source ? (
                 <a
                   className="local-hazard-source"
@@ -1229,42 +1179,9 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {hazard.source.label}
+                  Source: {hazard.source.label}
                 </a>
               ) : null}
-              {hazard.details?.length ? (
-                <div className="local-hazard-details">
-                  {hazard.details.map((detail) => (
-                    <div key={`${hazard.id}-${detail.label}`} className="local-hazard-detail">
-                      <span className="local-hazard-detail-label-wrap">
-                        <span className="local-hazard-detail-label">{detail.label}</span>
-                        {detail.pending ? (
-                          <PendingSummaryInfo />
-                        ) : null}
-                      </span>
-                      <span className={`local-hazard-detail-value${detail.pending ? ' local-hazard-detail-value-muted' : ''}`}>
-                        {detail.pending ? '--' : detail.value}
-                      </span>
-                      {detail.source ? (
-                        detail.source.href ? (
-                          <a
-                            className="local-hazard-detail-source"
-                            href={detail.source.href}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {detail.source.label}
-                          </a>
-                        ) : (
-                          <span className="local-hazard-detail-source local-hazard-detail-source-muted">{detail.source.label}</span>
-                        )
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-              <p className="local-hazard-label">Considerations</p>
-              <p className="local-hazard-copy">{hazard.copy}</p>
             </div>
           ))}
         </div>
