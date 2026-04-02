@@ -157,7 +157,11 @@ function HomePage() {
         <aside className="home-stage-side">
           {RAIL_ITEMS.map((item) => (
             item.to ? (
-              <Link key={item.label} className="home-side-card home-side-card-link card" to={item.to}>
+              <Link
+                key={item.label}
+                className={`home-side-card home-side-card-link home-side-card-${item.label.toLowerCase()} card`}
+                to={item.to}
+              >
                 <p className="home-side-label">{item.label}</p>
                 <div className="home-side-content">
                   <h2 className="home-side-title">{item.title}</h2>
@@ -166,7 +170,7 @@ function HomePage() {
                 </div>
               </Link>
             ) : (
-              <article key={item.label} className="home-side-card card">
+              <article key={item.label} className={`home-side-card home-side-card-${item.label.toLowerCase()} card`}>
                 <p className="home-side-label">{item.label}</p>
                 <div className="home-side-content">
                   <h2 className="home-side-title">{item.title}</h2>

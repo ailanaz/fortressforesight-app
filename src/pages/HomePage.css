@@ -239,9 +239,10 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  border: 1px solid rgba(61, 100, 240, 0.1);
+  border: 1.5px solid rgba(7, 31, 105, 0.14);
   background: #fbfcff;
   gap: 12px;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 
 .home-side-card-link {
@@ -249,8 +250,35 @@
 }
 
 .home-side-card-link:hover {
-  border-color: rgba(61, 100, 240, 0.18);
   box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.home-side-card-clarity {
+  border-color: rgba(7, 31, 105, 0.22);
+}
+
+.home-side-card-clarity:hover {
+  border-color: rgba(248, 194, 0, 0.68);
+  background: #fffdf4;
+}
+
+.home-side-card-structure {
+  border-color: rgba(248, 194, 0, 0.58);
+}
+
+.home-side-card-structure:hover {
+  border-color: rgba(7, 31, 105, 0.34);
+  background: #fbfdff;
+}
+
+.home-side-card-confidence {
+  border-color: rgba(7, 31, 105, 0.18);
+}
+
+.home-side-card-confidence:hover {
+  border-color: rgba(248, 194, 0, 0.62);
+  background: #fffdf6;
 }
 
 .home-side-label {
