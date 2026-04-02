@@ -114,11 +114,25 @@
 
 .recovery-bottom-action {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
   padding-top: 12px;
+}
+
+.recovery-add-link {
+  border: 0;
+  background: transparent;
+  color: #071f69;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 0;
+}
+
+.recovery-add-link:hover {
+  text-decoration: underline;
 }
 
 .recovery-upload-block {

@@ -103,6 +103,12 @@ function RecoveryTracker() {
     )))
   }
 
+  const addDamageRow = () => {
+    const setter = damageScope === 'Interior' ? setInteriorDamageRows : setExteriorDamageRows
+    const width = damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS.length : EXTERIOR_DAMAGE_COLUMNS.length
+    setter((current) => [...current, Array(width).fill('')])
+  }
+
   const updateExpenseCell = (rowIndex, cellIndex, value) => {
     setExpenseRows((current) => current.map((row, index) => (
       index === rowIndex
@@ -250,6 +256,9 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
+                    <button className="recovery-add-link" type="button" onClick={addDamageRow}>
+                      {damageScope === 'Interior' ? '→ Add new room' : '→ Add new area'}
+                    </button>
                     <div className="recovery-upload-block">
                       <button className="btn-outline recovery-add-btn">
                         Upload
@@ -308,8 +317,8 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="btn-outline recovery-add-btn" onClick={addTimelineRow}>
-                      + Add Row
+                    <button className="recovery-add-link" type="button" onClick={addTimelineRow}>
+                      → Add new row
                     </button>
                   </div>
                 </>
@@ -354,8 +363,8 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="btn-outline recovery-add-btn" onClick={addExpenseRow}>
-                      + Add Row
+                    <button className="recovery-add-link" type="button" onClick={addExpenseRow}>
+                      → Add new row
                     </button>
                     <div className="recovery-upload-block">
                       <button className="btn-outline recovery-add-btn">
