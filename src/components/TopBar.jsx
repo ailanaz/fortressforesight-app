@@ -7,7 +7,7 @@ import './TopBar.css'
 
 function TopBar() {
   const location = useLocation()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, propertyLimit } = useAuth()
   const { activeHome } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const mobileMenuRef = useRef(null)
@@ -63,10 +63,17 @@ function TopBar() {
             </div>
           ) : null}
           {showPlanPill ? (
-            <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link" to="/upgrade">
-              <span className="topbar-home-title">Saved Properties</span>
-              <span className="topbar-home-meta">Upgrade to save properties.</span>
-            </Link>
+            isAuthenticated ? (
+              <div className="topbar-home-pill topbar-plan-pill">
+                <span className="topbar-home-title">Saved Properties</span>
+                <span className="topbar-home-meta">Up to {propertyLimit} properties.</span>
+              </div>
+            ) : (
+              <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link" to="/upgrade">
+                <span className="topbar-home-title">Saved Properties</span>
+                <span className="topbar-home-meta">Upgrade to save properties.</span>
+              </Link>
+            )
           ) : null}
         </div>
         {showMobileSwitcher ? (
@@ -80,7 +87,7 @@ function TopBar() {
             >
               <span className="topbar-mobile-toggle-copy">
                 <span className="topbar-mobile-toggle-title">{showHomePill ? homeTitle : 'Saved Properties'}</span>
-                <span className="topbar-mobile-toggle-meta">{showHomePill ? 'Tap for more' : 'Upgrade to save'}</span>
+                <span className="topbar-mobile-toggle-meta">{showHomePill ? 'Tap for more' : isAuthenticated ? `Up to ${propertyLimit} properties` : 'Upgrade to save'}</span>
               </span>
               <svg
                 width="16"
@@ -104,10 +111,17 @@ function TopBar() {
                   </Link>
                 ) : null}
                 {showPlanPill ? (
-                  <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link topbar-mobile-menu-card" to="/upgrade">
-                    <span className="topbar-home-title">Saved Properties</span>
-                    <span className="topbar-home-meta">Upgrade to save properties.</span>
-                  </Link>
+                  isAuthenticated ? (
+                    <div className="topbar-home-pill topbar-plan-pill topbar-mobile-menu-card">
+                      <span className="topbar-home-title">Saved Properties</span>
+                      <span className="topbar-home-meta">Up to {propertyLimit} properties.</span>
+                    </div>
+                  ) : (
+                    <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link topbar-mobile-menu-card" to="/upgrade">
+                      <span className="topbar-home-title">Saved Properties</span>
+                      <span className="topbar-home-meta">Upgrade to save properties.</span>
+                    </Link>
+                  )
                 ) : null}
               </div>
             ) : null}
