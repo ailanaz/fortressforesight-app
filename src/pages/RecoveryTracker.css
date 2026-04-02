@@ -195,10 +195,16 @@
   width: 58%;
 }
 
-.timeline-sheet th:nth-child(2),
-.timeline-sheet td:nth-child(2) input {
-  padding-left: 2px;
+.timeline-sheet th:nth-child(2) {
+  padding-left: 0;
   padding-right: 4px;
+  transform: translateX(-20px);
+}
+
+.timeline-sheet td:nth-child(2) input {
+  padding-left: 0;
+  padding-right: 4px;
+  transform: translateX(-20px);
 }
 
 .empty-room-state {
