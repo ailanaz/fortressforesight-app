@@ -1,5 +1,6 @@
 import { HashRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
+import { AuthProvider } from './context/AuthContext'
 import { HomeProvider } from './context/HomeContext'
 import HomePage from './pages/HomePage'
 import PropertyProfile from './pages/PropertyProfile'
@@ -13,25 +14,27 @@ import './App.css'
 
 function App() {
   return (
-    <HomeProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/upgrade" element={<Login initialMode="signup" />} />
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/home" replace />} />
-            <Route path="home" element={<HomePage />} />
-            <Route path="search" element={<PropertyProfile />} />
-            <Route path="property" element={<Navigate to="/search" replace />} />
-            <Route path="documents" element={<DocumentStorage />} />
-            <Route path="readiness" element={<ReadinessCenter />} />
-            <Route path="recovery" element={<RecoveryTracker />} />
-            <Route path="knowledge" element={<KnowledgeBase />} />
-            <Route path="contacts" element={<EmergencyContacts />} />
-          </Route>
-        </Routes>
-      </Router>
-    </HomeProvider>
+    <AuthProvider>
+      <HomeProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/upgrade" element={<Login initialMode="signup" />} />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/home" replace />} />
+              <Route path="home" element={<HomePage />} />
+              <Route path="search" element={<PropertyProfile />} />
+              <Route path="property" element={<Navigate to="/search" replace />} />
+              <Route path="documents" element={<DocumentStorage />} />
+              <Route path="readiness" element={<ReadinessCenter />} />
+              <Route path="recovery" element={<RecoveryTracker />} />
+              <Route path="knowledge" element={<KnowledgeBase />} />
+              <Route path="contacts" element={<EmergencyContacts />} />
+            </Route>
+          </Routes>
+        </Router>
+      </HomeProvider>
+    </AuthProvider>
   )
 }
 

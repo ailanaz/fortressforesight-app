@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './TopBar.css'
 
 function TopBar() {
   const location = useLocation()
+  const { isAuthenticated } = useAuth()
   const { activeHome } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const mobileMenuRef = useRef(null)
@@ -111,7 +113,12 @@ function TopBar() {
             ) : null}
           </div>
         ) : null}
-        <Link className="topbar-account" aria-label="Account" to="/login">
+        <Link
+          className={`topbar-account${isAuthenticated ? ' is-authenticated' : ''}`}
+          aria-label="Account"
+          title={isAuthenticated ? 'Signed in account' : 'Account'}
+          to="/login"
+        >
           <svg
             width="24"
             height="24"

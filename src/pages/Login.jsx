@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import './Login.css'
 
 function Login({ initialMode = 'login' }) {
@@ -10,10 +11,14 @@ function Login({ initialMode = 'login' }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
+  const { user, loading, isAuthenticated, signIn, signOut, signUp, hasFirebaseConfig } = useAuth()
 
   const changeMode = (nextMode) => {
     setMode(nextMode)
+    setError('')
     setSearchParams((current) => {
       const next = new URLSearchParams(current)
       next.set('mode', nextMode)
@@ -21,9 +26,30 @@ function Login({ initialMode = 'login' }) {
     }, { replace: true })
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    navigate('/search')
+
+    if (isAuthenticated) {
+      navigate('/search')
+      return
+    }
+
+    setSubmitting(true)
+    setError('')
+
+    try {
+      if (mode === 'login') {
+        await signIn(email.trim(), password)
+      } else {
+        await signUp(email.trim(), password)
+      }
+
+      navigate('/search')
+    } catch (authError) {
+      setError(authError?.message || 'We could not access the account right now.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -58,7 +84,21 @@ function Login({ initialMode = 'login' }) {
 
         <form className="login-shell-form" onSubmit={handleSubmit}>
           <div className="login-panel card">
-            {mode === 'login' ? (
+            {loading ? (
+              <div className="login-upgrade">
+                <h2 className="login-upgrade-title">Checking account</h2>
+                <p className="login-upgrade-copy">One moment while FortressForesight loads your account.</p>
+              </div>
+            ) : isAuthenticated ? (
+              <>
+                <div className="login-upgrade">
+                  <h2 className="login-upgrade-title">Account active</h2>
+                  <p className="login-upgrade-copy">
+                    Signed in as {user?.email || 'your account'}. Continue to the app or sign out here.
+                  </p>
+                </div>
+              </>
+            ) : mode === 'login' ? (
               <>
                 <div className="login-upgrade">
                   <h2 className="login-upgrade-title">Welcome back</h2>
@@ -127,20 +167,48 @@ function Login({ initialMode = 'login' }) {
             )}
           </div>
 
+          {error ? <p className="login-error">{error}</p> : null}
+          {!hasFirebaseConfig ? (
+            <p className="login-config-note">Firebase web app values still need to be added before sign-in can work.</p>
+          ) : null}
+
           <div className="login-actions login-actions-centered">
-            <button className="login-submit login-submit-inline" type="submit">
-              {mode === 'login' ? 'Sign In' : 'Upgrade to Paid'}
+            <button className="login-submit login-submit-inline" type="submit" disabled={loading || submitting}>
+              {loading
+                ? 'Loading...'
+                : submitting
+                  ? mode === 'login'
+                    ? 'Signing In...'
+                    : 'Creating Account...'
+                  : isAuthenticated
+                    ? 'Open App'
+                    : mode === 'login'
+                      ? 'Sign In'
+                      : 'Upgrade to Paid'}
             </button>
           </div>
 
           <div className="login-utility-row login-utility-row-centered">
-            <button
-              className="login-secondary-link"
-              type="button"
-              onClick={() => setShowPassword((value) => !value)}
-            >
-              {showPassword ? 'Hide password' : 'Show password'}
-            </button>
+            {isAuthenticated ? (
+              <button
+                className="login-secondary-link"
+                type="button"
+                onClick={async () => {
+                  await signOut()
+                  setError('')
+                }}
+              >
+                Sign out
+              </button>
+            ) : (
+              <button
+                className="login-secondary-link"
+                type="button"
+                onClick={() => setShowPassword((value) => !value)}
+              >
+                {showPassword ? 'Hide password' : 'Show password'}
+              </button>
+            )}
           </div>
         </form>
       </div>

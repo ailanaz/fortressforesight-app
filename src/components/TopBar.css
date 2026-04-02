@@ -106,6 +106,11 @@
   border-color: rgba(61, 100, 240, 0.26);
 }
 
+.topbar-account.is-authenticated {
+  border-color: rgba(248, 194, 0, 0.78);
+  background: rgba(248, 194, 0, 0.18);
+}
+
 @media (max-width: 720px) {
   .topbar {
     position: sticky;

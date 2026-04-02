@@ -190,6 +190,22 @@
   margin-top: 12px;
 }
 
+.login-error,
+.login-config-note {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.login-error {
+  color: #b42318;
+}
+
+.login-config-note {
+  color: var(--color-gray-500);
+}
+
 .login-actions-single,
 .login-actions-centered {
   justify-content: center;
