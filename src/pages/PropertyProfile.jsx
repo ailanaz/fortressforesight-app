@@ -28,7 +28,7 @@ const EMPTY_SUMMARY_CARDS = [
     ],
   },
   {
-    title: 'Soil & Geology',
+    title: 'Land and Water Conditions',
     rows: [
       {
         label: 'USDA soil survey',
@@ -48,11 +48,6 @@ const EMPTY_SUMMARY_CARDS = [
         pending: true,
         source: { label: 'USGS', href: 'https://pubs.usgs.gov/sir/2008/5023/pdf/SIR2008-5023.pdf' },
       },
-    ],
-  },
-  {
-    title: 'Water / Drainage',
-    rows: [
       {
         label: 'FEMA flood zone',
         value: '\u2014',
@@ -74,30 +69,7 @@ const EMPTY_SUMMARY_CARDS = [
     ],
   },
   {
-    title: 'Wildfire / Vegetation',
-    rows: [
-      {
-        label: 'Wildfire community map',
-        value: '\u2014',
-        pending: true,
-        source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
-      },
-      {
-        label: 'Defensible space review',
-        value: '\u2014',
-        pending: true,
-        source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
-      },
-      {
-        label: 'Brush / canopy check',
-        value: '\u2014',
-        pending: true,
-        source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
-      },
-    ],
-  },
-  {
-    title: 'Response / Area Claims',
+    title: 'Area Response Context',
     rows: [
       {
         label: 'Fire response class',
@@ -114,10 +86,8 @@ const EMPTY_SUMMARY_CARDS = [
 const SUMMARY_CARD_ORDER = [
   'Property Information',
   'Zoning / Future Use',
-  'Soil & Geology',
-  'Water / Drainage',
-  'Wildfire / Vegetation',
-  'Response / Area Claims',
+  'Land and Water Conditions',
+  'Area Response Context',
 ]
 
 const PENDING_SUMMARY_HINT = 'Search address to see Risk Summary'
@@ -434,7 +404,7 @@ function createStarterProfile(result) {
         ],
       },
       {
-        title: 'Soil & Geology',
+        title: 'Land and Water Conditions',
         rows: [
           {
             label: 'USDA soil survey',
@@ -454,11 +424,6 @@ function createStarterProfile(result) {
             pending: true,
             source: { label: 'USGS', href: 'https://pubs.usgs.gov/sir/2008/5023/pdf/SIR2008-5023.pdf' },
           },
-        ],
-      },
-      {
-        title: 'Water / Drainage',
-        rows: [
           {
             label: 'FEMA flood zone',
             value: 'Pending FEMA source',
@@ -480,30 +445,7 @@ function createStarterProfile(result) {
         ],
       },
       {
-        title: 'Wildfire / Vegetation',
-        rows: [
-          {
-            label: 'Wildfire community map',
-            value: 'Pending wildfire source',
-            pending: true,
-            source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
-          },
-          {
-            label: 'Defensible space review',
-            value: 'Pending vegetation source',
-            pending: true,
-            source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
-          },
-          {
-            label: 'Brush / canopy check',
-            value: 'Pending vegetation source',
-            pending: true,
-            source: { label: 'USDA', href: 'https://www.fs.usda.gov/es/node/231140' },
-          },
-        ],
-      },
-      {
-        title: 'Response / Area Claims',
+        title: 'Area Response Context',
         rows: [
           {
             label: 'Fire response class',
@@ -910,9 +852,8 @@ function PropertyProfile() {
   const orderedSummaryCards = orderSummaryCards(property?.summaryCards || EMPTY_SUMMARY_CARDS)
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
   const zoningCard = orderedSummaryCards.find((card) => card.title === 'Zoning / Future Use')
-  const remainingSummaryCards = orderedSummaryCards.filter(
-    (card) => card.title !== 'Property Information' && card.title !== 'Zoning / Future Use',
-  )
+  const landAndWaterCard = orderedSummaryCards.find((card) => card.title === 'Land and Water Conditions')
+  const areaResponseCard = orderedSummaryCards.find((card) => card.title === 'Area Response Context')
   const localHazards = buildLocalHazards(property)
 
   const handleSubmit = async (event) => {
@@ -1045,15 +986,22 @@ function PropertyProfile() {
                 <div className="summary-alert-row">
                   <AlertTicker />
                 </div>
-                {remainingSummaryCards.map((card) => (
-                  <SummaryCard
-                    key={card.title}
-                    title={card.title}
-                    rows={card.rows}
-                  />
-                ))}
-                <div className="summary-hazard-row">
+                <div className="summary-context-row">
                   <LocalHazardConsiderations hazards={localHazards} hasProperty />
+                  {landAndWaterCard ? (
+                    <SummaryCard
+                      key={landAndWaterCard.title}
+                      title={landAndWaterCard.title}
+                      rows={landAndWaterCard.rows}
+                    />
+                  ) : null}
+                  {areaResponseCard ? (
+                    <SummaryCard
+                      key={areaResponseCard.title}
+                      title={areaResponseCard.title}
+                      rows={areaResponseCard.rows}
+                    />
+                  ) : null}
                 </div>
               </div>
             </>
@@ -1085,11 +1033,14 @@ function PropertyProfile() {
                 <div className="summary-alert-row">
                   <AlertTicker />
                 </div>
-                {remainingSummaryCards.map((card) => (
-                  <SummaryCard key={card.title} title={card.title} rows={card.rows} />
-                ))}
-                <div className="summary-hazard-row">
+                <div className="summary-context-row">
                   <LocalHazardConsiderations hazards={[]} hasProperty={false} />
+                  {landAndWaterCard ? (
+                    <SummaryCard key={landAndWaterCard.title} title={landAndWaterCard.title} rows={landAndWaterCard.rows} />
+                  ) : null}
+                  {areaResponseCard ? (
+                    <SummaryCard key={areaResponseCard.title} title={areaResponseCard.title} rows={areaResponseCard.rows} />
+                  ) : null}
                 </div>
               </div>
             </div>

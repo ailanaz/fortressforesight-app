@@ -212,8 +212,8 @@
 }
 
 .summary-stack {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   padding: 12px 20px 20px;
 }
@@ -248,6 +248,12 @@
 
 .summary-alert-row .alert-ticker {
   margin-bottom: 0;
+}
+
+.summary-context-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .summary-card {
@@ -388,8 +394,8 @@
 
 .local-hazards-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .local-hazard-item {
@@ -481,11 +487,6 @@
 }
 
 @media (max-width: 980px) {
-  .summary-top-row,
-  .summary-stack {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .summary-top-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -496,6 +497,10 @@
 
   .summary-map-card .property-map-frame {
     min-height: 320px;
+  }
+
+  .summary-context-row {
+    grid-template-columns: 1fr;
   }
 
   .local-hazards-grid {
@@ -519,7 +524,8 @@
   .property-summary,
   .property-searchbar-bottom,
   .summary-stack,
-  .summary-alert-row {
+  .summary-alert-row,
+  .summary-context-row {
     min-width: 0;
   }
 
@@ -553,7 +559,7 @@
   }
 
   .summary-top-row,
-  .summary-stack {
+  .summary-context-row {
     grid-template-columns: 1fr;
   }
 
