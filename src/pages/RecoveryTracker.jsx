@@ -26,8 +26,8 @@ const RECOVERY_SECTIONS = [
   },
 ]
 
-const EXPENSE_COLUMNS = ['Date', 'Details', 'Notes', 'Uploads', 'Amount']
-const EXPENSE_PLACEHOLDER_ROW = ['04/02/2026', '2 nights at Hilton Hotel', 'Claim lodging after storm', 'Receipt, image, doc, none', '245.00']
+const EXPENSE_COLUMNS = ['Date', 'Details', 'Uploads', 'Amount']
+const EXPENSE_PLACEHOLDER_ROW = ['04/02/2026', '2 nights at Hilton Hotel', 'Receipt, image, doc, none', '245.00']
 
 const TIME_LOG_COLUMNS = ['Date', 'Time', 'Notes']
 const TIME_LOG_PLACEHOLDER_ROW = ['04/02/2026', '8:30 AM', 'Called insurer and opened claim']
