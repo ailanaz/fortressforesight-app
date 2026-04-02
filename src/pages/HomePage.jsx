@@ -7,19 +7,19 @@ const RAIL_ITEMS = [
   {
     label: 'Clarity',
     alt: 'Clarity before disaster',
-    src: '/branding/home/Clarity.png?v=20260331-2',
+    src: '/branding/home/clarity.mp4?v=20260401-1',
     to: '/readiness',
   },
   {
     label: 'Structure',
     alt: 'Structure during crisis',
-    src: '/branding/home/Structure.png?v=20260331-2',
+    src: '/branding/home/structure.mp4?v=20260401-1',
     to: '/documents',
   },
   {
     label: 'Confidence',
     alt: 'Confidence through recovery',
-    src: '/branding/home/Confidence.png?v=20260331-2',
+    src: '/branding/home/confidence.mp4?v=20260401-1',
     to: '/recovery',
   },
 ]
@@ -157,14 +157,34 @@ function HomePage() {
               <Link key={item.alt} className="home-side-card home-side-card-link card" to={item.to}>
                 <p className="home-side-label">{item.label}</p>
                 <div className="home-side-media">
-                  <img className="home-side-image" src={item.src} alt={item.alt} />
+                  <video
+                    className="home-side-video"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    aria-label={item.alt}
+                  >
+                    <source src={item.src} type="video/mp4" />
+                  </video>
                 </div>
               </Link>
             ) : (
               <article key={item.alt} className="home-side-card card">
                 <p className="home-side-label">{item.label}</p>
                 <div className="home-side-media">
-                  <img className="home-side-image" src={item.src} alt={item.alt} />
+                  <video
+                    className="home-side-video"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    aria-label={item.alt}
+                  >
+                    <source src={item.src} type="video/mp4" />
+                  </video>
                 </div>
               </article>
             )

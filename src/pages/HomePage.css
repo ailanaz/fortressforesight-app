@@ -291,7 +291,8 @@
   pointer-events: none;
 }
 
-.home-side-image {
+.home-side-image,
+.home-side-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
