@@ -7,7 +7,7 @@ const RAIL_ITEMS = [
   {
     label: 'Clarity',
     title: 'See the property clearly',
-    text: 'Search one address to review the map, Risk Summary, and local hazard context in one place.',
+    text: 'Search an address to review the map, Risk Summary, and local hazard context in one place.',
     cta: 'Open Search',
     to: '/search',
   },
