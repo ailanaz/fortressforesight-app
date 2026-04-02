@@ -297,6 +297,39 @@ function orderSummaryCards(cards) {
   )
 }
 
+function mergeCardRows(...cards) {
+  return cards.flatMap((card) => card?.rows || [])
+}
+
+function normalizeSummaryCards(cards) {
+  if (!Array.isArray(cards) || !cards.length) {
+    return EMPTY_SUMMARY_CARDS
+  }
+
+  const propertyInformationCard = cards.find((card) => card.title === 'Property Information')
+  const zoningCard = cards.find((card) => card.title === 'Zoning / Future Use')
+  const existingLandAndWaterCard = cards.find((card) => card.title === 'Land and Water Conditions')
+  const existingAreaResponseCard = cards.find((card) => card.title === 'Area Response Context')
+  const soilCard = cards.find((card) => card.title === 'Soil & Geology')
+  const waterCard = cards.find((card) => card.title === 'Water / Drainage')
+  const responseCard = cards.find((card) => card.title === 'Response / Area Claims')
+
+  return [
+    propertyInformationCard || EMPTY_SUMMARY_CARDS[0],
+    zoningCard || EMPTY_SUMMARY_CARDS[1],
+    existingLandAndWaterCard || {
+      title: 'Land and Water Conditions',
+      rows: mergeCardRows(soilCard, waterCard).length
+        ? mergeCardRows(soilCard, waterCard)
+        : EMPTY_SUMMARY_CARDS[2].rows,
+    },
+    existingAreaResponseCard || {
+      title: 'Area Response Context',
+      rows: responseCard?.rows?.length ? responseCard.rows : EMPTY_SUMMARY_CARDS[3].rows,
+    },
+  ]
+}
+
 function PendingSummaryInfo() {
   const [open, setOpen] = useState(false)
 
@@ -849,7 +882,7 @@ function PropertyProfile() {
   }, [location.search, location.state, property?.query, saveActiveHome])
 
   const googleEmbedSrc = getGoogleEmbedSrc(property)
-  const orderedSummaryCards = orderSummaryCards(property?.summaryCards || EMPTY_SUMMARY_CARDS)
+  const orderedSummaryCards = orderSummaryCards(normalizeSummaryCards(property?.summaryCards))
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
   const zoningCard = orderedSummaryCards.find((card) => card.title === 'Zoning / Future Use')
   const landAndWaterCard = orderedSummaryCards.find((card) => card.title === 'Land and Water Conditions')
