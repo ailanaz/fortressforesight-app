@@ -268,7 +268,7 @@ function getHazardOrganizationLabel(hazardId) {
   }
 
   if (hazardId === 'storm-wind') {
-    return 'NOAA active alerts'
+    return 'NOAA area context'
   }
 
   if (hazardId === 'wildfire') {
@@ -282,7 +282,7 @@ function getHazardOrganizationLabel(hazardId) {
   return 'Source'
 }
 
-function getHazardResultValue(hazardId, property) {
+function getHazardResultValue(hazardId, property, level) {
   const summaryCards = normalizeSummaryCards(property?.summaryCards)
   const landAndWaterCard = summaryCards.find((card) => card.title === 'Land and Water Conditions')
   const areaResponseCard = summaryCards.find((card) => card.title === 'Area Response Context')
@@ -292,7 +292,7 @@ function getHazardResultValue(hazardId, property) {
   }
 
   if (hazardId === 'storm-wind') {
-    return areaResponseCard?.rows?.find((row) => row.label === 'NOAA active alerts')?.value || 'Not returned'
+    return getHazardStatus(level)
   }
 
   if (hazardId === 'wildfire') {
@@ -300,7 +300,7 @@ function getHazardResultValue(hazardId, property) {
   }
 
   if (hazardId === 'earthquake') {
-    return getHazardStatus(getHazardLevel(HAZARD_DEFINITIONS.find((definition) => definition.id === 'earthquake'), normalizeStateCode(property?.address?.state)))
+    return getHazardStatus(level)
   }
 
   return 'Not returned'
@@ -316,24 +316,19 @@ function buildLocalHazards(property) {
   const evaluated = HAZARD_DEFINITIONS
     .filter((definition) => ['flood', 'storm-wind', 'wildfire', 'earthquake'].includes(definition.id))
     .map((definition) => {
-      const level = getHazardLevel(definition, stateCode)
-
-      if (level === 'omit') {
-        return null
-      }
+      const rawLevel = getHazardLevel(definition, stateCode)
+      const level = rawLevel === 'omit' ? 'limited' : rawLevel
 
       return {
         id: definition.id,
         title: definition.title,
         level,
-        status: getHazardStatus(level),
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
         organizationLabel: getHazardOrganizationLabel(definition.id),
-        resultValue: getHazardResultValue(definition.id, property),
+        resultValue: getHazardResultValue(definition.id, property, level),
         source: definition.source,
       }
     })
-    .filter(Boolean)
 
   return evaluated
 }
@@ -1201,9 +1196,8 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
               <p className="local-hazard-label">Hazard</p>
               <p className="local-hazard-title">{hazard.title}</p>
               <p className="local-hazard-label">Organization</p>
-              <p className={`local-hazard-status local-hazard-status-${hazard.level}`}>{hazard.organizationLabel}</p>
+              <p className="local-hazard-organization">{hazard.organizationLabel}</p>
               <p className="local-hazard-result">{hazard.resultValue}</p>
-              <p className="local-hazard-copy">{hazard.copy}</p>
               {hazard.source ? (
                 <a
                   className="local-hazard-source"
@@ -1214,6 +1208,8 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
                   {hazard.source.label}
                 </a>
               ) : null}
+              <p className="local-hazard-label">Description</p>
+              <p className="local-hazard-copy">{hazard.copy}</p>
             </div>
           ))}
         </div>

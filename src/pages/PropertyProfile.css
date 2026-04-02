@@ -430,28 +430,16 @@
   color: #071f69;
 }
 
-.local-hazard-status {
+.local-hazard-organization {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-red);
+  color: #071f69;
 }
 
 .local-hazard-result {
   font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
-  color: var(--color-red);
-}
-
-.local-hazard-status-primary {
-  color: var(--color-red);
-}
-
-.local-hazard-status-seasonal {
-  color: var(--color-red);
-}
-
-.local-hazard-status-limited {
   color: var(--color-red);
 }
 
