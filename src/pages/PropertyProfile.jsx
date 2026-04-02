@@ -34,18 +34,6 @@ const EMPTY_SUMMARY_CARDS = [
     title: 'Land and Water Conditions',
     rows: [
       {
-        label: 'USDA soil survey',
-        value: '\u2014',
-        pending: true,
-        source: { label: 'USDA', href: 'https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey' },
-      },
-      {
-        label: 'EPA radon zone',
-        value: '\u2014',
-        pending: true,
-        source: { label: 'EPA', href: 'https://www.epa.gov/radon/epa-map-radon-zones-and-supplemental-information-0' },
-      },
-      {
         label: 'Karst / sinkhole',
         value: '\u2014',
         pending: true,
@@ -474,18 +462,6 @@ function createStarterProfile(result) {
       {
         title: 'Land and Water Conditions',
         rows: [
-          {
-            label: 'USDA soil survey',
-            value: 'Pending USDA source',
-            pending: true,
-            source: { label: 'USDA', href: 'https://www.nrcs.usda.gov/resources/data-and-reports/web-soil-survey' },
-          },
-          {
-            label: 'EPA radon zone',
-            value: 'Pending EPA source',
-            pending: true,
-            source: { label: 'EPA', href: 'https://www.epa.gov/radon/epa-map-radon-zones-and-supplemental-information-0' },
-          },
           {
             label: 'Karst / sinkhole',
             value: 'Pending geology source',
