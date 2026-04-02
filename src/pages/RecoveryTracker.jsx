@@ -26,14 +26,14 @@ const RECOVERY_SECTIONS = [
   },
 ]
 
-const EXPENSE_COLUMNS = ['Date', 'Category', 'Vendor', 'Amount', 'Notes', 'Receipt']
+const EXPENSE_COLUMNS = ['Date', 'Category', 'Vendor', 'Amount', 'Notes', 'Uploads']
 const EXPENSE_PLACEHOLDER_ROW = ['04/02/2026', 'Hotel', 'Hilton', '245.00', '2 nights after storm', 'Receipt, image, doc, none']
 
 const TIME_LOG_COLUMNS = ['Date', 'Time', 'Notes']
 const TIME_LOG_PLACEHOLDER_ROW = ['04/02/2026', '8:30 AM', 'Called insurer and opened claim']
 
-const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Notes', 'Uploads']
-const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Notes', 'Uploads']
+const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Damage Notes', 'Uploads']
+const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Damage Notes', 'Uploads']
 const INTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Kitchen', 'Ceiling stain and wall damage', 'Receipt, image, doc, none']
 const EXTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Roof', 'Missing shingles and gutter damage', 'Receipt, image, doc, none']
 
@@ -198,7 +198,12 @@ function RecoveryTracker() {
                   </div>
                   <div className="expense-sheet-wrap">
                     <div className="expense-sheet-scroll">
-                      <table className="expense-sheet">
+                      <table className="expense-sheet damage-sheet">
+                        <colgroup>
+                          <col className="damage-col-area" />
+                          <col className="damage-col-notes" />
+                          <col className="damage-col-uploads" />
+                        </colgroup>
                         <thead>
                           <tr>
                             {(damageScope === 'Interior' ? INTERIOR_DAMAGE_COLUMNS : EXTERIOR_DAMAGE_COLUMNS).map((column) => (
