@@ -364,13 +364,26 @@ function getMunicipality(address) {
 
 function getStreetLine(result) {
   const address = result?.address ?? {}
-  const streetLine = [address.house_number, address.road].filter(Boolean).join(' ').trim()
+  const streetLine = [
+    address.street_line,
+    [address.house_number, address.road].filter(Boolean).join(' ').trim(),
+  ]
+    .filter(Boolean)[0]
+    ?.trim()
 
   if (streetLine) {
     return streetLine
   }
 
-  return result?.query || result?.displayName || 'Not available yet'
+  const queryFirstLine = result?.query?.split(',')[0]?.trim()
+
+  if (queryFirstLine) {
+    return queryFirstLine
+  }
+
+  const displayFirstLine = result?.displayName?.split(',')[0]?.trim()
+
+  return displayFirstLine || 'Not available yet'
 }
 
 function rankGeocodeResult(result) {
