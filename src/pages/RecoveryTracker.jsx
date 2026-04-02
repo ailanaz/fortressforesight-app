@@ -201,7 +201,7 @@ function RecoveryTracker() {
                       <button className="btn-outline recovery-add-btn">
                         Upload
                       </button>
-                      <p className="recovery-upload-note">Add photos, receipts, JPG, PNG, PDF.</p>
+                      <p className="recovery-upload-note">Add photos, receipts, etc.<br />JPG, PNG, PDF, Word</p>
                     </div>
                   </div>
                   <div className="recovery-guide-block">
@@ -287,7 +287,7 @@ function RecoveryTracker() {
                       <button className="btn-outline recovery-add-btn">
                         Upload
                       </button>
-                      <p className="recovery-upload-note">Add photos, receipts, JPG, PNG, PDF.</p>
+                      <p className="recovery-upload-note">Add photos, receipts, etc.<br />JPG, PNG, PDF, Word</p>
                     </div>
                   </div>
                 </>
