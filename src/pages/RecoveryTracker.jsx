@@ -319,7 +319,13 @@ function RecoveryTracker() {
                 <>
                   <div className="expense-sheet-wrap">
                     <div className="expense-sheet-scroll">
-                      <table className="expense-sheet">
+                      <table className="expense-sheet expense-entry-sheet">
+                        <colgroup>
+                          <col className="expense-col-date" />
+                          <col className="expense-col-details" />
+                          <col className="expense-col-uploads" />
+                          <col className="expense-col-amount" />
+                        </colgroup>
                         <thead>
                           <tr>
                             {EXPENSE_COLUMNS.map((column) => (

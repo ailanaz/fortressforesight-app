@@ -179,6 +179,31 @@
   color: rgba(7, 31, 105, 0.28);
 }
 
+.expense-entry-sheet {
+  min-width: 720px;
+}
+
+.expense-col-date {
+  width: 17%;
+}
+
+.expense-col-details {
+  width: 43%;
+}
+
+.expense-col-uploads {
+  width: 22%;
+}
+
+.expense-col-amount {
+  width: 18%;
+}
+
+.expense-entry-sheet th:last-child,
+.expense-entry-sheet td:last-child input {
+  text-align: right;
+}
+
 .damage-sheet {
   min-width: 560px;
 }
