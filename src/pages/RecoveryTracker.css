@@ -259,42 +259,59 @@
 .claim-steps {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
   padding: 6px 0 0;
 }
 
 .claim-step {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid rgba(7, 31, 105, 0.18);
-  background: #ffffff;
+  padding: 6px 2px;
+  border: 0;
+  background: transparent;
   border-radius: 4px;
   font-size: 14px;
   color: #071f69;
   text-align: left;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition: background 0.1s;
+}
+
+.claim-step:hover {
+  background: var(--color-blue-light);
 }
 
 .claim-step.done {
-  color: #071f69;
-  background: rgba(7, 31, 105, 0.08);
-  border-color: #071f69;
+  color: inherit;
 }
 
-.step-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid rgba(7, 31, 105, 0.32);
+.claim-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid var(--color-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: var(--color-green);
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.claim-step.done .step-dot {
-  background: #071f69;
-  border-color: #071f69;
+.claim-step.done .claim-checkbox {
+  background: var(--color-yellow);
+  border-color: var(--color-yellow);
+  color: var(--color-black);
+}
+
+.claim-step-text {
+  line-height: 1.35;
+}
+
+.claim-step.done .claim-step-text {
+  text-decoration: line-through;
+  color: var(--color-gray-500);
 }
 
 @media (max-width: 680px) {

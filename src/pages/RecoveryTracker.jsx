@@ -370,8 +370,14 @@ function RecoveryTracker() {
                       className={`claim-step${step.done ? ' done' : ''}`}
                       onClick={() => toggleClaimStep(step.label)}
                     >
-                      <div className="step-dot" />
-                      <span>{step.label}</span>
+                      <span className="claim-checkbox">
+                        {step.done ? (
+                          <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M5 10.5L8.5 14L15 6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        ) : null}
+                      </span>
+                      <span className="claim-step-text">{step.label}</span>
                     </button>
                   ))}
                 </div>
