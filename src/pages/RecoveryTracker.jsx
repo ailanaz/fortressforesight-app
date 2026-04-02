@@ -73,7 +73,7 @@ function RecoveryTracker() {
   const [exteriorDamageRows, setExteriorDamageRows] = useState(() => createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
   const [expenseRows, setExpenseRows] = useState(() => createBlankRows(EXPENSE_COLUMNS.length))
   const [timelineRows, setTimelineRows] = useState(() => createBlankRows(TIME_LOG_COLUMNS.length))
-  const [claimSteps, setClaimSteps] = useState(() => CLAIM_STATUS_STEPS.map((label) => ({ label, done: false })))
+  const [claimSteps, setClaimSteps] = useState(() => CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
   const homeTitle = getHomeTitle(activeHome)
 
   const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
@@ -137,6 +137,14 @@ function RecoveryTracker() {
     setClaimSteps((current) => current.map((step) => (
       step.label === label
         ? { ...step, done: !step.done }
+        : step
+    )))
+  }
+
+  const updateClaimStepNote = (label, value) => {
+    setClaimSteps((current) => current.map((step) => (
+      step.label === label
+        ? { ...step, note: value }
         : step
     )))
   }
@@ -379,21 +387,30 @@ function RecoveryTracker() {
               {selectedSection.id === 'claim-status' ? (
                 <div className="claim-steps">
                   {claimSteps.map((step) => (
-                    <button
-                      key={step.label}
-                      type="button"
-                      className={`claim-step${step.done ? ' done' : ''}`}
-                      onClick={() => toggleClaimStep(step.label)}
-                    >
-                      <span className="claim-checkbox">
-                        {step.done ? (
-                          <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                            <path d="M5 10.5L8.5 14L15 6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        ) : null}
-                      </span>
-                      <span className="claim-step-text">{step.label}</span>
-                    </button>
+                    <div key={step.label} className={`claim-step${step.done ? ' done' : ''}`}>
+                      <button
+                        type="button"
+                        className="claim-step-main"
+                        onClick={() => toggleClaimStep(step.label)}
+                      >
+                        <span className="claim-checkbox">
+                          {step.done ? (
+                            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                              <path d="M5 10.5L8.5 14L15 6.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          ) : null}
+                        </span>
+                        <span className="claim-step-text">{step.label}</span>
+                      </button>
+                      <input
+                        className="claim-step-note"
+                        type="text"
+                        value={step.note}
+                        placeholder="Add note"
+                        onChange={(event) => updateClaimStepNote(step.label, event.target.value)}
+                        aria-label={`${step.label} note`}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : null}

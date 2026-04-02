@@ -304,7 +304,7 @@
 
 .claim-step {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   width: 100%;
   padding: 6px 2px;
@@ -323,6 +323,20 @@
 
 .claim-step.done {
   color: inherit;
+}
+
+.claim-step-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: inherit;
+  font: inherit;
 }
 
 .claim-checkbox {
@@ -353,6 +367,27 @@
   color: var(--color-gray-500);
 }
 
+.claim-step-note {
+  width: 220px;
+  max-width: 42%;
+  min-height: 34px;
+  border: 0;
+  border-bottom: 1px solid rgba(7, 31, 105, 0.2);
+  background: transparent;
+  padding: 0 0 2px;
+  color: #071f69;
+  font: inherit;
+  outline: none;
+}
+
+.claim-step-note::placeholder {
+  color: rgba(7, 31, 105, 0.28);
+}
+
+.claim-step-note:focus {
+  border-bottom-color: #071f69;
+}
+
 @media (max-width: 680px) {
   .recovery-filter-tabs {
     display: grid;
@@ -368,5 +403,16 @@
     text-align: center;
     white-space: normal;
     line-height: 1.15;
+  }
+
+  .claim-step {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .claim-step-note {
+    max-width: 100%;
+    width: 100%;
+    margin-left: 32px;
   }
 }
