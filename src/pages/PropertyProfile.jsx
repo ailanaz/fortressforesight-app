@@ -306,6 +306,33 @@ function getHazardResultValue(hazardId, property, level) {
   return 'Not returned'
 }
 
+function getHazardDetails(hazardId, property) {
+  const summaryCards = normalizeSummaryCards(property?.summaryCards)
+  const landAndWaterCard = summaryCards.find((card) => card.title === 'Land and Water Conditions')
+  const areaResponseCard = summaryCards.find((card) => card.title === 'Area Response Context')
+
+  if (hazardId === 'flood') {
+    return [
+      landAndWaterCard?.rows?.find((row) => row.label === 'Drainage / low basin'),
+      landAndWaterCard?.rows?.find((row) => row.label === 'Water table / wetlands'),
+    ].filter(Boolean)
+  }
+
+  if (hazardId === 'storm-wind') {
+    return [
+      areaResponseCard?.rows?.find((row) => row.label === 'NWS forecast office'),
+    ].filter(Boolean)
+  }
+
+  if (hazardId === 'earthquake') {
+    return [
+      landAndWaterCard?.rows?.find((row) => row.label === 'Karst / sinkhole'),
+    ].filter(Boolean)
+  }
+
+  return []
+}
+
 function buildLocalHazards(property) {
   const stateCode = normalizeStateCode(property?.address?.state)
 
@@ -326,6 +353,7 @@ function buildLocalHazards(property) {
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
         organizationLabel: getHazardOrganizationLabel(definition.id),
         resultValue: getHazardResultValue(definition.id, property, level),
+        details: getHazardDetails(definition.id, property),
         source: definition.source,
       }
     })
@@ -1208,6 +1236,37 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
                   {hazard.source.label}
                 </a>
               ) : null}
+              {hazard.details?.length ? (
+                <div className="local-hazard-details">
+                  {hazard.details.map((detail) => (
+                    <div key={`${hazard.id}-${detail.label}`} className="local-hazard-detail">
+                      <span className="local-hazard-detail-label-wrap">
+                        <span className="local-hazard-detail-label">{detail.label}</span>
+                        {detail.pending ? (
+                          <PendingSummaryInfo />
+                        ) : null}
+                      </span>
+                      <span className={`local-hazard-detail-value${detail.pending ? ' local-hazard-detail-value-muted' : ''}`}>
+                        {detail.pending ? '--' : detail.value}
+                      </span>
+                      {detail.source ? (
+                        detail.source.href ? (
+                          <a
+                            className="local-hazard-detail-source"
+                            href={detail.source.href}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.source.label}
+                          </a>
+                        ) : (
+                          <span className="local-hazard-detail-source local-hazard-detail-source-muted">{detail.source.label}</span>
+                        )
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
               <p className="local-hazard-label">Description</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
             </div>
@@ -1351,8 +1410,6 @@ function PropertyProfile() {
   const orderedSummaryCards = orderSummaryCards(normalizeSummaryCards(property?.summaryCards))
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
   const zoningCard = orderedSummaryCards.find((card) => card.title === 'Zoning / Future Use')
-  const landAndWaterCard = orderedSummaryCards.find((card) => card.title === 'Land and Water Conditions')
-  const areaResponseCard = orderedSummaryCards.find((card) => card.title === 'Area Response Context')
   const localHazards = buildLocalHazards(property)
 
   const handleSubmit = async (event) => {
@@ -1488,22 +1545,6 @@ function PropertyProfile() {
                 <div className="summary-hazard-row">
                   <LocalHazardConsiderations hazards={localHazards} hasProperty />
                 </div>
-                <div className="summary-lower-row">
-                  {landAndWaterCard ? (
-                    <SummaryCard
-                      key={landAndWaterCard.title}
-                      title={landAndWaterCard.title}
-                      rows={landAndWaterCard.rows}
-                    />
-                  ) : null}
-                  {areaResponseCard ? (
-                    <SummaryCard
-                      key={areaResponseCard.title}
-                      title={areaResponseCard.title}
-                      rows={areaResponseCard.rows}
-                    />
-                  ) : null}
-                </div>
               </div>
             </>
           ) : (
@@ -1536,14 +1577,6 @@ function PropertyProfile() {
                 </div>
                 <div className="summary-hazard-row">
                   <LocalHazardConsiderations hazards={[]} hasProperty={false} />
-                </div>
-                <div className="summary-lower-row">
-                  {landAndWaterCard ? (
-                    <SummaryCard key={landAndWaterCard.title} title={landAndWaterCard.title} rows={landAndWaterCard.rows} />
-                  ) : null}
-                  {areaResponseCard ? (
-                    <SummaryCard key={areaResponseCard.title} title={areaResponseCard.title} rows={areaResponseCard.rows} />
-                  ) : null}
                 </div>
               </div>
             </div>
