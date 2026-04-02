@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
+import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
 import './Page.css'
 import './DocumentStorage.css'
 
@@ -44,12 +45,14 @@ function inferDocType(file) {
 
 function DocumentStorage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const { activeHome } = useActiveHome()
   const [docs, setDocs] = useState(SAMPLE_DOCS)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const fileInputRef = useRef(null)
+  const hydratedRef = useRef(false)
+  const storageKey = getPageStateStorageKey('documents', user?.uid, activeHome)
 
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
   const otherDocs = normalizedDocs.filter((doc) => !BASE_DOC_TYPES.includes(doc.type))
@@ -58,6 +61,36 @@ function DocumentStorage() {
   const typeParam = searchParams.get('type')
   const initialType = docTabs.includes(typeParam) ? typeParam : BASE_DOC_TYPES[0]
   const [activeType, setActiveType] = useState(initialType)
+
+  useEffect(() => {
+    hydratedRef.current = false
+
+    if (!storageKey) {
+      setDocs(SAMPLE_DOCS)
+      setCalendarTitle('')
+      setCalendarDate(defaultCalendarDate())
+      hydratedRef.current = true
+      return
+    }
+
+    const storedState = readPageState(storageKey)
+    setDocs(Array.isArray(storedState?.docs) ? storedState.docs : SAMPLE_DOCS)
+    setCalendarTitle(storedState?.calendarTitle || '')
+    setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
+    hydratedRef.current = true
+  }, [storageKey])
+
+  useEffect(() => {
+    if (!storageKey || !hydratedRef.current) {
+      return
+    }
+
+    writePageState(storageKey, {
+      docs: docs.map(({ file, ...doc }) => doc),
+      calendarTitle,
+      calendarDate,
+    })
+  }, [calendarDate, calendarTitle, docs, storageKey])
 
   const addFiles = (files) => {
     const nextDocs = Array.from(files).map((file, index) => ({

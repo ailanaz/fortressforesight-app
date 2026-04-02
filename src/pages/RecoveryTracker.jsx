@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
+import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
 import './Page.css'
 import './RecoveryTracker.css'
 
@@ -61,7 +62,7 @@ function getSectionTabClassName(sectionId, activeSection) {
 }
 
 function RecoveryTracker() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const { activeHome } = useActiveHome()
   const [searchParams, setSearchParams] = useSearchParams()
   const [damageScope, setDamageScope] = useState('Interior')
@@ -77,6 +78,63 @@ function RecoveryTracker() {
   const [timelineRows, setTimelineRows] = useState(() => createBlankRows(TIME_LOG_COLUMNS.length))
   const [claimSteps, setClaimSteps] = useState(() => CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
   const homeTitle = getHomeTitle(activeHome)
+  const hydratedRef = useRef(false)
+  const storageKey = getPageStateStorageKey('recovery', user?.uid, activeHome)
+
+  useEffect(() => {
+    hydratedRef.current = false
+
+    if (!storageKey) {
+      setDamageScope('Interior')
+      setCalendarTitle('')
+      setCalendarDate(defaultCalendarDate(7))
+      setInteriorDamageRows(createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
+      setExteriorDamageRows(createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
+      setExpenseRows(createBlankRows(EXPENSE_COLUMNS.length))
+      setTimelineRows(createBlankRows(TIME_LOG_COLUMNS.length))
+      setClaimSteps(CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
+      hydratedRef.current = true
+      return
+    }
+
+    const storedState = readPageState(storageKey)
+    setDamageScope(storedState?.damageScope || 'Interior')
+    setCalendarTitle(storedState?.calendarTitle || '')
+    setCalendarDate(storedState?.calendarDate || defaultCalendarDate(7))
+    setInteriorDamageRows(Array.isArray(storedState?.interiorDamageRows) ? storedState.interiorDamageRows : createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
+    setExteriorDamageRows(Array.isArray(storedState?.exteriorDamageRows) ? storedState.exteriorDamageRows : createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
+    setExpenseRows(Array.isArray(storedState?.expenseRows) ? storedState.expenseRows : createBlankRows(EXPENSE_COLUMNS.length))
+    setTimelineRows(Array.isArray(storedState?.timelineRows) ? storedState.timelineRows : createBlankRows(TIME_LOG_COLUMNS.length))
+    setClaimSteps(Array.isArray(storedState?.claimSteps) ? storedState.claimSteps : CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
+    hydratedRef.current = true
+  }, [storageKey])
+
+  useEffect(() => {
+    if (!storageKey || !hydratedRef.current) {
+      return
+    }
+
+    writePageState(storageKey, {
+      damageScope,
+      calendarTitle,
+      calendarDate,
+      interiorDamageRows,
+      exteriorDamageRows,
+      expenseRows,
+      timelineRows,
+      claimSteps,
+    })
+  }, [
+    calendarDate,
+    calendarTitle,
+    claimSteps,
+    damageScope,
+    expenseRows,
+    exteriorDamageRows,
+    interiorDamageRows,
+    storageKey,
+    timelineRows,
+  ])
 
   const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
 

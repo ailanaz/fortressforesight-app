@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
+import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
 import './Page.css'
 import './EmergencyContacts.css'
 
@@ -27,12 +28,44 @@ const CONTACT_PLACEHOLDERS = [
 ]
 
 function EmergencyContacts() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const { activeHome } = useActiveHome()
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const homeTitle = getHomeTitle(activeHome)
+  const hydratedRef = useRef(false)
+  const storageKey = getPageStateStorageKey('contacts', user?.uid, activeHome)
+
+  useEffect(() => {
+    hydratedRef.current = false
+
+    if (!storageKey) {
+      setContacts(DEFAULT_CONTACTS)
+      setCalendarTitle('')
+      setCalendarDate(defaultCalendarDate())
+      hydratedRef.current = true
+      return
+    }
+
+    const storedState = readPageState(storageKey)
+    setContacts(Array.isArray(storedState?.contacts) ? storedState.contacts : DEFAULT_CONTACTS)
+    setCalendarTitle(storedState?.calendarTitle || '')
+    setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
+    hydratedRef.current = true
+  }, [storageKey])
+
+  useEffect(() => {
+    if (!storageKey || !hydratedRef.current) {
+      return
+    }
+
+    writePageState(storageKey, {
+      contacts,
+      calendarTitle,
+      calendarDate,
+    })
+  }, [calendarDate, calendarTitle, contacts, storageKey])
 
   const updateContact = (id, field, value) => {
     setContacts((previous) =>

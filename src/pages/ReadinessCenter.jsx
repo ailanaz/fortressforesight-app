@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
+import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
 import './Page.css'
 import './ReadinessCenter.css'
 
@@ -271,8 +272,29 @@ function createCustomChecklistDraft() {
     id: `custom-${Date.now()}`,
     title: '',
     items: [],
-    initiallyOpen: true,
+    open: true,
+    editingTitle: true,
+    done: {},
   }
+}
+
+function normalizeCustomChecklist(checklist) {
+  return {
+    id: checklist.id,
+    title: checklist.title || '',
+    items: (checklist.items || []).map((item, index) => (
+      typeof item === 'string'
+        ? { id: `${checklist.id}-${index}`, text: item }
+        : { id: item.id || `${checklist.id}-${index}`, text: item.text || '' }
+    )),
+    open: Boolean(checklist.open ?? checklist.initiallyOpen),
+    editingTitle: Boolean(checklist.editingTitle ?? checklist.initiallyOpen),
+    done: checklist.done || {},
+  }
+}
+
+function normalizeCustomChecklists(checklists) {
+  return (Array.isArray(checklists) && checklists.length ? checklists : CUSTOM_STARTER_CHECKLISTS).map(normalizeCustomChecklist)
 }
 
 function ChecklistItem({ text, done, onToggle }) {
@@ -290,20 +312,16 @@ function ChecklistItem({ text, done, onToggle }) {
   )
 }
 
-function Checklist({ checklist, locked = false }) {
-  const [open, setOpen] = useState(false)
-  const [done, setDone] = useState({})
-
-  const toggleItem = (index) =>
-    setDone((previous) => ({ ...previous, [index]: !previous[index] }))
-
+function Checklist({ checklist, locked = false, state, onToggleOpen, onToggleItem }) {
+  const open = Boolean(state?.open)
+  const done = state?.done || {}
   const doneCount = Object.values(done).filter(Boolean).length
 
   return (
     <div className={`checklist-card card${locked ? ' is-locked' : ''}`}>
       <div className="checklist-header" onClick={() => {
         if (!locked) {
-          setOpen((value) => !value)
+          onToggleOpen(checklist.id)
         }
       }}>
         <div>
@@ -339,7 +357,7 @@ function Checklist({ checklist, locked = false }) {
               key={item}
               text={item}
               done={!!done[index]}
-              onToggle={() => toggleItem(index)}
+              onToggle={() => onToggleItem(checklist.id, index)}
             />
           ))}
         </ul>
@@ -348,49 +366,30 @@ function Checklist({ checklist, locked = false }) {
   )
 }
 
-function CustomChecklist({ checklist, onDelete, locked = false }) {
-  const [open, setOpen] = useState(!!checklist.initiallyOpen)
-  const [title, setTitle] = useState(checklist.title)
-  const [editingTitle, setEditingTitle] = useState(!!checklist.initiallyOpen)
-  const [done, setDone] = useState({})
-  const [items, setItems] = useState(
-    checklist.items.map((text, index) => ({
-      id: `${checklist.id}-${index}`,
-      text,
-    })),
-  )
+function CustomChecklist({
+  checklist,
+  onDelete,
+  onToggleOpen,
+  onTitleChange,
+  onLockTitle,
+  onToggleItem,
+  onRemoveItem,
+  onAddItem,
+  locked = false,
+}) {
+  const open = Boolean(checklist.open)
+  const title = checklist.title
+  const editingTitle = Boolean(checklist.editingTitle)
+  const done = checklist.done || {}
+  const items = checklist.items || []
   const [newItem, setNewItem] = useState('')
-
-  const toggleItem = (id) =>
-    setDone((previous) => ({ ...previous, [id]: !previous[id] }))
-
-  const removeItem = (id) => {
-    setItems((previous) => previous.filter((item) => item.id !== id))
-    setDone((previous) => {
-      const updated = { ...previous }
-      delete updated[id]
-      return updated
-    })
-  }
 
   const addItem = () => {
     const trimmed = newItem.trim()
     if (!trimmed) return
 
-    setItems((previous) => [
-      ...previous,
-      {
-        id: `${checklist.id}-${Date.now()}`,
-        text: trimmed,
-      },
-    ])
+    onAddItem(checklist.id, trimmed)
     setNewItem('')
-    setOpen(true)
-  }
-
-  const lockTitle = () => {
-    setTitle((current) => current.trim() || 'New Custom List')
-    setEditingTitle(false)
   }
 
   const doneCount = items.filter((item) => done[item.id]).length
@@ -400,7 +399,7 @@ function CustomChecklist({ checklist, onDelete, locked = false }) {
     <div className={`checklist-card card${locked ? ' is-locked' : ''}`}>
       <div className="checklist-header" onClick={() => {
         if (!locked) {
-          setOpen((value) => !value)
+          onToggleOpen(checklist.id)
         }
       }}>
         <div>
@@ -435,11 +434,11 @@ function CustomChecklist({ checklist, onDelete, locked = false }) {
                 className="page-input page-input-wide"
                 type="text"
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
+                onChange={(event) => onTitleChange(checklist.id, event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {
                     event.preventDefault()
-                    lockTitle()
+                    onLockTitle(checklist.id)
                   }
                 }}
                 placeholder="List title"
@@ -449,7 +448,7 @@ function CustomChecklist({ checklist, onDelete, locked = false }) {
           ) : null}
           <div className={`custom-checklist-actions${editingTitle ? ' is-editing' : ''}`}>
             {editingTitle ? (
-              <button className="checklist-remove custom-checklist-lock" type="button" onClick={lockTitle}>
+              <button className="checklist-remove custom-checklist-lock" type="button" onClick={() => onLockTitle(checklist.id)}>
                 Lock Name
               </button>
             ) : null}
@@ -460,7 +459,7 @@ function CustomChecklist({ checklist, onDelete, locked = false }) {
           <ul className="checklist-items">
             {items.map((item) => (
               <li key={item.id} className={`checklist-item${done[item.id] ? ' done' : ''}`}>
-                <button className="checklist-item-main" type="button" onClick={() => toggleItem(item.id)}>
+                <button className="checklist-item-main" type="button" onClick={() => onToggleItem(checklist.id, item.id)}>
                   <span className="checklist-checkbox">
                     {done[item.id] ? (
                       <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -470,7 +469,7 @@ function CustomChecklist({ checklist, onDelete, locked = false }) {
                   </span>
                   <span className="checklist-text">{item.text}</span>
                 </button>
-                <button className="checklist-remove" type="button" onClick={() => removeItem(item.id)}>
+                <button className="checklist-remove" type="button" onClick={() => onRemoveItem(checklist.id, item.id)}>
                   Remove
                 </button>
               </li>
@@ -497,17 +496,53 @@ function CustomChecklist({ checklist, onDelete, locked = false }) {
 
 function ReadinessCenter() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const { activeHome } = useActiveHome()
   const homeTitle = getHomeTitle(activeHome)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
-  const [customChecklists, setCustomChecklists] = useState(CUSTOM_STARTER_CHECKLISTS)
+  const [customChecklists, setCustomChecklists] = useState(() => normalizeCustomChecklists(CUSTOM_STARTER_CHECKLISTS))
+  const [checklistState, setChecklistState] = useState({})
   const sectionParam = searchParams.get('section')
   const initialSection = CHECKLIST_SECTIONS.some((section) => section.id === sectionParam)
     ? sectionParam
     : 'homebuyers'
   const [section, setSection] = useState(initialSection)
+  const hydratedRef = useRef(false)
+  const storageKey = getPageStateStorageKey('readiness', user?.uid, activeHome)
+
+  useEffect(() => {
+    hydratedRef.current = false
+
+    if (!storageKey) {
+      setCalendarTitle('')
+      setCalendarDate(defaultCalendarDate())
+      setChecklistState({})
+      setCustomChecklists(normalizeCustomChecklists(CUSTOM_STARTER_CHECKLISTS))
+      hydratedRef.current = true
+      return
+    }
+
+    const storedState = readPageState(storageKey)
+    setCalendarTitle(storedState?.calendarTitle || '')
+    setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
+    setChecklistState(storedState?.checklistState || {})
+    setCustomChecklists(normalizeCustomChecklists(storedState?.customChecklists))
+    hydratedRef.current = true
+  }, [storageKey])
+
+  useEffect(() => {
+    if (!storageKey || !hydratedRef.current) {
+      return
+    }
+
+    writePageState(storageKey, {
+      calendarTitle,
+      calendarDate,
+      checklistState,
+      customChecklists,
+    })
+  }, [calendarDate, calendarTitle, checklistState, customChecklists, storageKey])
 
   const handleSectionChange = (nextSection) => {
     setSection(nextSection)
@@ -528,6 +563,94 @@ function ReadinessCenter() {
 
   const handleDeleteCustomList = (id) => {
     setCustomChecklists((current) => current.filter((checklist) => checklist.id !== id))
+  }
+
+  const handleToggleChecklistOpen = (id) => {
+    setChecklistState((current) => ({
+      ...current,
+      [id]: {
+        open: !current[id]?.open,
+        done: current[id]?.done || {},
+      },
+    }))
+  }
+
+  const handleToggleChecklistItem = (id, index) => {
+    setChecklistState((current) => ({
+      ...current,
+      [id]: {
+        open: current[id]?.open || false,
+        done: {
+          ...(current[id]?.done || {}),
+          [index]: !current[id]?.done?.[index],
+        },
+      },
+    }))
+  }
+
+  const updateCustomChecklist = (id, updater) => {
+    setCustomChecklists((current) => current.map((checklist) => (
+      checklist.id === id ? updater(checklist) : checklist
+    )))
+  }
+
+  const handleToggleCustomChecklistOpen = (id) => {
+    updateCustomChecklist(id, (checklist) => ({
+      ...checklist,
+      open: !checklist.open,
+    }))
+  }
+
+  const handleCustomChecklistTitleChange = (id, value) => {
+    updateCustomChecklist(id, (checklist) => ({
+      ...checklist,
+      title: value,
+    }))
+  }
+
+  const handleLockCustomChecklistTitle = (id) => {
+    updateCustomChecklist(id, (checklist) => ({
+      ...checklist,
+      title: checklist.title.trim() || 'New Custom List',
+      editingTitle: false,
+    }))
+  }
+
+  const handleToggleCustomChecklistItem = (id, itemId) => {
+    updateCustomChecklist(id, (checklist) => ({
+      ...checklist,
+      done: {
+        ...(checklist.done || {}),
+        [itemId]: !checklist.done?.[itemId],
+      },
+    }))
+  }
+
+  const handleRemoveCustomChecklistItem = (id, itemId) => {
+    updateCustomChecklist(id, (checklist) => {
+      const nextDone = { ...(checklist.done || {}) }
+      delete nextDone[itemId]
+
+      return {
+        ...checklist,
+        items: checklist.items.filter((item) => item.id !== itemId),
+        done: nextDone,
+      }
+    })
+  }
+
+  const handleAddCustomChecklistItem = (id, text) => {
+    updateCustomChecklist(id, (checklist) => ({
+      ...checklist,
+      open: true,
+      items: [
+        ...checklist.items,
+        {
+          id: `${checklist.id}-${Date.now()}`,
+          text,
+        },
+      ],
+    }))
   }
 
   const sectionChecklists = PREMADE_CHECKLISTS.filter((checklist) => checklist.section === section)
@@ -595,6 +718,12 @@ function ReadinessCenter() {
                 key={checklist.id}
                 checklist={checklist}
                 onDelete={handleDeleteCustomList}
+                onToggleOpen={handleToggleCustomChecklistOpen}
+                onTitleChange={handleCustomChecklistTitleChange}
+                onLockTitle={handleLockCustomChecklistTitle}
+                onToggleItem={handleToggleCustomChecklistItem}
+                onRemoveItem={handleRemoveCustomChecklistItem}
+                onAddItem={handleAddCustomChecklistItem}
                 locked={!isAuthenticated}
               />
             ))}
@@ -610,7 +739,14 @@ function ReadinessCenter() {
           ) : null}
           <div className="readiness-list">
             {sectionChecklists.map((checklist) => (
-              <Checklist key={checklist.id} checklist={checklist} locked={!isAuthenticated} />
+              <Checklist
+                key={checklist.id}
+                checklist={checklist}
+                state={checklistState[checklist.id]}
+                onToggleOpen={handleToggleChecklistOpen}
+                onToggleItem={handleToggleChecklistItem}
+                locked={!isAuthenticated}
+              />
             ))}
           </div>
         </>
