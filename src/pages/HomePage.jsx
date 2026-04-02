@@ -207,7 +207,7 @@ function HomePage() {
                   id="home-address-search"
                   className="home-search-input"
                   type="text"
-                  placeholder="Enter address"
+                  placeholder="Enter address, city, state ZIP"
                   value={address}
                   onChange={(event) => setAddress(event.target.value)}
                 />

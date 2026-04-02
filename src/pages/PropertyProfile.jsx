@@ -1393,7 +1393,7 @@ function PropertyProfile() {
           id="property-address-search"
           className="property-search-input"
           type="text"
-          placeholder="Enter address"
+          placeholder="Enter address, city, state ZIP"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -1493,7 +1493,7 @@ function PropertyProfile() {
             id="property-address-search-secondary"
             className="property-search-input"
             type="text"
-            placeholder="Enter address"
+            placeholder="Enter address, city, state ZIP"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
