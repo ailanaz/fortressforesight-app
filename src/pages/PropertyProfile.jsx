@@ -406,9 +406,14 @@ function getMunicipality(address) {
   )
 }
 
-function getStreetLine(result) {
+function getQueryStreetLine(query) {
+  return query?.split(',')[0]?.trim() || ''
+}
+
+function getStreetLine(result, preferredStreetLine = '') {
   const address = result?.address ?? {}
   const streetLine = [
+    preferredStreetLine,
     address.street_line,
     [address.house_number, address.road].filter(Boolean).join(' ').trim(),
   ]
@@ -453,13 +458,15 @@ function rankGeocodeResult(result) {
   return score
 }
 
-function createStarterProfile(result) {
+function createStarterProfile(result, query = '') {
+  const preferredStreetLine = getQueryStreetLine(query)
+
   return {
     summaryCards: [
       {
         title: 'Property Information',
         rows: [
-          { label: 'Address', value: getStreetLine(result) },
+          { label: 'Address', value: getStreetLine(result, preferredStreetLine) },
           {
             label: 'City / State',
             value:
@@ -538,6 +545,38 @@ function createStarterProfile(result) {
         ],
       },
     ],
+  }
+}
+
+function applyPreferredStreetLine(property) {
+  if (!property) {
+    return property
+  }
+
+  const preferredStreetLine = getQueryStreetLine(property.query)
+
+  if (!preferredStreetLine) {
+    return property
+  }
+
+  return {
+    ...property,
+    address: {
+      ...(property.address || {}),
+      street_line: preferredStreetLine,
+    },
+    summaryCards: normalizeSummaryCards(property.summaryCards).map((card) => (
+      card.title === 'Property Information'
+        ? {
+            ...card,
+            rows: card.rows.map((row) => (
+              row.label === 'Address'
+                ? { ...row, value: preferredStreetLine }
+                : row
+            )),
+          }
+        : card
+    )),
   }
 }
 
@@ -1107,14 +1146,15 @@ async function geocodeAddress(query, signal) {
 
 async function lookupProperty(query, signal) {
   const result = await geocodeAddress(query, signal)
-  const starterProfile = createStarterProfile(result)
+  const starterProfile = createStarterProfile(result, query)
   const property = {
     ...result,
     ...starterProfile,
     query,
   }
 
-  return enrichPropertyWithSearchSources(property, signal)
+  const enrichedProperty = await enrichPropertyWithSearchSources(property, signal)
+  return applyPreferredStreetLine(enrichedProperty)
 }
 
 function SummaryCard({ title, rows }) {
@@ -1230,7 +1270,7 @@ function PropertyProfile() {
   }, [])
 
   useEffect(() => {
-    setProperty(activeHome ?? null)
+    setProperty(activeHome ? applyPreferredStreetLine(activeHome) : null)
     setQuery((currentValue) => currentValue || activeHome?.query || '')
   }, [activeHome])
 
@@ -1248,7 +1288,9 @@ function PropertyProfile() {
 
     ;(async () => {
       try {
-        const nextProperty = await enrichPropertyWithSearchSources(property, controller.signal)
+        const nextProperty = applyPreferredStreetLine(
+          await enrichPropertyWithSearchSources(property, controller.signal),
+        )
 
         if (!controller.signal.aborted && nextProperty !== property) {
           setProperty(nextProperty)
