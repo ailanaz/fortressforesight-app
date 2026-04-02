@@ -6,22 +6,22 @@ import './HomePage.css'
 const RAIL_ITEMS = [
   {
     label: 'Clarity',
-    title: 'See the property clearly',
-    text: 'Search an address to review the map, Risk Summary, and local hazard context in one place.',
+    title: 'Understand the property first',
+    text: 'Clarity helps you see the home, the area, and the risks more clearly before you move forward.',
     cta: 'Open Search',
     to: '/search',
   },
   {
     label: 'Structure',
-    title: 'Get organized before you need to',
-    text: 'Documents keeps policies, warranties, inspections, and receipts tied to the home you are tracking.',
+    title: 'Keep everything organized',
+    text: 'Structure keeps key records, notes, and progress connected in one place.',
     cta: 'Open Documents',
     to: '/documents',
   },
   {
     label: 'Confidence',
-    title: 'Keep recovery in one place',
-    text: 'Recovery helps you track damage, expenses, claim steps, and what needs to happen next.',
+    title: 'Know what to do next',
+    text: 'Confidence helps you move through damage, claims, and recovery with more direction.',
     cta: 'Open Recovery',
     to: '/recovery',
   },
