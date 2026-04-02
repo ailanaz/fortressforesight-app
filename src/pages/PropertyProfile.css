@@ -375,6 +375,13 @@
   text-decoration: underline;
 }
 
+.summary-row-source {
+  width: fit-content;
+  color: var(--color-gray-500);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .local-hazards-card {
   margin-bottom: 0;
 }
@@ -438,6 +445,19 @@
   font-size: 13px;
   line-height: 1.55;
   color: var(--color-gray-700);
+}
+
+.local-hazard-source {
+  width: fit-content;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #071f69;
+  text-decoration: none;
+}
+
+.local-hazard-source:hover {
+  text-decoration: underline;
 }
 
 .property-checklist {

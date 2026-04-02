@@ -22,9 +22,9 @@ const EMPTY_SUMMARY_CARDS = [
   {
     title: 'Zoning / Future Use',
     rows: [
-      { label: 'Zoning code', value: '\u2014', pending: true },
-      { label: 'Land use', value: '\u2014', pending: true },
-      { label: 'Future use / corridor', value: '\u2014', pending: true },
+      { label: 'Zoning code', value: '\u2014', pending: true, source: { label: 'Local / State' } },
+      { label: 'Land use', value: '\u2014', pending: true, source: { label: 'Local / State' } },
+      { label: 'Future use / corridor', value: '\u2014', pending: true, source: { label: 'Local / State' } },
     ],
   },
   {
@@ -77,8 +77,8 @@ const EMPTY_SUMMARY_CARDS = [
         pending: true,
         source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
       },
-      { label: 'Hydrant / station review', value: '\u2014', pending: true },
-      { label: 'Area claim pressure', value: '\u2014', pending: true },
+      { label: 'Hydrant / station review', value: '\u2014', pending: true, source: { label: 'Local / State' } },
+      { label: 'Area claim pressure', value: '\u2014', pending: true, source: { label: 'Local / State' } },
     ],
   },
 ]
@@ -165,6 +165,7 @@ const HAZARD_DEFINITIONS = [
     showEverywhere: true,
     copy: 'Drainage, lower-level water entry, and recovery planning may need closer review.',
     limitedCopy: 'Not a primary area concern here, but drainage and lower-level water entry can still vary by lot.',
+    source: { label: 'FEMA', href: 'https://msc.fema.gov/portal/search' },
   },
   {
     id: 'storm-wind',
@@ -173,6 +174,7 @@ const HAZARD_DEFINITIONS = [
     showEverywhere: true,
     copy: 'Roofing, windows, exterior materials, and nearby tree exposure may need closer review.',
     limitedCopy: 'Not a primary area concern here, but roofing, windows, and tree exposure can still vary by site.',
+    source: { label: 'NOAA', href: 'https://www.weather.gov/' },
   },
   {
     id: 'hail',
@@ -181,6 +183,7 @@ const HAZARD_DEFINITIONS = [
     seasonalStates: HAIL_SEASONAL_STATES,
     copy: 'Shingles, gutters, skylights, and siding may be more exposed to damage.',
     limitedCopy: 'Not commonly associated with this location, but exterior materials and glass may still vary by site.',
+    source: { label: 'NOAA', href: 'https://www.spc.noaa.gov/' },
   },
   {
     id: 'wildfire',
@@ -189,6 +192,7 @@ const HAZARD_DEFINITIONS = [
     seasonalStates: WILDFIRE_SEASONAL_STATES,
     copy: 'Defensible space, vents, roofing materials, and exterior vulnerability may need closer review.',
     limitedCopy: 'Not a primary area concern here, but vegetation and exterior materials can still shape exposure.',
+    source: { label: 'USFS', href: 'https://www.fs.usda.gov/' },
   },
   {
     id: 'freeze',
@@ -197,6 +201,7 @@ const HAZARD_DEFINITIONS = [
     seasonalStates: FREEZE_SEASONAL_STATES,
     copy: 'Exposed pipes, drainage, and seasonal protection points may need closer review.',
     limitedCopy: 'Not commonly associated with this location, but exposed pipes and seasonal protection points can still vary by property.',
+    source: { label: 'NOAA', href: 'https://www.weather.gov/' },
   },
   {
     id: 'earthquake',
@@ -205,6 +210,7 @@ const HAZARD_DEFINITIONS = [
     seasonalStates: EARTHQUAKE_SEASONAL_STATES,
     copy: 'Masonry, structural connections, water heater bracing, and shutoff access may need closer review.',
     limitedCopy: 'Not a primary area concern here, but masonry and heavy mounted items may still be worth noting by property.',
+    source: { label: 'USGS', href: 'https://earthquake.usgs.gov/' },
   },
 ]
 
@@ -481,21 +487,21 @@ function createStarterProfile(result) {
         title: 'Area Response Context',
         rows: [
           {
-            label: 'Fire response class',
-            value: 'Pending local source',
-            pending: true,
-            source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
-          },
-          { label: 'Hydrant / station review', value: 'Pending local source', pending: true },
-          { label: 'Area claim pressure', value: 'Pending claims source', pending: true },
-        ],
+        label: 'Fire response class',
+        value: 'Pending local source',
+        pending: true,
+        source: { label: 'FEMA', href: 'https://hazards.fema.gov/nri/' },
+      },
+      { label: 'Hydrant / station review', value: 'Pending local source', pending: true, source: { label: 'Local / State' } },
+      { label: 'Area claim pressure', value: 'Pending claims source', pending: true, source: { label: 'Local / State' } },
+    ],
       },
       {
         title: 'Zoning / Future Use',
         rows: [
-          { label: 'Zoning code', value: 'Pending local source', pending: true },
-          { label: 'Land use', value: 'Pending local source', pending: true },
-          { label: 'Future use / corridor', value: 'Pending local source', pending: true },
+          { label: 'Zoning code', value: 'Pending local source', pending: true, source: { label: 'Local / State' } },
+          { label: 'Land use', value: 'Pending local source', pending: true, source: { label: 'Local / State' } },
+          { label: 'Future use / corridor', value: 'Pending local source', pending: true, source: { label: 'Local / State' } },
         ],
       },
     ],
@@ -750,14 +756,18 @@ function SummaryCard({ title, rows }) {
               {row.pending ? '--' : row.value}
             </span>
             {row.source ? (
-              <a
-                className="summary-row-link"
-                href={row.source.href}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {row.source.label}
-              </a>
+              row.source.href ? (
+                <a
+                  className="summary-row-link"
+                  href={row.source.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {row.source.label}
+                </a>
+              ) : (
+                <span className="summary-row-source">{row.source.label}</span>
+              )
             ) : null}
           </div>
         ))}
@@ -785,6 +795,16 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
               <p className="local-hazard-title">{hazard.title}</p>
               <p className={`local-hazard-status local-hazard-status-${hazard.level}`}>{hazard.status}</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
+              {hazard.source ? (
+                <a
+                  className="local-hazard-source"
+                  href={hazard.source.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {hazard.source.label}
+                </a>
+              ) : null}
             </div>
           ))}
         </div>
