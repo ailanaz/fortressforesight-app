@@ -13,12 +13,12 @@ const RECOVERY_SECTIONS = [
     label: 'Damage Log',
   },
   {
-    id: 'timeline',
-    label: 'Timeline',
-  },
-  {
     id: 'expenses',
     label: 'Expenses',
+  },
+  {
+    id: 'timeline',
+    label: 'Timeline',
   },
   {
     id: 'claim-status',
@@ -248,36 +248,43 @@ function RecoveryTracker() {
               ) : null}
 
               {selectedSection.id === 'expenses' ? (
-                <div className="expense-sheet-wrap">
-                  <div className="expense-sheet-scroll">
-                    <table className="expense-sheet">
-                      <thead>
-                        <tr>
-                          {EXPENSE_COLUMNS.map((column) => (
-                            <th key={column}>{column}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {EXPENSE_ROWS.map((row, rowIndex) => (
-                          <tr key={`expense-row-${rowIndex}`}>
-                            {row.map((cell, cellIndex) => (
-                              <td key={`expense-cell-${rowIndex}-${cellIndex}`}>
-                                <input
-                                  type="text"
-                                  value={cell}
-                                  readOnly
-                                  placeholder=""
-                                  aria-label={`${EXPENSE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
-                                />
-                              </td>
+                <>
+                  <div className="expense-sheet-wrap">
+                    <div className="expense-sheet-scroll">
+                      <table className="expense-sheet">
+                        <thead>
+                          <tr>
+                            {EXPENSE_COLUMNS.map((column) => (
+                              <th key={column}>{column}</th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {EXPENSE_ROWS.map((row, rowIndex) => (
+                            <tr key={`expense-row-${rowIndex}`}>
+                              {row.map((cell, cellIndex) => (
+                                <td key={`expense-cell-${rowIndex}-${cellIndex}`}>
+                                  <input
+                                    type="text"
+                                    value={cell}
+                                    readOnly
+                                    placeholder=""
+                                    aria-label={`${EXPENSE_COLUMNS[cellIndex]} row ${rowIndex + 1}`}
+                                  />
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
+                  <div className="recovery-bottom-action">
+                    <button className="btn-outline recovery-add-btn">
+                      Upload JPG, PNG, PDF
+                    </button>
+                  </div>
+                </>
               ) : null}
 
               {selectedSection.id === 'claim-status' ? (
