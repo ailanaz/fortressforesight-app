@@ -198,7 +198,7 @@ function RecoveryTracker() {
                   </div>
                   <div className="recovery-bottom-action">
                     <button className="btn-outline recovery-add-btn">
-                      {damageScope === 'Interior' ? '+ Add Room' : '+ Add Area'}
+                      Upload JPG, PNG, PDF
                     </button>
                   </div>
                   <div className="recovery-guide-block">
