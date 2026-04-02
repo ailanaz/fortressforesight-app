@@ -118,6 +118,19 @@
   padding-top: 12px;
 }
 
+.recovery-upload-block {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.recovery-upload-note {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-gray-500);
+  text-align: center;
+}
+
 .expense-sheet-wrap {
   padding-top: 4px;
 }

@@ -197,9 +197,12 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="btn-outline recovery-add-btn">
-                      Upload JPG, PNG, PDF
-                    </button>
+                    <div className="recovery-upload-block">
+                      <button className="btn-outline recovery-add-btn">
+                        Upload
+                      </button>
+                      <p className="recovery-upload-note">Add photos, receipts, JPG, PNG, PDF.</p>
+                    </div>
                   </div>
                   <div className="recovery-guide-block">
                     <h3 className="guide-title">Working with Adjusters</h3>
@@ -280,9 +283,12 @@ function RecoveryTracker() {
                     </div>
                   </div>
                   <div className="recovery-bottom-action">
-                    <button className="btn-outline recovery-add-btn">
-                      Upload JPG, PNG, PDF
-                    </button>
+                    <div className="recovery-upload-block">
+                      <button className="btn-outline recovery-add-btn">
+                        Upload
+                      </button>
+                      <p className="recovery-upload-note">Add photos, receipts, JPG, PNG, PDF.</p>
+                    </div>
                   </div>
                 </>
               ) : null}
