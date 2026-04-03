@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
-import { firebaseDb } from '../firebase'
+import { collection, deleteDoc, doc, getDoc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
+import { deleteObject, ref } from 'firebase/storage'
+import { firebaseDb, firebaseStorage } from '../firebase'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import { clearPageStatesForProperty } from '../utils/pageStateStorage'
 import { buildSavedPropertyId } from '../utils/propertyStorage'
@@ -20,6 +21,37 @@ function normalizeSavedHome(docId, data) {
 
 function sortSavedHomes(left, right) {
   return getHomeTitle(left).localeCompare(getHomeTitle(right))
+}
+
+async function clearKnownPropertyData(userId, propertyId) {
+  if (!firebaseDb || !userId || !propertyId) {
+    return
+  }
+
+  let documentPaths = []
+
+  try {
+    const documentsSnapshot = await getDoc(doc(firebaseDb, 'users', userId, 'properties', propertyId, 'documents', 'items'))
+    if (documentsSnapshot.exists()) {
+      documentPaths = (documentsSnapshot.data()?.docs || [])
+        .map((item) => item?.storagePath)
+        .filter(Boolean)
+    }
+  } catch {
+    documentPaths = []
+  }
+
+  if (firebaseStorage && documentPaths.length) {
+    await Promise.allSettled(documentPaths.map((path) => deleteObject(ref(firebaseStorage, path))))
+  }
+
+  await Promise.allSettled([
+    deleteDoc(doc(firebaseDb, 'users', userId, 'properties', propertyId, 'contacts', 'items')),
+    deleteDoc(doc(firebaseDb, 'users', userId, 'properties', propertyId, 'documents', 'items')),
+    deleteDoc(doc(firebaseDb, 'users', userId, 'properties', propertyId, 'readiness', 'state')),
+    deleteDoc(doc(firebaseDb, 'users', userId, 'properties', propertyId, 'recovery', 'claim-status')),
+    deleteDoc(doc(firebaseDb, 'users', userId, 'properties', propertyId, 'recovery', 'sheets')),
+  ])
 }
 
 export function HomeProvider({ children }) {
@@ -185,6 +217,7 @@ export function HomeProvider({ children }) {
     clearPageStatesForProperty(user.uid, targetHome)
 
     try {
+      await clearKnownPropertyData(user.uid, propertyId)
       await deleteDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId))
     } catch {
       const nextHomes = currentSavedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)

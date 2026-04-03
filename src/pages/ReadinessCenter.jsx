@@ -570,6 +570,9 @@ function ReadinessCenter() {
             const remoteState = snapshot.data()
             skipRemoteWriteRef.current = true
 
+            setCalendarTitle(remoteState?.calendarTitle || '')
+            setCalendarDate(remoteState?.calendarDate || defaultCalendarDate())
+
             if (remoteState?.checklistState) {
               setChecklistState(remoteState.checklistState)
             }
@@ -621,6 +624,8 @@ function ReadinessCenter() {
         await setDoc(
           doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'readiness', READINESS_DOC_ID),
           {
+            calendarTitle,
+            calendarDate,
             checklistState: sanitizeChecklistState(checklistState),
             customChecklists: sanitizeCustomChecklists(customChecklists),
             updatedAt: serverTimestamp(),
@@ -633,7 +638,7 @@ function ReadinessCenter() {
     }
 
     syncReadinessState()
-  }, [checklistState, customChecklists, isAuthenticated, propertyId, user?.uid])
+  }, [calendarDate, calendarTitle, checklistState, customChecklists, isAuthenticated, propertyId, user?.uid])
 
   const handleSectionChange = (nextSection) => {
     setSection(nextSection)

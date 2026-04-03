@@ -71,6 +71,7 @@ function EmergencyContacts() {
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const homeTitle = getHomeTitle(activeHome)
   const hydratedRef = useRef(false)
+  const skipRemoteWriteRef = useRef(false)
   const storageKey = getPageStateStorageKey('contacts', user?.uid, activeHome)
   const propertyId = activeHome?.savedPropertyId || (activeHome ? buildSavedPropertyId(activeHome) : '')
 
@@ -101,7 +102,11 @@ function EmergencyContacts() {
           const snapshot = await getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'contacts', CONTACTS_DOC_ID))
 
           if (!cancelled && snapshot.exists()) {
-            setContacts(normalizeContacts(snapshot.data()?.contacts))
+            const remoteState = snapshot.data()
+            skipRemoteWriteRef.current = true
+            setContacts(normalizeContacts(remoteState?.contacts))
+            setCalendarTitle(remoteState?.calendarTitle || '')
+            setCalendarDate(remoteState?.calendarDate || defaultCalendarDate())
           }
         } catch (error) {
           console.warn('Contacts sync is not ready yet.', error)
@@ -130,6 +135,35 @@ function EmergencyContacts() {
     })
   }, [calendarDate, calendarTitle, contacts, storageKey])
 
+  useEffect(() => {
+    if (!hydratedRef.current || !firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
+      return
+    }
+
+    if (skipRemoteWriteRef.current) {
+      skipRemoteWriteRef.current = false
+      return
+    }
+
+    const syncContactCalendar = async () => {
+      try {
+        await setDoc(
+          doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'contacts', CONTACTS_DOC_ID),
+          {
+            calendarTitle,
+            calendarDate,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        )
+      } catch (error) {
+        console.warn('Contacts calendar save is not ready yet.', error)
+      }
+    }
+
+    syncContactCalendar()
+  }, [calendarDate, calendarTitle, isAuthenticated, propertyId, user?.uid])
+
   const persistContacts = async (nextContacts) => {
     if (!firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
       return
@@ -140,6 +174,8 @@ function EmergencyContacts() {
         doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'contacts', CONTACTS_DOC_ID),
         {
           contacts: sanitizeContacts(nextContacts),
+          calendarTitle,
+          calendarDate,
           updatedAt: serverTimestamp(),
         },
         { merge: true },

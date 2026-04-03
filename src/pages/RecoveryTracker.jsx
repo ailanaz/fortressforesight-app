@@ -155,6 +155,8 @@ function RecoveryTracker() {
             const remoteSheets = sheetsSnapshot.data()
             skipRemoteSheetWriteRef.current = true
             setDamageScope(remoteSheets?.damageScope || 'Interior')
+            setCalendarTitle(remoteSheets?.calendarTitle || '')
+            setCalendarDate(remoteSheets?.calendarDate || defaultCalendarDate(7))
             setInteriorDamageRows(normalizeRows(remoteSheets?.interiorDamageRows, INTERIOR_DAMAGE_COLUMNS.length))
             setExteriorDamageRows(normalizeRows(remoteSheets?.exteriorDamageRows, EXTERIOR_DAMAGE_COLUMNS.length))
             setExpenseRows(normalizeRows(remoteSheets?.expenseRows, EXPENSE_COLUMNS.length))
@@ -223,6 +225,8 @@ function RecoveryTracker() {
           doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', RECOVERY_SHEETS_DOC_ID),
           {
             damageScope,
+            calendarTitle,
+            calendarDate,
             interiorDamageRows,
             exteriorDamageRows,
             expenseRows,
@@ -245,6 +249,8 @@ function RecoveryTracker() {
     isAuthenticated,
     propertyId,
     timelineRows,
+    calendarDate,
+    calendarTitle,
     user?.uid,
   ])
 
