@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
@@ -7,7 +7,6 @@ import { readSavedHomes } from '../utils/savedHomesStorage'
 import './TopBar.css'
 
 function TopBar() {
-  const navigate = useNavigate()
   const location = useLocation()
   const { isAuthenticated, propertyLimit, user } = useAuth()
   const { activeHome, savedHomes, savedHomesLoading, selectSavedHome } = useActiveHome()
@@ -55,7 +54,6 @@ function TopBar() {
     selectSavedHome(home)
     setMobileMenuOpen(false)
     setDesktopMenuOpen(false)
-    navigate('/search')
   }
 
   return (
