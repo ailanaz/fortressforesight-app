@@ -71,9 +71,11 @@
 .topbar-plan-pill-button {
   appearance: none;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  width: 100%;
   text-align: left;
   cursor: pointer;
   color: inherit;
