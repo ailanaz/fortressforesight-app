@@ -1600,7 +1600,7 @@ function PropertyProfile() {
                   <AlertTicker />
                 </div>
                 <div className="summary-hazard-row">
-                  <LocalHazardConsiderations hazards={localHazards} hasProperty />
+                  <LocalHazardConsiderations hazards={localHazards} hasProperty={Boolean(property)} />
                 </div>
               </div>
             </>
