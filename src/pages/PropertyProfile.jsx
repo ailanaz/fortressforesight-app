@@ -1160,7 +1160,7 @@ async function lookupProperty(query, signal) {
 
 function SummaryCard({ title, rows, footer }) {
   return (
-    <article className="summary-card card">
+    <article className={`summary-card card${title === 'Property Information' ? ' summary-card-property' : ''}`}>
       <div className="summary-card-header">
         <p className="summary-card-title">{title}</p>
       </div>

@@ -399,6 +399,10 @@
   color: var(--color-red);
 }
 
+.summary-card-property .summary-value {
+  color: #071f69;
+}
+
 .summary-value-muted {
   color: var(--color-gray-500);
 }
@@ -433,7 +437,8 @@
 .summary-card-note {
   font-size: 12px;
   line-height: 1.45;
-  color: var(--color-gray-500);
+  color: #b42318;
+  font-weight: 700;
 }
 
 .local-hazards-card {
