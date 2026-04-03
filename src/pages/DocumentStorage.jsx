@@ -12,6 +12,7 @@ import './DocumentStorage.css'
 const SAMPLE_DOCS = []
 
 const BASE_DOC_TYPES = ['Insurance Policy', 'Warranty', 'Inspection', 'Receipts']
+const DOC_TABS = [...BASE_DOC_TYPES, 'Other']
 
 const MOBILE_DOC_TAB_LABELS = {
   'Insurance Policy': 'Policy',
@@ -66,7 +67,7 @@ function DocumentStorage() {
   const normalizedDocs = docs.map((doc) => ({ ...doc, type: normalizeDocType(doc.type) }))
   const otherDocs = normalizedDocs.filter((doc) => !BASE_DOC_TYPES.includes(doc.type))
   const homeTitle = getHomeTitle(activeHome)
-  const docTabs = [...BASE_DOC_TYPES, ...(otherDocs.length ? ['Other'] : [])]
+  const docTabs = DOC_TABS
   const typeParam = searchParams.get('type')
   const initialType = docTabs.includes(typeParam) ? typeParam : BASE_DOC_TYPES[0]
   const [activeType, setActiveType] = useState(initialType)
