@@ -16,14 +16,18 @@ import './DocumentStorage.css'
 const SAMPLE_DOCS = []
 
 const BASE_DOC_TYPES = ['Insurance Policy', 'Warranty', 'Inspection', 'Receipts']
-const DOC_TABS = [...BASE_DOC_TYPES, 'Other']
+const INVENTORY_TAB = 'Inventory'
+const DOC_TABS = [...BASE_DOC_TYPES, INVENTORY_TAB, 'Other']
 const DOCUMENTS_DOC_ID = 'items'
+const INVENTORY_COLUMNS = ['Room / Area', 'Item', 'Brand / Model', 'Serial', 'Est. Value', 'Purchase Date', 'Uploads', 'Notes']
+const INVENTORY_PLACEHOLDER_ROW = ['Living Room', 'TV', 'Sony Bravia', 'SN-45831', '850.00', '06/12/2023', 'Photo, receipt, none', 'Wall-mounted above console']
 
 const MOBILE_DOC_TAB_LABELS = {
   'Insurance Policy': 'Policy',
   Warranty: 'Warranty',
   Inspection: 'Inspection',
   Receipts: 'Receipts',
+  Inventory: 'Inventory',
   Other: 'Other',
 }
 
@@ -50,7 +54,7 @@ function inferDocType(file) {
 }
 
 function resolveUploadType(activeType, file) {
-  if (BASE_DOC_TYPES.includes(activeType)) {
+  if (BASE_DOC_TYPES.includes(activeType) || activeType === INVENTORY_TAB) {
     return activeType
   }
 
@@ -78,11 +82,26 @@ function sanitizeDocs(docs) {
   }))
 }
 
+function createBlankInventoryRows(count = 5) {
+  return Array.from({ length: count }, () => Array(INVENTORY_COLUMNS.length).fill(''))
+}
+
+function normalizeInventoryRows(rows) {
+  if (!Array.isArray(rows)) {
+    return createBlankInventoryRows()
+  }
+
+  return rows.map((row) => (
+    Array.from({ length: INVENTORY_COLUMNS.length }, (_, index) => (Array.isArray(row) ? row[index] || '' : ''))
+  ))
+}
+
 function DocumentStorage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { isAuthenticated, user } = useAuth()
   const { activeHome } = useActiveHome()
   const [docs, setDocs] = useState(SAMPLE_DOCS)
+  const [inventoryRows, setInventoryRows] = useState(() => createBlankInventoryRows())
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const fileInputRef = useRef(null)
@@ -106,6 +125,7 @@ function DocumentStorage() {
     const hydrate = async () => {
       if (!storageKey) {
         setDocs(SAMPLE_DOCS)
+        setInventoryRows(createBlankInventoryRows())
         setCalendarTitle('')
         setCalendarDate(defaultCalendarDate())
         hydratedRef.current = true
@@ -116,6 +136,7 @@ function DocumentStorage() {
 
       if (!cancelled) {
         setDocs(Array.isArray(storedState?.docs) ? storedState.docs : SAMPLE_DOCS)
+        setInventoryRows(normalizeInventoryRows(storedState?.inventoryRows))
         setCalendarTitle(storedState?.calendarTitle || '')
         setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
       }
@@ -128,6 +149,7 @@ function DocumentStorage() {
             const remoteState = snapshot.data()
             skipRemoteWriteRef.current = true
             setDocs(Array.isArray(remoteState?.docs) ? remoteState.docs : SAMPLE_DOCS)
+            setInventoryRows(normalizeInventoryRows(remoteState?.inventoryRows))
             setCalendarTitle(remoteState?.calendarTitle || '')
             setCalendarDate(remoteState?.calendarDate || defaultCalendarDate())
           }
@@ -153,10 +175,11 @@ function DocumentStorage() {
 
     writePageState(storageKey, {
       docs: docs.map(({ file, ...doc }) => doc),
+      inventoryRows,
       calendarTitle,
       calendarDate,
     })
-  }, [calendarDate, calendarTitle, docs, storageKey])
+  }, [calendarDate, calendarTitle, docs, inventoryRows, storageKey])
 
   useEffect(() => {
     if (!hydratedRef.current || !firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
@@ -174,6 +197,7 @@ function DocumentStorage() {
           doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'documents', DOCUMENTS_DOC_ID),
           {
             docs: sanitizeDocs(docs),
+            inventoryRows,
             calendarTitle,
             calendarDate,
             updatedAt: serverTimestamp(),
@@ -186,7 +210,7 @@ function DocumentStorage() {
     }
 
     syncDocumentsState()
-  }, [calendarDate, calendarTitle, docs, isAuthenticated, propertyId, user?.uid])
+  }, [calendarDate, calendarTitle, docs, inventoryRows, isAuthenticated, propertyId, user?.uid])
 
   const addFiles = async (files) => {
     const selectedFiles = Array.from(files)
@@ -288,9 +312,79 @@ function DocumentStorage() {
     }, { replace: true })
   }
 
+  const updateInventoryCell = (rowIndex, cellIndex, value) => {
+    setInventoryRows((current) => current.map((row, index) => (
+      index === rowIndex
+        ? row.map((cell, innerIndex) => (innerIndex === cellIndex ? value : cell))
+        : row
+    )))
+  }
+
+  const addInventoryRow = () => {
+    setInventoryRows((current) => [...current, Array(INVENTORY_COLUMNS.length).fill('')])
+  }
+
   const activeDocs = activeType === 'Other'
     ? otherDocs
     : normalizedDocs.filter((doc) => doc.type === activeType)
+
+  const renderDocList = () => (
+    <div className="doc-category-list">
+      {activeDocs.length === 0 ? (
+        <div className="empty-state doc-empty-state">No files yet.</div>
+      ) : (
+        activeDocs.map((doc) => (
+          <div key={doc.id} className="doc-card">
+            <div className="doc-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            </div>
+            <div className="doc-info">
+              <span className="doc-name">{doc.name}</span>
+              <span className="doc-meta">
+                {activeType === 'Other' ? `${doc.type} - ${doc.date} - ${doc.size}` : `${doc.date} - ${doc.size}`}
+              </span>
+            </div>
+            <div className="doc-actions">
+              {isAuthenticated ? (
+                <>
+                  <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <path d="M8.6 13.5l6.8 4" />
+                      <path d="M15.4 6.5l-6.8 4" />
+                    </svg>
+                  </button>
+                  <button
+                    className="doc-delete"
+                    type="button"
+                    aria-label={`Delete ${doc.name}`}
+                    onClick={() => handleDelete(doc.id)}
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <Link className="doc-action" aria-label={`Upgrade to share ${doc.name}`} to="/upgrade">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <path d="M8.6 13.5l6.8 4" />
+                    <path d="M15.4 6.5l-6.8 4" />
+                  </svg>
+                </Link>
+              )}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  )
 
   return (
     <div className="page">
@@ -335,61 +429,64 @@ function DocumentStorage() {
       />
 
       <section className="doc-category-card card">
-        <div className="doc-category-list">
-          {activeDocs.length === 0 ? (
-            <div className="empty-state doc-empty-state">No files yet.</div>
-          ) : (
-            activeDocs.map((doc) => (
-              <div key={doc.id} className="doc-card">
-                <div className="doc-icon">
-                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
-                </div>
-                <div className="doc-info">
-                  <span className="doc-name">{doc.name}</span>
-                  <span className="doc-meta">
-                    {activeType === 'Other' ? `${doc.type} - ${doc.date} - ${doc.size}` : `${doc.date} - ${doc.size}`}
-                  </span>
-                </div>
-                <div className="doc-actions">
-                  {isAuthenticated ? (
-                    <>
-                      <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
-                        <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <circle cx="18" cy="5" r="3" />
-                          <circle cx="6" cy="12" r="3" />
-                          <circle cx="18" cy="19" r="3" />
-                          <path d="M8.6 13.5l6.8 4" />
-                          <path d="M15.4 6.5l-6.8 4" />
-                        </svg>
-                      </button>
-                      <button
-                        className="doc-delete"
-                        type="button"
-                        aria-label={`Delete ${doc.name}`}
-                        onClick={() => handleDelete(doc.id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  ) : (
-                    <Link className="doc-action" aria-label={`Upgrade to share ${doc.name}`} to="/upgrade">
-                      <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <circle cx="18" cy="5" r="3" />
-                        <circle cx="6" cy="12" r="3" />
-                        <circle cx="18" cy="19" r="3" />
-                        <path d="M8.6 13.5l6.8 4" />
-                        <path d="M15.4 6.5l-6.8 4" />
-                      </svg>
-                    </Link>
-                  )}
-                </div>
+        {activeType === INVENTORY_TAB ? (
+          <>
+            <div className="inventory-sheet-wrap">
+              <div className="inventory-sheet-scroll">
+                <table className="inventory-sheet">
+                  <thead>
+                    <tr>
+                      {INVENTORY_COLUMNS.map((column, index) => (
+                        <th
+                          key={column}
+                          className={index === 0 ? 'inventory-col-area' : index === 1 ? 'inventory-col-item' : ''}
+                        >
+                          {column}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inventoryRows.map((row, rowIndex) => (
+                      <tr key={`inventory-row-${rowIndex}`}>
+                        {row.map((cell, cellIndex) => (
+                          <td key={`${rowIndex}-${cellIndex}`}>
+                            <input
+                              type="text"
+                              value={cell}
+                              onChange={(event) => updateInventoryCell(rowIndex, cellIndex, event.target.value)}
+                              placeholder={rowIndex === 0 ? INVENTORY_PLACEHOLDER_ROW[cellIndex] : ''}
+                              disabled={!isAuthenticated}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ))
-          )}
-        </div>
+            </div>
+
+            <div className="document-bottom-link-wrap">
+              {isAuthenticated ? (
+                <button className="document-add-link" type="button" onClick={addInventoryRow}>
+                  → Add inventory row
+                </button>
+              ) : (
+                <Link className="document-add-link" to="/upgrade">
+                  → Add inventory row
+                </Link>
+              )}
+            </div>
+
+            <div className="inventory-uploads-block">
+              <p className="inventory-uploads-title">Inventory Uploads</p>
+              {renderDocList()}
+            </div>
+          </>
+        ) : (
+          renderDocList()
+        )}
       </section>
 
       <div className="document-bottom-action">

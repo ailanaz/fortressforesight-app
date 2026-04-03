@@ -9,6 +9,11 @@ import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
 import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
 import { buildSavedPropertyId } from '../utils/propertyStorage'
+import {
+  createCustomChecklistDraft,
+  normalizeCustomChecklists,
+  sanitizeCustomChecklists,
+} from '../utils/readinessCustomLists'
 import './Page.css'
 import './ReadinessCenter.css'
 
@@ -241,62 +246,7 @@ const PREMADE_CHECKLISTS = [
   },
 ]
 
-const CUSTOM_STARTER_CHECKLISTS = [
-  {
-    id: 'my-emergency-planning',
-    title: 'My Emergency Planning and Kits',
-    description: 'Starter custom checklist',
-    items: [
-      'Three days of food',
-      'Three days of water',
-      'Lights',
-      'Batteries',
-      'First aid supplies',
-      'Medications and backup prescriptions',
-      'Emergency contacts',
-      'Family meeting spots',
-      'Insurance policy numbers',
-      'Two ways out of every room',
-      'Fire drills twice a year',
-    ],
-  },
-]
-
 const READINESS_DOC_ID = 'state'
-
-function createCustomChecklistDraft() {
-  return {
-    id: `custom-${Date.now()}`,
-    title: '',
-    items: [],
-    open: true,
-    editingTitle: true,
-    done: {},
-  }
-}
-
-function normalizeCustomChecklist(checklist) {
-  return {
-    id: checklist.id,
-    title: checklist.title || '',
-    items: (checklist.items || []).map((item, index) => (
-      typeof item === 'string'
-        ? { id: `${checklist.id}-${index}`, text: item }
-        : { id: item.id || `${checklist.id}-${index}`, text: item.text || '' }
-    )),
-    open: Boolean(checklist.open ?? checklist.initiallyOpen),
-    editingTitle: Boolean(checklist.editingTitle ?? checklist.initiallyOpen),
-    done: checklist.done || {},
-  }
-}
-
-function normalizeCustomChecklists(checklists) {
-  if (Array.isArray(checklists)) {
-    return checklists.map(normalizeCustomChecklist)
-  }
-
-  return CUSTOM_STARTER_CHECKLISTS.map(normalizeCustomChecklist)
-}
 
 function sanitizeChecklistState(state) {
   return Object.entries(state || {}).reduce((nextState, [checklistId, checklist]) => {
@@ -307,20 +257,6 @@ function sanitizeChecklistState(state) {
 
     return nextState
   }, {})
-}
-
-function sanitizeCustomChecklists(checklists) {
-  return (checklists || []).map((checklist) => ({
-    id: checklist.id,
-    title: checklist.title || '',
-    items: (checklist.items || []).map((item) => ({
-      id: item.id,
-      text: item.text || '',
-    })),
-    open: Boolean(checklist.open),
-    editingTitle: Boolean(checklist.editingTitle),
-    done: checklist.done || {},
-  }))
 }
 
 function ChecklistItem({ text, done, onToggle }) {
@@ -527,7 +463,8 @@ function ReadinessCenter() {
   const homeTitle = getHomeTitle(activeHome)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
-  const [customChecklists, setCustomChecklists] = useState(() => normalizeCustomChecklists(CUSTOM_STARTER_CHECKLISTS))
+  const [removedStarterKeys, setRemovedStarterKeys] = useState([])
+  const [customChecklists, setCustomChecklists] = useState(() => normalizeCustomChecklists([], []))
   const [checklistState, setChecklistState] = useState({})
   const sectionParam = searchParams.get('section')
   const initialSection = CHECKLIST_SECTIONS.some((section) => section.id === sectionParam)
@@ -548,7 +485,8 @@ function ReadinessCenter() {
         setCalendarTitle('')
         setCalendarDate(defaultCalendarDate())
         setChecklistState({})
-        setCustomChecklists(normalizeCustomChecklists())
+        setRemovedStarterKeys([])
+        setCustomChecklists(normalizeCustomChecklists([], []))
         hydratedRef.current = true
         return
       }
@@ -559,7 +497,8 @@ function ReadinessCenter() {
         setCalendarTitle(storedState?.calendarTitle || '')
         setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
         setChecklistState(storedState?.checklistState || {})
-        setCustomChecklists(normalizeCustomChecklists(storedState?.customChecklists))
+        setRemovedStarterKeys(Array.isArray(storedState?.removedStarterKeys) ? storedState.removedStarterKeys : [])
+        setCustomChecklists(normalizeCustomChecklists(storedState?.customChecklists, storedState?.removedStarterKeys || []))
       }
 
       if (firebaseDb && isAuthenticated && user?.uid && propertyId) {
@@ -577,9 +516,9 @@ function ReadinessCenter() {
               setChecklistState(remoteState.checklistState)
             }
 
-            if (Array.isArray(remoteState?.customChecklists)) {
-              setCustomChecklists(normalizeCustomChecklists(remoteState.customChecklists))
-            }
+            const nextRemovedStarterKeys = Array.isArray(remoteState?.removedStarterKeys) ? remoteState.removedStarterKeys : []
+            setRemovedStarterKeys(nextRemovedStarterKeys)
+            setCustomChecklists(normalizeCustomChecklists(remoteState?.customChecklists, nextRemovedStarterKeys))
           }
         } catch (error) {
           console.warn('Readiness sync is not ready yet.', error)
@@ -606,8 +545,9 @@ function ReadinessCenter() {
       calendarDate,
       checklistState,
       customChecklists,
+      removedStarterKeys,
     })
-  }, [calendarDate, calendarTitle, checklistState, customChecklists, storageKey])
+  }, [calendarDate, calendarTitle, checklistState, customChecklists, removedStarterKeys, storageKey])
 
   useEffect(() => {
     if (!hydratedRef.current || !firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
@@ -628,6 +568,7 @@ function ReadinessCenter() {
             calendarDate,
             checklistState: sanitizeChecklistState(checklistState),
             customChecklists: sanitizeCustomChecklists(customChecklists),
+            removedStarterKeys,
             updatedAt: serverTimestamp(),
           },
           { merge: true },
@@ -638,7 +579,7 @@ function ReadinessCenter() {
     }
 
     syncReadinessState()
-  }, [calendarDate, calendarTitle, checklistState, customChecklists, isAuthenticated, propertyId, user?.uid])
+  }, [calendarDate, calendarTitle, checklistState, customChecklists, isAuthenticated, propertyId, removedStarterKeys, user?.uid])
 
   const handleSectionChange = (nextSection) => {
     setSection(nextSection)
@@ -658,7 +599,19 @@ function ReadinessCenter() {
   }
 
   const handleDeleteCustomList = (id) => {
-    setCustomChecklists((current) => current.filter((checklist) => checklist.id !== id))
+    setCustomChecklists((current) => {
+      const checklistToDelete = current.find((checklist) => checklist.id === id)
+
+      if (checklistToDelete?.starterKey) {
+        setRemovedStarterKeys((currentRemoved) => (
+          currentRemoved.includes(checklistToDelete.starterKey)
+            ? currentRemoved
+            : [...currentRemoved, checklistToDelete.starterKey]
+        ))
+      }
+
+      return current.filter((checklist) => checklist.id !== id)
+    })
   }
 
   const handleToggleChecklistOpen = (id) => {

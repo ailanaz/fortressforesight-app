@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import AlertTicker from '../components/AlertTicker'
+import { firebaseDb } from '../firebase'
+import { buildSavedPropertyId } from '../utils/propertyStorage'
+import {
+  buildWeatherChecklist,
+  getWeatherChecklistPreview,
+  normalizeCustomChecklists,
+  sanitizeCustomChecklists,
+} from '../utils/readinessCustomLists'
 import './Page.css'
 import './PropertyProfile.css'
 
@@ -10,6 +19,15 @@ const GOOGLE_MAPS_EMBED_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 const FEMA_FLOOD_ZONE_QUERY_URL = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query'
 const NOAA_POINTS_API_URL = 'https://api.weather.gov/points'
 const NOAA_ALERTS_API_URL = 'https://api.weather.gov/alerts/active'
+const READINESS_DOC_ID = 'state'
+const PROPERTY_ALERT_REFRESH_MS = 15 * 60 * 1000
+const ALERT_SEVERITY_ORDER = {
+  Extreme: 4,
+  Severe: 3,
+  Moderate: 2,
+  Minor: 1,
+  Unknown: 0,
+}
 
 const EMPTY_DETAIL_ROWS = [
   { label: 'Address', value: '\u2014' },
@@ -728,6 +746,41 @@ function getNoaaAlertLabel(features) {
   return `${events.length} active alerts`
 }
 
+function formatAlertTimeLabel(value) {
+  if (!value) {
+    return ''
+  }
+
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(new Date(value))
+  } catch {
+    return ''
+  }
+}
+
+function normalizePropertyAlert(feature) {
+  const properties = feature?.properties ?? {}
+  const severity = properties.severity || 'Unknown'
+  const sentLabel = formatAlertTimeLabel(properties.sent)
+  const expiresLabel = formatAlertTimeLabel(properties.expires)
+
+  return {
+    id: feature?.id || `${properties.event}-${properties.sent}`,
+    event: properties.event || 'Weather alert',
+    headline: properties.headline || properties.event || 'Active weather alert',
+    severity,
+    sent: properties.sent || '',
+    sentLabel,
+    expiresLabel,
+    rank: ALERT_SEVERITY_ORDER[severity] ?? 0,
+  }
+}
+
 async function fetchNoaaContext(result, signal) {
   if (!Number.isFinite(result?.lat) || !Number.isFinite(result?.lon)) {
     return null
@@ -787,10 +840,21 @@ async function fetchNoaaContext(result, signal) {
 
   const alertsPayload = await alertsResponse.json()
   const features = Array.isArray(alertsPayload?.features) ? alertsPayload.features : []
+  const alerts = features
+    .map(normalizePropertyAlert)
+    .sort((left, right) => {
+      if (right.rank !== left.rank) {
+        return right.rank - left.rank
+      }
+
+      return new Date(right.sent).getTime() - new Date(left.sent).getTime()
+    })
+    .slice(0, 3)
 
   return {
     officeLabel,
     alertsLabel: getNoaaAlertLabel(features),
+    alerts,
   }
 }
 
@@ -1238,6 +1302,119 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
   )
 }
 
+function PropertyAlertsCard({
+  hasProperty,
+  isAuthenticated,
+  alertsStatus,
+  alerts,
+  officeLabel,
+}) {
+  return (
+    <article className="summary-card card property-alerts-card">
+      <div className="summary-card-header">
+        <p className="summary-card-title">Property Alerts</p>
+      </div>
+
+      {!hasProperty ? (
+        <p className="property-alerts-empty">Search an address to view alert context for that property.</p>
+      ) : !isAuthenticated ? (
+        <div className="property-alerts-locked">
+          <p className="property-alerts-empty">Upgrade to view alerts tied to this property.</p>
+          <Link className="page-locked-link" to="/upgrade">
+            Upgrade to view alerts →
+          </Link>
+        </div>
+      ) : alertsStatus === 'loading' ? (
+        <p className="property-alerts-empty">Loading property alerts...</p>
+      ) : alertsStatus === 'error' ? (
+        <p className="property-alerts-empty">Property alerts are unavailable right now.</p>
+      ) : alerts.length ? (
+        <>
+          <div className="property-alert-list">
+            {alerts.map((alert) => (
+              <div key={alert.id} className="property-alert-item">
+                <p className="property-alert-event">
+                  {alert.event}
+                  {alert.severity ? <span className="property-alert-severity"> • {alert.severity}</span> : null}
+                </p>
+                <p className="property-alert-headline">{alert.headline}</p>
+                <p className="property-alert-meta">
+                  {alert.expiresLabel ? `Until ${alert.expiresLabel}` : alert.sentLabel ? `Updated ${alert.sentLabel}` : 'Active now'}
+                </p>
+              </div>
+            ))}
+          </div>
+          {officeLabel ? (
+            <p className="property-alert-source">Source: NOAA / NWS {officeLabel}</p>
+          ) : (
+            <p className="property-alert-source">Source: NOAA</p>
+          )}
+        </>
+      ) : (
+        <>
+          <p className="property-alerts-empty">No active weather alerts for this property right now.</p>
+          {officeLabel ? (
+            <p className="property-alert-source">Source: NOAA / NWS {officeLabel}</p>
+          ) : (
+            <p className="property-alert-source">Source: NOAA</p>
+          )}
+        </>
+      )}
+    </article>
+  )
+}
+
+function WeatherRecommendationsCard({
+  hasProperty,
+  isAuthenticated,
+  recommendation,
+  createStatus,
+  onCreate,
+}) {
+  return (
+    <article className="summary-card card property-weather-card">
+      <div className="summary-card-header">
+        <p className="summary-card-title">Weather Checklist</p>
+      </div>
+
+      {!hasProperty ? (
+        <p className="property-alerts-empty">Search an address to see event-based recommendations.</p>
+      ) : !isAuthenticated ? (
+        <div className="property-alerts-locked">
+          <p className="property-alerts-empty">Upgrade to create event-based preparedness checklists.</p>
+          <Link className="page-locked-link" to="/upgrade">
+            Upgrade to create checklists →
+          </Link>
+        </div>
+      ) : recommendation ? (
+        <>
+          <p className="property-weather-title">{recommendation.title}</p>
+          <ul className="property-weather-list">
+            {recommendation.items.slice(0, 5).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <div className="property-weather-actions">
+            <button className="btn-outline property-weather-button" type="button" onClick={onCreate}>
+              {createStatus === 'working' ? 'Adding...' : 'Create Weather Checklist'}
+            </button>
+            {createStatus === 'saved' ? (
+              <Link className="page-locked-link" to="/readiness?section=custom">
+                Open Custom Checklists →
+              </Link>
+            ) : null}
+            {createStatus === 'error' ? (
+              <p className="property-weather-error">Could not add that checklist right now.</p>
+            ) : null}
+          </div>
+        </>
+      ) : (
+        <p className="property-alerts-empty">When an alert is active, this card can turn it into a property checklist.</p>
+      )}
+    </article>
+  )
+}
+
 function getGoogleEmbedSrc(property) {
   if (!property) {
     return ''
@@ -1253,7 +1430,7 @@ function getGoogleEmbedSrc(property) {
 }
 
 function PropertyProfile() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const {
     activeHome,
     saveActiveHome,
@@ -1268,6 +1445,10 @@ function PropertyProfile() {
   const [error, setError] = useState('')
   const [accountError, setAccountError] = useState('')
   const [propertyActionStatus, setPropertyActionStatus] = useState('idle')
+  const [propertyAlertsStatus, setPropertyAlertsStatus] = useState('idle')
+  const [propertyAlerts, setPropertyAlerts] = useState([])
+  const [propertyAlertOffice, setPropertyAlertOffice] = useState('')
+  const [weatherChecklistStatus, setWeatherChecklistStatus] = useState('idle')
   const [property, setProperty] = useState(activeHome)
   const requestRef = useRef(null)
   const autoSearchRef = useRef('')
@@ -1381,13 +1562,60 @@ function PropertyProfile() {
   const orderedSummaryCards = orderSummaryCards(normalizeSummaryCards(property?.summaryCards))
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
   const localHazards = buildLocalHazards(property)
+  const weatherRecommendation = getWeatherChecklistPreview(propertyAlerts)
   const propertyIsSaved = isHomeSaved(property)
   const propertyCanRemove = Boolean(property?.savedPropertyId) || propertyIsSaved
 
   useEffect(() => {
     setAccountError('')
     setPropertyActionStatus('idle')
+    setWeatherChecklistStatus('idle')
   }, [property?.query, property?.savedPropertyId])
+
+  useEffect(() => {
+    if (!property || !isAuthenticated) {
+      setPropertyAlerts([])
+      setPropertyAlertOffice('')
+      setPropertyAlertsStatus('idle')
+      return undefined
+    }
+
+    let cancelled = false
+    const controller = new AbortController()
+
+    const loadPropertyAlerts = async () => {
+      setPropertyAlertsStatus('loading')
+
+      try {
+        const nextContext = await fetchNoaaContext(property, controller.signal)
+
+        if (cancelled) {
+          return
+        }
+
+        setPropertyAlerts(nextContext?.alerts || [])
+        setPropertyAlertOffice(nextContext?.officeLabel || '')
+        setPropertyAlertsStatus('ready')
+      } catch (lookupError) {
+        if (lookupError.name === 'AbortError' || cancelled) {
+          return
+        }
+
+        setPropertyAlerts([])
+        setPropertyAlertOffice('')
+        setPropertyAlertsStatus('error')
+      }
+    }
+
+    loadPropertyAlerts()
+    const intervalId = window.setInterval(loadPropertyAlerts, PROPERTY_ALERT_REFRESH_MS)
+
+    return () => {
+      cancelled = true
+      controller.abort()
+      window.clearInterval(intervalId)
+    }
+  }, [isAuthenticated, property?.lat, property?.lon, property?.query])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -1466,6 +1694,44 @@ function PropertyProfile() {
     }
   }
 
+  const handleCreateWeatherChecklist = async () => {
+    if (!firebaseDb || !isAuthenticated || !user?.uid || !property) {
+      return
+    }
+
+    const propertyId = property.savedPropertyId || buildSavedPropertyId(property)
+    const weatherChecklist = buildWeatherChecklist(propertyAlerts)
+
+    if (!weatherChecklist || !propertyId) {
+      return
+    }
+
+    setWeatherChecklistStatus('working')
+
+    try {
+      const readinessRef = doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'readiness', READINESS_DOC_ID)
+      const readinessSnapshot = await getDoc(readinessRef)
+      const readinessState = readinessSnapshot.exists() ? readinessSnapshot.data() : {}
+      const removedStarterKeys = Array.isArray(readinessState?.removedStarterKeys) ? readinessState.removedStarterKeys : []
+      const existingCustomChecklists = normalizeCustomChecklists(readinessState?.customChecklists, removedStarterKeys)
+
+      await setDoc(
+        readinessRef,
+        {
+          customChecklists: sanitizeCustomChecklists([weatherChecklist, ...existingCustomChecklists]),
+          removedStarterKeys,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      )
+
+      setWeatherChecklistStatus('saved')
+    } catch (saveError) {
+      console.warn('Weather checklist save is not ready yet.', saveError)
+      setWeatherChecklistStatus('error')
+    }
+  }
+
   const handleClearSearch = () => {
     if (requestRef.current) {
       requestRef.current.abort()
@@ -1484,6 +1750,10 @@ function PropertyProfile() {
     setError('')
     setAccountError('')
     setPropertyActionStatus('idle')
+    setPropertyAlerts([])
+    setPropertyAlertOffice('')
+    setPropertyAlertsStatus('idle')
+    setWeatherChecklistStatus('idle')
     clearActiveHome()
   }
 
@@ -1602,6 +1872,22 @@ function PropertyProfile() {
                 <div className="summary-hazard-row">
                   <LocalHazardConsiderations hazards={localHazards} hasProperty={Boolean(property)} />
                 </div>
+                <div className="summary-weather-row">
+                  <PropertyAlertsCard
+                    hasProperty={Boolean(property)}
+                    isAuthenticated={isAuthenticated}
+                    alertsStatus={propertyAlertsStatus}
+                    alerts={propertyAlerts}
+                    officeLabel={propertyAlertOffice}
+                  />
+                  <WeatherRecommendationsCard
+                    hasProperty={Boolean(property)}
+                    isAuthenticated={isAuthenticated}
+                    recommendation={weatherRecommendation}
+                    createStatus={weatherChecklistStatus}
+                    onCreate={handleCreateWeatherChecklist}
+                  />
+                </div>
               </div>
             </>
           ) : (
@@ -1631,6 +1917,22 @@ function PropertyProfile() {
                 </div>
                 <div className="summary-hazard-row">
                   <LocalHazardConsiderations hazards={[]} hasProperty={false} />
+                </div>
+                <div className="summary-weather-row">
+                  <PropertyAlertsCard
+                    hasProperty={false}
+                    isAuthenticated={isAuthenticated}
+                    alertsStatus="idle"
+                    alerts={[]}
+                    officeLabel=""
+                  />
+                  <WeatherRecommendationsCard
+                    hasProperty={false}
+                    isAuthenticated={isAuthenticated}
+                    recommendation={null}
+                    createStatus="idle"
+                    onCreate={handleCreateWeatherChecklist}
+                  />
                 </div>
               </div>
             </div>
