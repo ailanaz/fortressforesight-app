@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
 import { firebaseDb } from '../firebase'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { readSavedHomes, writeSavedHomes } from '../utils/savedHomesStorage'
 import { useAuth } from './AuthContext'
 import { persistHome, readStoredHome } from '../utils/homeStorage'
 
@@ -60,6 +61,8 @@ export function HomeProvider({ children }) {
       return undefined
     }
 
+    const localHomes = readSavedHomes(user.uid).sort(sortSavedHomes)
+    setSavedHomes(localHomes)
     setSavedHomesLoading(true)
 
     const unsubscribe = onSnapshot(
@@ -70,6 +73,7 @@ export function HomeProvider({ children }) {
           .sort(sortSavedHomes)
 
         setSavedHomes(nextHomes)
+        writeSavedHomes(user.uid, nextHomes)
         setSavedHomesLoading(false)
 
         setActiveHome((current) => {
@@ -89,6 +93,7 @@ export function HomeProvider({ children }) {
         })
       },
       () => {
+        setSavedHomes(readSavedHomes(user.uid).sort(sortSavedHomes))
         setSavedHomesLoading(false)
       },
     )
@@ -143,17 +148,29 @@ export function HomeProvider({ children }) {
       location: getHomeLocation(home),
     }
 
-    await setDoc(
-      doc(firebaseDb, 'users', user.uid, 'properties', propertyId),
-      {
-        ...savedHome,
-        updatedAt: serverTimestamp(),
-        savedAt: serverTimestamp(),
-      },
-      { merge: true },
-    )
+    const nextHomes = [...savedHomes.filter((savedHomeItem) => savedHomeItem.savedPropertyId !== propertyId), savedHome].sort(sortSavedHomes)
+
+    try {
+      await setDoc(
+        doc(firebaseDb, 'users', user.uid, 'properties', propertyId),
+        {
+          ...savedHome,
+          updatedAt: serverTimestamp(),
+          savedAt: serverTimestamp(),
+        },
+        { merge: true },
+      )
+    } catch (error) {
+      writeSavedHomes(user.uid, nextHomes)
+      setSavedHomes(nextHomes)
+      setActiveHome(savedHome)
+      persistHome(savedHome, { persistent: true })
+      return savedHome
+    }
 
     setActiveHome(savedHome)
+    setSavedHomes(nextHomes)
+    writeSavedHomes(user.uid, nextHomes)
     persistHome(savedHome, { persistent: true })
     return savedHome
   }
@@ -165,7 +182,13 @@ export function HomeProvider({ children }) {
 
     const propertyId = typeof home === 'string' ? home : home.savedPropertyId || buildSavedPropertyId(home)
 
-    await deleteDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId))
+    try {
+      await deleteDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId))
+    } catch {
+      const nextHomes = savedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)
+      setSavedHomes(nextHomes)
+      writeSavedHomes(user.uid, nextHomes)
+    }
 
     setActiveHome((current) => {
       if (!current) {
@@ -185,6 +208,10 @@ export function HomeProvider({ children }) {
       persistHome(nextHome, { persistent: false })
       return nextHome
     })
+
+    const nextHomes = savedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)
+    setSavedHomes(nextHomes)
+    writeSavedHomes(user.uid, nextHomes)
   }
 
   const value = useMemo(
