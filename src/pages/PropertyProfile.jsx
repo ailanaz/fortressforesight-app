@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import AlertTicker from '../components/AlertTicker'
 import './Page.css'
@@ -1263,11 +1264,21 @@ function getGoogleEmbedSrc(property) {
 }
 
 function PropertyProfile() {
-  const { activeHome, saveActiveHome, clearActiveHome } = useActiveHome()
+  const { isAuthenticated } = useAuth()
+  const {
+    activeHome,
+    saveActiveHome,
+    clearActiveHome,
+    saveProperty,
+    removeProperty,
+    isHomeSaved,
+  } = useActiveHome()
   const location = useLocation()
   const [query, setQuery] = useState(activeHome?.query || '')
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState('')
+  const [accountError, setAccountError] = useState('')
+  const [propertyActionStatus, setPropertyActionStatus] = useState('idle')
   const [property, setProperty] = useState(activeHome)
   const requestRef = useRef(null)
   const autoSearchRef = useRef('')
@@ -1381,6 +1392,12 @@ function PropertyProfile() {
   const orderedSummaryCards = orderSummaryCards(normalizeSummaryCards(property?.summaryCards))
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
   const localHazards = buildLocalHazards(property)
+  const propertyIsSaved = isHomeSaved(property)
+
+  useEffect(() => {
+    setAccountError('')
+    setPropertyActionStatus('idle')
+  }, [property?.query, property?.savedPropertyId])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -1434,6 +1451,28 @@ function PropertyProfile() {
     setError('')
   }
 
+  const handleSaveProperty = async () => {
+    if (!property) {
+      return
+    }
+
+    setPropertyActionStatus('working')
+    setAccountError('')
+
+    try {
+      if (propertyIsSaved) {
+        await removeProperty(property)
+      } else {
+        const savedHome = await saveProperty(property)
+        setProperty(savedHome)
+      }
+    } catch (saveError) {
+      setAccountError(saveError?.message || 'We could not update the saved properties right now.')
+    } finally {
+      setPropertyActionStatus('idle')
+    }
+  }
+
   return (
     <div className="page property-page">
       <div className="property-heading">
@@ -1467,9 +1506,27 @@ function PropertyProfile() {
             Reset
           </button>
         ) : null}
+        {property ? (
+          isAuthenticated ? (
+            <button
+              className="btn-outline property-search-button"
+              type="button"
+              onClick={handleSaveProperty}
+            >
+              {propertyActionStatus === 'working'
+                ? propertyIsSaved ? 'Removing...' : 'Saving...'
+                : propertyIsSaved ? 'Remove Saved' : 'Save Property'}
+            </button>
+          ) : (
+            <Link className="btn-outline property-search-button" to="/upgrade">
+              Save Property
+            </Link>
+          )
+        ) : null}
       </form>
 
       {error ? <p className="property-error">{error}</p> : null}
+      {accountError ? <p className="property-error">{accountError}</p> : null}
 
       <div className="property-workspace">
         <section className="property-summary">

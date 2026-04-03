@@ -1,32 +1,41 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import './TopBar.css'
 
 function TopBar() {
+  const navigate = useNavigate()
   const location = useLocation()
   const { isAuthenticated, propertyLimit } = useAuth()
-  const { activeHome } = useActiveHome()
+  const { activeHome, savedHomes, savedHomesLoading, selectSavedHome } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
   const mobileMenuRef = useRef(null)
+  const desktopMenuRef = useRef(null)
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
   const showHomePill = activeHome && location.pathname !== '/home'
   const showPlanPill = location.pathname !== '/home'
   const showMobileSwitcher = location.pathname !== '/home'
+  const savedHomeCount = savedHomes.length
 
   useEffect(() => {
     setMobileMenuOpen(false)
+    setDesktopMenuOpen(false)
   }, [location.pathname])
 
   useEffect(() => {
-    if (!mobileMenuOpen) return undefined
+    if (!mobileMenuOpen && !desktopMenuOpen) return undefined
 
     const handlePointerDown = (event) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
         setMobileMenuOpen(false)
+      }
+
+      if (desktopMenuRef.current && !desktopMenuRef.current.contains(event.target)) {
+        setDesktopMenuOpen(false)
       }
     }
 
@@ -37,7 +46,14 @@ function TopBar() {
       document.removeEventListener('mousedown', handlePointerDown)
       document.removeEventListener('touchstart', handlePointerDown)
     }
-  }, [mobileMenuOpen])
+  }, [desktopMenuOpen, mobileMenuOpen])
+
+  const handleSelectSavedHome = (home) => {
+    selectSavedHome(home)
+    setMobileMenuOpen(false)
+    setDesktopMenuOpen(false)
+    navigate('/search')
+  }
 
   return (
     <header className="topbar">
@@ -64,9 +80,42 @@ function TopBar() {
           ) : null}
           {showPlanPill ? (
             isAuthenticated ? (
-              <div className="topbar-home-pill topbar-plan-pill">
-                <span className="topbar-home-title">Saved Properties</span>
-                <span className="topbar-home-meta">Up to {propertyLimit} properties.</span>
+              <div className="topbar-plan-menu-wrap" ref={desktopMenuRef}>
+                <button
+                  className={`topbar-home-pill topbar-plan-pill topbar-plan-pill-button${desktopMenuOpen ? ' is-open' : ''}`}
+                  type="button"
+                  aria-expanded={desktopMenuOpen}
+                  onClick={() => setDesktopMenuOpen((current) => !current)}
+                >
+                  <span className="topbar-home-title">Saved Properties</span>
+                  <span className="topbar-home-meta">{savedHomeCount} of {propertyLimit} saved.</span>
+                </button>
+
+                {desktopMenuOpen ? (
+                  <div className="topbar-plan-menu">
+                    {savedHomesLoading ? (
+                      <div className="topbar-plan-menu-empty">Loading properties...</div>
+                    ) : savedHomes.length ? (
+                      savedHomes.map((home) => {
+                        const isCurrent = activeHome?.savedPropertyId === home.savedPropertyId
+
+                        return (
+                          <button
+                            key={home.savedPropertyId}
+                            className={`topbar-plan-menu-item${isCurrent ? ' is-active' : ''}`}
+                            type="button"
+                            onClick={() => handleSelectSavedHome(home)}
+                          >
+                            <span className="topbar-plan-menu-title">{getHomeTitle(home)}</span>
+                            <span className="topbar-plan-menu-meta">{getHomeLocation(home) || 'Saved property'}</span>
+                          </button>
+                        )
+                      })
+                    ) : (
+                      <div className="topbar-plan-menu-empty">No saved properties yet.</div>
+                    )}
+                  </div>
+                ) : null}
               </div>
             ) : (
               <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link" to="/upgrade">
@@ -114,7 +163,7 @@ function TopBar() {
                   isAuthenticated ? (
                     <div className="topbar-home-pill topbar-plan-pill topbar-mobile-menu-card">
                       <span className="topbar-home-title">Saved Properties</span>
-                      <span className="topbar-home-meta">Up to {propertyLimit} properties.</span>
+                      <span className="topbar-home-meta">{savedHomeCount} of {propertyLimit} saved.</span>
                     </div>
                   ) : (
                     <Link className="topbar-home-pill topbar-plan-pill topbar-plan-pill-link topbar-mobile-menu-card" to="/upgrade">
@@ -122,6 +171,31 @@ function TopBar() {
                       <span className="topbar-home-meta">Upgrade to save properties.</span>
                     </Link>
                   )
+                ) : null}
+                {isAuthenticated ? (
+                  <div className="topbar-mobile-saved-list">
+                    {savedHomesLoading ? (
+                      <div className="topbar-plan-menu-empty">Loading properties...</div>
+                    ) : savedHomes.length ? (
+                      savedHomes.map((home) => {
+                        const isCurrent = activeHome?.savedPropertyId === home.savedPropertyId
+
+                        return (
+                          <button
+                            key={home.savedPropertyId}
+                            className={`topbar-plan-menu-item topbar-mobile-saved-item${isCurrent ? ' is-active' : ''}`}
+                            type="button"
+                            onClick={() => handleSelectSavedHome(home)}
+                          >
+                            <span className="topbar-plan-menu-title">{getHomeTitle(home)}</span>
+                            <span className="topbar-plan-menu-meta">{getHomeLocation(home) || 'Saved property'}</span>
+                          </button>
+                        )
+                      })
+                    ) : (
+                      <div className="topbar-plan-menu-empty">No saved properties yet.</div>
+                    )}
+                  </div>
                 ) : null}
               </div>
             ) : null}
