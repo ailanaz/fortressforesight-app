@@ -51,9 +51,20 @@ const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Damage Notes', 'Uploads']
 const INTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Kitchen', 'Ceiling stain and wall damage', 'Receipt, image, doc, none']
 const EXTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Roof', 'Missing shingles and gutter damage', 'Receipt, image, doc, none']
 const CLAIM_STATUS_DOC_ID = 'claim-status'
+const RECOVERY_SHEETS_DOC_ID = 'sheets'
 
 function createBlankRows(columns, count = 5) {
   return Array.from({ length: count }, () => Array(columns).fill(''))
+}
+
+function normalizeRows(rows, width) {
+  if (!Array.isArray(rows)) {
+    return createBlankRows(width)
+  }
+
+  return rows.map((row) => (
+    Array.from({ length: width }, (_, index) => (Array.isArray(row) ? row[index] || '' : ''))
+  ))
 }
 
 function getDamagePlaceholderRow(scope) {
@@ -97,6 +108,7 @@ function RecoveryTracker() {
   const [claimSteps, setClaimSteps] = useState(() => normalizeClaimSteps())
   const homeTitle = getHomeTitle(activeHome)
   const hydratedRef = useRef(false)
+  const skipRemoteSheetWriteRef = useRef(false)
   const skipRemoteClaimWriteRef = useRef(false)
   const storageKey = getPageStateStorageKey('recovery', user?.uid, activeHome)
   const propertyId = activeHome?.savedPropertyId || (activeHome ? buildSavedPropertyId(activeHome) : '')
@@ -125,23 +137,36 @@ function RecoveryTracker() {
         setDamageScope(storedState?.damageScope || 'Interior')
         setCalendarTitle(storedState?.calendarTitle || '')
         setCalendarDate(storedState?.calendarDate || defaultCalendarDate(7))
-        setInteriorDamageRows(Array.isArray(storedState?.interiorDamageRows) ? storedState.interiorDamageRows : createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
-        setExteriorDamageRows(Array.isArray(storedState?.exteriorDamageRows) ? storedState.exteriorDamageRows : createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
-        setExpenseRows(Array.isArray(storedState?.expenseRows) ? storedState.expenseRows : createBlankRows(EXPENSE_COLUMNS.length))
-        setTimelineRows(Array.isArray(storedState?.timelineRows) ? storedState.timelineRows : createBlankRows(TIME_LOG_COLUMNS.length))
+        setInteriorDamageRows(normalizeRows(storedState?.interiorDamageRows, INTERIOR_DAMAGE_COLUMNS.length))
+        setExteriorDamageRows(normalizeRows(storedState?.exteriorDamageRows, EXTERIOR_DAMAGE_COLUMNS.length))
+        setExpenseRows(normalizeRows(storedState?.expenseRows, EXPENSE_COLUMNS.length))
+        setTimelineRows(normalizeRows(storedState?.timelineRows, TIME_LOG_COLUMNS.length))
         setClaimSteps(normalizeClaimSteps(storedState?.claimSteps))
       }
 
       if (firebaseDb && isAuthenticated && user?.uid && propertyId) {
         try {
-          const snapshot = await getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', CLAIM_STATUS_DOC_ID))
+          const [sheetsSnapshot, claimSnapshot] = await Promise.all([
+            getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', RECOVERY_SHEETS_DOC_ID)),
+            getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', CLAIM_STATUS_DOC_ID)),
+          ])
 
-          if (!cancelled && snapshot.exists()) {
+          if (!cancelled && sheetsSnapshot.exists()) {
+            const remoteSheets = sheetsSnapshot.data()
+            skipRemoteSheetWriteRef.current = true
+            setDamageScope(remoteSheets?.damageScope || 'Interior')
+            setInteriorDamageRows(normalizeRows(remoteSheets?.interiorDamageRows, INTERIOR_DAMAGE_COLUMNS.length))
+            setExteriorDamageRows(normalizeRows(remoteSheets?.exteriorDamageRows, EXTERIOR_DAMAGE_COLUMNS.length))
+            setExpenseRows(normalizeRows(remoteSheets?.expenseRows, EXPENSE_COLUMNS.length))
+            setTimelineRows(normalizeRows(remoteSheets?.timelineRows, TIME_LOG_COLUMNS.length))
+          }
+
+          if (!cancelled && claimSnapshot.exists()) {
             skipRemoteClaimWriteRef.current = true
-            setClaimSteps(normalizeClaimSteps(snapshot.data()?.claimSteps))
+            setClaimSteps(normalizeClaimSteps(claimSnapshot.data()?.claimSteps))
           }
         } catch (error) {
-          console.warn('Claim status sync is not ready yet.', error)
+          console.warn('Recovery sync is not ready yet.', error)
         }
       }
 
@@ -180,6 +205,47 @@ function RecoveryTracker() {
     interiorDamageRows,
     storageKey,
     timelineRows,
+  ])
+
+  useEffect(() => {
+    if (!hydratedRef.current || !firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
+      return
+    }
+
+    if (skipRemoteSheetWriteRef.current) {
+      skipRemoteSheetWriteRef.current = false
+      return
+    }
+
+    const syncRecoverySheets = async () => {
+      try {
+        await setDoc(
+          doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', RECOVERY_SHEETS_DOC_ID),
+          {
+            damageScope,
+            interiorDamageRows,
+            exteriorDamageRows,
+            expenseRows,
+            timelineRows,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        )
+      } catch (error) {
+        console.warn('Recovery sheets save is not ready yet.', error)
+      }
+    }
+
+    syncRecoverySheets()
+  }, [
+    damageScope,
+    expenseRows,
+    exteriorDamageRows,
+    interiorDamageRows,
+    isAuthenticated,
+    propertyId,
+    timelineRows,
+    user?.uid,
   ])
 
   useEffect(() => {

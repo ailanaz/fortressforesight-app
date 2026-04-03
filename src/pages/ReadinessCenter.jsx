@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
+import { firebaseDb } from '../firebase'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
 import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
+import { buildSavedPropertyId } from '../utils/propertyStorage'
 import './Page.css'
 import './ReadinessCenter.css'
 
@@ -259,6 +262,8 @@ const CUSTOM_STARTER_CHECKLISTS = [
   },
 ]
 
+const READINESS_DOC_ID = 'state'
+
 function createCustomChecklistDraft() {
   return {
     id: `custom-${Date.now()}`,
@@ -286,7 +291,36 @@ function normalizeCustomChecklist(checklist) {
 }
 
 function normalizeCustomChecklists(checklists) {
-  return (Array.isArray(checklists) && checklists.length ? checklists : CUSTOM_STARTER_CHECKLISTS).map(normalizeCustomChecklist)
+  if (Array.isArray(checklists)) {
+    return checklists.map(normalizeCustomChecklist)
+  }
+
+  return CUSTOM_STARTER_CHECKLISTS.map(normalizeCustomChecklist)
+}
+
+function sanitizeChecklistState(state) {
+  return Object.entries(state || {}).reduce((nextState, [checklistId, checklist]) => {
+    nextState[checklistId] = {
+      open: Boolean(checklist?.open),
+      done: checklist?.done || {},
+    }
+
+    return nextState
+  }, {})
+}
+
+function sanitizeCustomChecklists(checklists) {
+  return (checklists || []).map((checklist) => ({
+    id: checklist.id,
+    title: checklist.title || '',
+    items: (checklist.items || []).map((item) => ({
+      id: item.id,
+      text: item.text || '',
+    })),
+    open: Boolean(checklist.open),
+    editingTitle: Boolean(checklist.editingTitle),
+    done: checklist.done || {},
+  }))
 }
 
 function ChecklistItem({ text, done, onToggle }) {
@@ -501,27 +535,63 @@ function ReadinessCenter() {
     : 'homebuyers'
   const [section, setSection] = useState(initialSection)
   const hydratedRef = useRef(false)
+  const skipRemoteWriteRef = useRef(false)
   const storageKey = getPageStateStorageKey('readiness', user?.uid, activeHome)
+  const propertyId = activeHome?.savedPropertyId || (activeHome ? buildSavedPropertyId(activeHome) : '')
 
   useEffect(() => {
+    let cancelled = false
     hydratedRef.current = false
 
-    if (!storageKey) {
-      setCalendarTitle('')
-      setCalendarDate(defaultCalendarDate())
-      setChecklistState({})
-      setCustomChecklists(normalizeCustomChecklists(CUSTOM_STARTER_CHECKLISTS))
+    const hydrate = async () => {
+      if (!storageKey) {
+        setCalendarTitle('')
+        setCalendarDate(defaultCalendarDate())
+        setChecklistState({})
+        setCustomChecklists(normalizeCustomChecklists())
+        hydratedRef.current = true
+        return
+      }
+
+      const storedState = readPageState(storageKey)
+
+      if (!cancelled) {
+        setCalendarTitle(storedState?.calendarTitle || '')
+        setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
+        setChecklistState(storedState?.checklistState || {})
+        setCustomChecklists(normalizeCustomChecklists(storedState?.customChecklists))
+      }
+
+      if (firebaseDb && isAuthenticated && user?.uid && propertyId) {
+        try {
+          const snapshot = await getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'readiness', READINESS_DOC_ID))
+
+          if (!cancelled && snapshot.exists()) {
+            const remoteState = snapshot.data()
+            skipRemoteWriteRef.current = true
+
+            if (remoteState?.checklistState) {
+              setChecklistState(remoteState.checklistState)
+            }
+
+            if (Array.isArray(remoteState?.customChecklists)) {
+              setCustomChecklists(normalizeCustomChecklists(remoteState.customChecklists))
+            }
+          }
+        } catch (error) {
+          console.warn('Readiness sync is not ready yet.', error)
+        }
+      }
+
       hydratedRef.current = true
-      return
     }
 
-    const storedState = readPageState(storageKey)
-    setCalendarTitle(storedState?.calendarTitle || '')
-    setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
-    setChecklistState(storedState?.checklistState || {})
-    setCustomChecklists(normalizeCustomChecklists(storedState?.customChecklists))
-    hydratedRef.current = true
-  }, [storageKey])
+    hydrate()
+
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, propertyId, storageKey, user?.uid])
 
   useEffect(() => {
     if (!storageKey || !hydratedRef.current) {
@@ -535,6 +605,35 @@ function ReadinessCenter() {
       customChecklists,
     })
   }, [calendarDate, calendarTitle, checklistState, customChecklists, storageKey])
+
+  useEffect(() => {
+    if (!hydratedRef.current || !firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
+      return
+    }
+
+    if (skipRemoteWriteRef.current) {
+      skipRemoteWriteRef.current = false
+      return
+    }
+
+    const syncReadinessState = async () => {
+      try {
+        await setDoc(
+          doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'readiness', READINESS_DOC_ID),
+          {
+            checklistState: sanitizeChecklistState(checklistState),
+            customChecklists: sanitizeCustomChecklists(customChecklists),
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        )
+      } catch (error) {
+        console.warn('Readiness save is not ready yet.', error)
+      }
+    }
+
+    syncReadinessState()
+  }, [checklistState, customChecklists, isAuthenticated, propertyId, user?.uid])
 
   const handleSectionChange = (nextSection) => {
     setSection(nextSection)
