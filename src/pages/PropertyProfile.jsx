@@ -1479,23 +1479,32 @@ function PropertyProfile() {
           Property address
         </label>
         <div className="property-search-field">
-          <input
-            id="property-address-search"
-            className="property-search-input"
-            type="text"
-            placeholder="Enter address, city, state ZIP"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
+          <div className="property-search-input-wrap">
+            <input
+              id="property-address-search"
+              className="property-search-input"
+              type="text"
+              placeholder="Enter address, city, state ZIP"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <button
+              className="property-search-icon-button"
+              type="submit"
+              aria-label={status === 'loading' ? 'Searching address' : 'Search address'}
+            >
+              <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" />
+              </svg>
+            </button>
+          </div>
           <button
-            className="property-search-icon-button"
-            type="submit"
-            aria-label={status === 'loading' ? 'Searching address' : 'Search address'}
+            className="property-search-clear"
+            type="button"
+            onClick={() => setQuery('')}
           >
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M20 20l-3.5-3.5" />
-            </svg>
+            Clear
           </button>
         </div>
         {property ? (

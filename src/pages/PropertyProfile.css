@@ -53,8 +53,16 @@
 }
 
 .property-search-field {
-  position: relative;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.property-search-input-wrap {
+  position: relative;
+  width: 100%;
 }
 
 .property-search-input {
@@ -96,6 +104,20 @@
 .property-search-icon-button:hover {
   background: var(--color-blue-light);
   color: var(--color-blue-strong);
+}
+
+.property-search-clear {
+  border: 0;
+  background: none;
+  color: #071f69;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  padding: 0 8px 0 0;
+}
+
+.property-search-clear:hover {
+  text-decoration: underline;
 }
 
 .property-search-button {
