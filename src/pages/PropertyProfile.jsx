@@ -253,18 +253,6 @@ function getHazardStatus(level) {
   return 'Limited area relevance'
 }
 
-function getHazardBadgeLabel(level) {
-  if (level === 'primary') {
-    return 'More relevant'
-  }
-
-  if (level === 'seasonal') {
-    return 'Relevant'
-  }
-
-  return 'Less relevant'
-}
-
 function getUsfsWildfireStatus(stateCode) {
   const wildfireDefinition = HAZARD_DEFINITIONS.find((definition) => definition.id === 'wildfire')
 
@@ -316,7 +304,7 @@ function buildLocalHazards(property) {
         id: definition.id,
         title: definition.title,
         level,
-        relevanceLabel: getHazardBadgeLabel(level),
+        statusLabel: getHazardStatus(level),
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
         resultValue: getHazardResultValue(definition.id, property, level),
         source: definition.source,
@@ -1230,7 +1218,7 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
             <div key={hazard.id} className="local-hazard-item">
               <p className="local-hazard-title">{hazard.title}</p>
               <p className={`local-hazard-relevance local-hazard-relevance-${hazard.level}`}>
-                {hazard.relevanceLabel}
+                {hazard.statusLabel}
               </p>
               <p className="local-hazard-result">{hazard.resultValue}</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
