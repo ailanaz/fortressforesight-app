@@ -9,13 +9,16 @@ import './TopBar.css'
 function TopBar() {
   const location = useLocation()
   const { isAuthenticated, propertyLimit, user, signOut } = useAuth()
-  const { activeHome, savedHomes, savedHomesLoading, selectSavedHome } = useActiveHome()
+  const { activeHome, savedHomes, savedHomesLoading, selectSavedHome, isHomeSaved } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
   const mobileMenuRef = useRef(null)
   const desktopMenuRef = useRef(null)
   const homeTitle = getHomeTitle(activeHome)
   const homeLocation = getHomeLocation(activeHome)
+  const activeHomeSaved = isHomeSaved(activeHome)
+  const activeHomeTitle = activeHomeSaved ? homeTitle : 'No saved property yet.'
+  const activeHomeMeta = activeHomeSaved ? homeLocation : ''
   const showHomePill = activeHome && location.pathname !== '/home'
   const showPlanPill = location.pathname !== '/home'
   const showMobileSwitcher = location.pathname !== '/home'
@@ -73,9 +76,9 @@ function TopBar() {
           </Link>
           {showHomePill ? (
             <div className="topbar-home-pill">
-              <span className="topbar-home-title">{homeTitle}</span>
-              {homeLocation ? (
-                <span className="topbar-home-meta">{homeLocation}</span>
+              <span className="topbar-home-title">{activeHomeTitle}</span>
+              {activeHomeMeta ? (
+                <span className="topbar-home-meta">{activeHomeMeta}</span>
               ) : null}
             </div>
           ) : null}
@@ -150,7 +153,7 @@ function TopBar() {
               onClick={() => setMobileMenuOpen((current) => !current)}
             >
               <span className="topbar-mobile-toggle-copy">
-                <span className="topbar-mobile-toggle-title">{showHomePill ? homeTitle : 'Saved Properties'}</span>
+                <span className="topbar-mobile-toggle-title">{showHomePill ? activeHomeTitle : 'Saved Properties'}</span>
                 <span className="topbar-mobile-toggle-meta">{showHomePill ? 'Tap for more' : isAuthenticated ? `Up to ${propertyLimit} properties` : 'Upgrade to save'}</span>
               </span>
               <svg
@@ -170,8 +173,8 @@ function TopBar() {
               <div className="topbar-mobile-menu">
                 {showHomePill ? (
                   <Link className="topbar-home-pill topbar-mobile-menu-card topbar-plan-pill-link" to="/search">
-                    <span className="topbar-home-title">{homeTitle}</span>
-                    {homeLocation ? <span className="topbar-home-meta">{homeLocation}</span> : null}
+                    <span className="topbar-home-title">{activeHomeTitle}</span>
+                    {activeHomeMeta ? <span className="topbar-home-meta">{activeHomeMeta}</span> : null}
                   </Link>
                 ) : null}
                 {showPlanPill ? (
