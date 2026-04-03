@@ -83,14 +83,6 @@ const PREMADE_CHECKLISTS = [
     ],
   },
   {
-    id: 'risk-awareness-and-insurance',
-    section: 'homeowners',
-    title: 'Risk Awareness and Insurance',
-    items: [
-      'Property hazard exposure is identified',
-    ],
-  },
-  {
     id: 'records-and-recovery',
     section: 'homeowners',
     title: 'Records and Recovery',
