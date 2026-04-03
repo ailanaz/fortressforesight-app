@@ -193,6 +193,24 @@
   background: rgba(248, 194, 0, 0.18);
 }
 
+.topbar-account-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.topbar-signout-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #071f69;
+  font-size: 11px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
 @media (max-width: 720px) {
   .topbar {
     position: sticky;
@@ -258,6 +276,10 @@
   .topbar-mobile-toggle-meta {
     font-size: 11px;
     color: #071f69;
+  }
+
+  .topbar-signout-link {
+    font-size: 10px;
   }
 
   .topbar-mobile-toggle-icon {

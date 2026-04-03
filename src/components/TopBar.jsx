@@ -8,7 +8,7 @@ import './TopBar.css'
 
 function TopBar() {
   const location = useLocation()
-  const { isAuthenticated, propertyLimit, user } = useAuth()
+  const { isAuthenticated, propertyLimit, user, signOut } = useAuth()
   const { activeHome, savedHomes, savedHomesLoading, selectSavedHome } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
@@ -216,24 +216,39 @@ function TopBar() {
             ) : null}
           </div>
         ) : null}
-        <Link
-          className={`topbar-account${isAuthenticated ? ' is-authenticated' : ''}`}
-          aria-label="Account"
-          title={isAuthenticated ? 'Signed in account' : 'Account'}
-          to="/login"
-        >
-          <svg
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
+        <div className="topbar-account-stack">
+          <Link
+            className={`topbar-account${isAuthenticated ? ' is-authenticated' : ''}`}
+            aria-label="Account"
+            title={isAuthenticated ? 'Signed in account' : 'Account'}
+            to="/login"
           >
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-          </svg>
-        </Link>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+          </Link>
+          {isAuthenticated ? (
+            <button
+              className="topbar-signout-link"
+              type="button"
+              onClick={async () => {
+                await signOut()
+                setMobileMenuOpen(false)
+                setDesktopMenuOpen(false)
+              }}
+            >
+              Sign out
+            </button>
+          ) : null}
+        </div>
       </div>
     </header>
   )
