@@ -486,6 +486,18 @@
   color: var(--color-red);
 }
 
+.local-hazard-result-primary {
+  color: #b42318;
+}
+
+.local-hazard-result-seasonal {
+  color: #8a6400;
+}
+
+.local-hazard-result-limited {
+  color: #127848;
+}
+
 .local-hazard-copy {
   font-size: 13px;
   line-height: 1.55;

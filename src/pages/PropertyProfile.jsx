@@ -1216,7 +1216,7 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
           {hazards.map((hazard) => (
             <div key={hazard.id} className="local-hazard-item">
               <p className="local-hazard-title">{hazard.title}</p>
-              <p className="local-hazard-result">{hazard.resultValue}</p>
+              <p className={`local-hazard-result local-hazard-result-${hazard.level}`}>{hazard.resultValue}</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
               {hazard.source ? (
                 <a
