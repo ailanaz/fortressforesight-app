@@ -1257,6 +1257,7 @@ function PropertyProfile() {
   const {
     activeHome,
     saveActiveHome,
+    clearActiveHome,
     saveProperty,
     removeProperty,
     isHomeSaved,
@@ -1465,6 +1466,27 @@ function PropertyProfile() {
     }
   }
 
+  const handleClearSearch = () => {
+    if (requestRef.current) {
+      requestRef.current.abort()
+      requestRef.current = null
+    }
+
+    if (sourceBackfillRef.current) {
+      sourceBackfillRef.current.abort()
+      sourceBackfillRef.current = null
+    }
+
+    autoSearchRef.current = ''
+    setQuery('')
+    setProperty(null)
+    setStatus('idle')
+    setError('')
+    setAccountError('')
+    setPropertyActionStatus('idle')
+    clearActiveHome()
+  }
+
   return (
     <div className="page property-page">
       <div className="property-heading">
@@ -1502,7 +1524,7 @@ function PropertyProfile() {
           <button
             className="property-search-clear"
             type="button"
-            onClick={() => setQuery('')}
+            onClick={handleClearSearch}
           >
             Clear
           </button>
