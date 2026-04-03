@@ -9,7 +9,7 @@ import './TopBar.css'
 function TopBar() {
   const location = useLocation()
   const { isAuthenticated, propertyLimit, user } = useAuth()
-  const { activeHome, savedHomes, savedHomesLoading, selectSavedHome } = useActiveHome()
+  const { activeHome, savedHomes, savedHomesLoading, selectSavedHome, removeProperty } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
   const mobileMenuRef = useRef(null)
@@ -54,6 +54,11 @@ function TopBar() {
     selectSavedHome(home)
     setMobileMenuOpen(false)
     setDesktopMenuOpen(false)
+  }
+
+  const handleRemoveSavedHome = async (event, home) => {
+    event.stopPropagation()
+    await removeProperty(home)
   }
 
   return (
@@ -115,15 +120,27 @@ function TopBar() {
                         const isCurrent = activeHome?.savedPropertyId === home.savedPropertyId
 
                         return (
-                          <button
+                          <div
                             key={home.savedPropertyId}
                             className={`topbar-plan-menu-item${isCurrent ? ' is-active' : ''}`}
-                            type="button"
-                            onClick={() => handleSelectSavedHome(home)}
                           >
-                            <span className="topbar-plan-menu-title">{getHomeTitle(home)}</span>
-                            <span className="topbar-plan-menu-meta">{getHomeLocation(home) || 'Saved property'}</span>
-                          </button>
+                            <button
+                              className="topbar-plan-menu-select"
+                              type="button"
+                              onClick={() => handleSelectSavedHome(home)}
+                            >
+                              <span className="topbar-plan-menu-title">{getHomeTitle(home)}</span>
+                              <span className="topbar-plan-menu-meta">{getHomeLocation(home) || 'Saved property'}</span>
+                            </button>
+                            <button
+                              className="topbar-plan-menu-remove"
+                              type="button"
+                              aria-label={`Remove ${getHomeTitle(home)}`}
+                              onClick={(event) => handleRemoveSavedHome(event, home)}
+                            >
+                              ×
+                            </button>
+                          </div>
                         )
                       })
                     ) : (
@@ -196,15 +213,27 @@ function TopBar() {
                         const isCurrent = activeHome?.savedPropertyId === home.savedPropertyId
 
                         return (
-                          <button
+                          <div
                             key={home.savedPropertyId}
                             className={`topbar-plan-menu-item topbar-mobile-saved-item${isCurrent ? ' is-active' : ''}`}
-                            type="button"
-                            onClick={() => handleSelectSavedHome(home)}
                           >
-                            <span className="topbar-plan-menu-title">{getHomeTitle(home)}</span>
-                            <span className="topbar-plan-menu-meta">{getHomeLocation(home) || 'Saved property'}</span>
-                          </button>
+                            <button
+                              className="topbar-plan-menu-select"
+                              type="button"
+                              onClick={() => handleSelectSavedHome(home)}
+                            >
+                              <span className="topbar-plan-menu-title">{getHomeTitle(home)}</span>
+                              <span className="topbar-plan-menu-meta">{getHomeLocation(home) || 'Saved property'}</span>
+                            </button>
+                            <button
+                              className="topbar-plan-menu-remove"
+                              type="button"
+                              aria-label={`Remove ${getHomeTitle(home)}`}
+                              onClick={(event) => handleRemoveSavedHome(event, home)}
+                            >
+                              ×
+                            </button>
+                          </div>
                         )
                       })
                     ) : (
