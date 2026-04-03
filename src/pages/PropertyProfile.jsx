@@ -1486,17 +1486,26 @@ function PropertyProfile() {
         <label className="sr-only" htmlFor="property-address-search">
           Property address
         </label>
-        <input
-          id="property-address-search"
-          className="property-search-input"
-          type="text"
-          placeholder="Enter address, city, state ZIP"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-        <button className="btn-primary property-search-button" type="submit">
-          {status === 'loading' ? 'Searching...' : 'Search'}
-        </button>
+        <div className="property-search-field">
+          <input
+            id="property-address-search"
+            className="property-search-input"
+            type="text"
+            placeholder="Enter address, city, state ZIP"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <button
+            className="property-search-icon-button"
+            type="submit"
+            aria-label={status === 'loading' ? 'Searching address' : 'Search address'}
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" />
+            </svg>
+          </button>
+        </div>
         {property ? (
           <button
             className="btn-outline property-search-button"
@@ -1509,7 +1518,7 @@ function PropertyProfile() {
         {property ? (
           isAuthenticated ? (
             <button
-              className="btn-outline property-search-button"
+              className="btn-primary property-search-button property-save-button"
               type="button"
               onClick={handleSaveProperty}
             >
@@ -1518,7 +1527,7 @@ function PropertyProfile() {
                 : propertyIsSaved ? 'Remove Saved' : 'Save Property'}
             </button>
           ) : (
-            <Link className="btn-outline property-search-button" to="/upgrade">
+            <Link className="btn-primary property-search-button property-save-button" to="/upgrade">
               Save Property
             </Link>
           )
