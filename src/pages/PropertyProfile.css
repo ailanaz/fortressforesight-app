@@ -316,6 +316,14 @@
   gap: 10px;
 }
 
+.summary-card-footer {
+  display: grid;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-gray-100);
+}
+
 .summary-row {
   display: grid;
   gap: 4px;
@@ -412,6 +420,23 @@
   color: var(--color-red);
   font-size: 12px;
   font-weight: 600;
+}
+
+.summary-card-remove {
+  width: fit-content;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #071f69;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.summary-card-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-gray-500);
 }
 
 .local-hazards-card {

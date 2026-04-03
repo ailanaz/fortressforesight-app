@@ -1171,7 +1171,7 @@ async function lookupProperty(query, signal) {
   return applyPreferredStreetLine(enrichedProperty)
 }
 
-function SummaryCard({ title, rows }) {
+function SummaryCard({ title, rows, footer }) {
   return (
     <article className="summary-card card">
       <div className="summary-card-header">
@@ -1206,6 +1206,11 @@ function SummaryCard({ title, rows }) {
           </div>
         ))}
       </div>
+      {footer ? (
+        <div className="summary-card-footer">
+          {footer}
+        </div>
+      ) : null}
     </article>
   )
 }
@@ -1458,6 +1463,23 @@ function PropertyProfile() {
     }
   }
 
+  const handleRemoveSavedProperty = async () => {
+    if (!property) {
+      return
+    }
+
+    setPropertyActionStatus('working')
+    setAccountError('')
+
+    try {
+      await removeProperty(property)
+    } catch (removeError) {
+      setAccountError(removeError?.message || 'We could not remove this property right now.')
+    } finally {
+      setPropertyActionStatus('idle')
+    }
+  }
+
   return (
     <div className="page property-page">
       <div className="property-heading">
@@ -1527,6 +1549,20 @@ function PropertyProfile() {
                     key={propertyInformationCard.title}
                     title={propertyInformationCard.title}
                     rows={propertyInformationCard.rows}
+                    footer={isAuthenticated && propertyIsSaved ? (
+                      <>
+                        <button
+                          className="summary-card-remove"
+                          type="button"
+                          onClick={handleRemoveSavedProperty}
+                        >
+                          {propertyActionStatus === 'working' ? 'Removing...' : 'Remove property'}
+                        </button>
+                        <p className="summary-card-note">
+                          Removes all saved items related to this property.
+                        </p>
+                      </>
+                    ) : null}
                   />
                 ) : null}
                 <article className="summary-map-card card">

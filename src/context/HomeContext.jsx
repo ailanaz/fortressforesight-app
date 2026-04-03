@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
 import { firebaseDb } from '../firebase'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { clearPageStatesForProperty } from '../utils/pageStateStorage'
 import { readSavedHomes, writeSavedHomes } from '../utils/savedHomesStorage'
 import { useAuth } from './AuthContext'
 import { persistHome, readStoredHome } from '../utils/homeStorage'
@@ -181,6 +182,11 @@ export function HomeProvider({ children }) {
     }
 
     const propertyId = typeof home === 'string' ? home : home.savedPropertyId || buildSavedPropertyId(home)
+    const targetHome = typeof home === 'string'
+      ? savedHomes.find((savedHome) => savedHome.savedPropertyId === propertyId) || activeHome
+      : home
+
+    clearPageStatesForProperty(user.uid, targetHome)
 
     try {
       await deleteDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId))

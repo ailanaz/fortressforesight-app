@@ -1,4 +1,5 @@
 const PAGE_STATE_PREFIX = 'fortressforesight.page-state'
+const PAGE_STATE_NAMESPACES = ['readiness', 'documents', 'contacts', 'recovery']
 
 function getPropertyScope(activeHome) {
   if (!activeHome) {
@@ -45,4 +46,18 @@ export function writePageState(storageKey, value) {
   } catch {
     // Ignore browser storage failures and leave in-memory state as-is.
   }
+}
+
+export function clearPageStatesForProperty(userId, activeHome, namespaces = PAGE_STATE_NAMESPACES) {
+  if (typeof window === 'undefined' || !userId || !activeHome) {
+    return
+  }
+
+  namespaces.forEach((namespace) => {
+    const storageKey = getPageStateStorageKey(namespace, userId, activeHome)
+
+    if (storageKey) {
+      window.localStorage.removeItem(storageKey)
+    }
+  })
 }
