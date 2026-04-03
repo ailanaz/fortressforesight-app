@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   deleteUser,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
@@ -114,6 +115,14 @@ export function AuthProvider({ children }) {
     await firebaseSignOut(firebaseAuth)
   }
 
+  const resetPassword = async (email) => {
+    if (!firebaseAuth || !hasFirebaseConfig) {
+      throw createConfigError()
+    }
+
+    await sendPasswordResetEmail(firebaseAuth, email)
+  }
+
   const deleteAccount = async () => {
     if (!firebaseAuth || !hasFirebaseConfig || !firebaseAuth.currentUser) {
       throw createConfigError()
@@ -142,6 +151,7 @@ export function AuthProvider({ children }) {
       propertyLimit: profile?.propertyLimit || (user ? 2 : 0),
       signIn,
       signUp,
+      resetPassword,
       signOut,
       deleteAccount,
       hasFirebaseConfig,

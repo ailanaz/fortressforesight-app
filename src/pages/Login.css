@@ -191,6 +191,7 @@
 }
 
 .login-error,
+.login-notice,
 .login-config-note {
   margin-top: 10px;
   font-size: 13px;
@@ -200,6 +201,10 @@
 
 .login-error {
   color: #b42318;
+}
+
+.login-notice {
+  color: #127848;
 }
 
 .login-config-note {
@@ -240,6 +245,18 @@
 
 .login-danger-link {
   color: #b42318;
+}
+
+.login-password-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.login-password-links.is-login {
+  width: 100%;
+  justify-content: space-between;
 }
 
 @media (max-width: 520px) {

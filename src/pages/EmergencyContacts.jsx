@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
+import { firebaseDb } from '../firebase'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
 import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
+import { buildSavedPropertyId } from '../utils/propertyStorage'
 import './Page.css'
 import './EmergencyContacts.css'
 
@@ -27,33 +30,93 @@ const CONTACT_PLACEHOLDERS = [
   'Utility company',
 ]
 
+const CONTACTS_DOC_ID = 'items'
+
+function createDefaultContacts() {
+  return DEFAULT_CONTACTS.map((contact) => ({ ...contact }))
+}
+
+function normalizeContacts(contacts) {
+  if (!Array.isArray(contacts)) {
+    return createDefaultContacts()
+  }
+
+  if (!contacts.length) {
+    return []
+  }
+
+  return contacts.map((contact, index) => ({
+    id: contact.id ?? `${Date.now()}-${index}`,
+    name: contact.name || '',
+    phone: contact.phone || '',
+    placeholder: contact.placeholder || CONTACT_PLACEHOLDERS[index % CONTACT_PLACEHOLDERS.length],
+    isSaved: contact.isSaved ?? true,
+  }))
+}
+
+function sanitizeContacts(contacts) {
+  return contacts.map(({ id, name, phone, placeholder }) => ({
+    id,
+    name,
+    phone,
+    placeholder,
+  }))
+}
+
 function EmergencyContacts() {
   const { isAuthenticated, user } = useAuth()
   const { activeHome } = useActiveHome()
-  const [contacts, setContacts] = useState(DEFAULT_CONTACTS)
+  const [contacts, setContacts] = useState(createDefaultContacts)
   const [calendarTitle, setCalendarTitle] = useState('')
   const [calendarDate, setCalendarDate] = useState(defaultCalendarDate())
   const homeTitle = getHomeTitle(activeHome)
   const hydratedRef = useRef(false)
   const storageKey = getPageStateStorageKey('contacts', user?.uid, activeHome)
+  const propertyId = activeHome?.savedPropertyId || (activeHome ? buildSavedPropertyId(activeHome) : '')
 
   useEffect(() => {
+    let cancelled = false
     hydratedRef.current = false
 
-    if (!storageKey) {
-      setContacts(DEFAULT_CONTACTS)
-      setCalendarTitle('')
-      setCalendarDate(defaultCalendarDate())
+    const hydrate = async () => {
+      if (!storageKey) {
+        setContacts(createDefaultContacts())
+        setCalendarTitle('')
+        setCalendarDate(defaultCalendarDate())
+        hydratedRef.current = true
+        return
+      }
+
+      const storedState = readPageState(storageKey)
+      const fallbackContacts = normalizeContacts(storedState?.contacts)
+
+      if (!cancelled) {
+        setContacts(fallbackContacts)
+        setCalendarTitle(storedState?.calendarTitle || '')
+        setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
+      }
+
+      if (firebaseDb && isAuthenticated && user?.uid && propertyId) {
+        try {
+          const snapshot = await getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'contacts', CONTACTS_DOC_ID))
+
+          if (!cancelled && snapshot.exists()) {
+            setContacts(normalizeContacts(snapshot.data()?.contacts))
+          }
+        } catch (error) {
+          console.warn('Contacts sync is not ready yet.', error)
+        }
+      }
+
       hydratedRef.current = true
-      return
     }
 
-    const storedState = readPageState(storageKey)
-    setContacts(Array.isArray(storedState?.contacts) ? storedState.contacts : DEFAULT_CONTACTS)
-    setCalendarTitle(storedState?.calendarTitle || '')
-    setCalendarDate(storedState?.calendarDate || defaultCalendarDate())
-    hydratedRef.current = true
-  }, [storageKey])
+    hydrate()
+
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, propertyId, storageKey, user?.uid])
 
   useEffect(() => {
     if (!storageKey || !hydratedRef.current) {
@@ -67,6 +130,25 @@ function EmergencyContacts() {
     })
   }, [calendarDate, calendarTitle, contacts, storageKey])
 
+  const persistContacts = async (nextContacts) => {
+    if (!firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
+      return
+    }
+
+    try {
+      await setDoc(
+        doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'contacts', CONTACTS_DOC_ID),
+        {
+          contacts: sanitizeContacts(nextContacts),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      )
+    } catch (error) {
+      console.warn('Contacts save is not ready yet.', error)
+    }
+  }
+
   const updateContact = (id, field, value) => {
     setContacts((previous) =>
       previous.map((contact) =>
@@ -75,14 +157,16 @@ function EmergencyContacts() {
     )
   }
 
-  const saveContact = (id) => {
-    setContacts((previous) =>
-      previous.map((contact) => (contact.id === id ? { ...contact, isSaved: true } : contact)),
-    )
+  const saveContact = async (id) => {
+    const nextContacts = contacts.map((contact) => (contact.id === id ? { ...contact, isSaved: true } : contact))
+    setContacts(nextContacts)
+    await persistContacts(nextContacts)
   }
 
-  const removeContact = (id) => {
-    setContacts((previous) => previous.filter((contact) => contact.id !== id))
+  const removeContact = async (id) => {
+    const nextContacts = contacts.filter((contact) => contact.id !== id)
+    setContacts(nextContacts)
+    await persistContacts(nextContacts)
   }
 
   const addContact = () => {

@@ -4,27 +4,12 @@ import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, setDoc } from 
 import { firebaseDb } from '../firebase'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
 import { clearPageStatesForProperty } from '../utils/pageStateStorage'
+import { buildSavedPropertyId } from '../utils/propertyStorage'
 import { readSavedHomes, writeSavedHomes } from '../utils/savedHomesStorage'
 import { useAuth } from './AuthContext'
 import { persistHome, readStoredHome } from '../utils/homeStorage'
 
 const HomeContext = createContext(null)
-
-function buildSavedPropertyId(home) {
-  const baseValue = [
-    home?.query || getHomeTitle(home),
-    home?.address?.postcode || '',
-    home?.lat || '',
-    home?.lon || '',
-  ]
-    .filter(Boolean)
-    .join('-')
-    .trim()
-    .toLowerCase()
-
-  const slug = baseValue.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  return slug || `property-${Date.now()}`
-}
 
 function normalizeSavedHome(docId, data) {
   return {

@@ -12,13 +12,16 @@ function Login({ initialMode = 'login' }) {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [resetting, setResetting] = useState(false)
   const navigate = useNavigate()
-  const { user, loading, isAuthenticated, signIn, signOut, signUp, deleteAccount, hasFirebaseConfig } = useAuth()
+  const { user, loading, isAuthenticated, signIn, signOut, signUp, resetPassword, deleteAccount, hasFirebaseConfig } = useAuth()
 
   const changeMode = (nextMode) => {
     setMode(nextMode)
     setError('')
+    setNotice('')
     setSearchParams((current) => {
       const next = new URLSearchParams(current)
       next.set('mode', nextMode)
@@ -36,6 +39,7 @@ function Login({ initialMode = 'login' }) {
 
     setSubmitting(true)
     setError('')
+    setNotice('')
 
     try {
       if (mode === 'login') {
@@ -49,6 +53,29 @@ function Login({ initialMode = 'login' }) {
       setError(authError?.message || 'We could not access the account right now.')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    const trimmedEmail = email.trim()
+
+    if (!trimmedEmail) {
+      setError('Enter your email first.')
+      setNotice('')
+      return
+    }
+
+    setResetting(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await resetPassword(trimmedEmail)
+      setNotice('Password reset email sent.')
+    } catch (authError) {
+      setError(authError?.message || 'We could not send the reset email right now.')
+    } finally {
+      setResetting(false)
     }
   }
 
@@ -168,6 +195,7 @@ function Login({ initialMode = 'login' }) {
           </div>
 
           {error ? <p className="login-error">{error}</p> : null}
+          {notice ? <p className="login-notice">{notice}</p> : null}
           {!hasFirebaseConfig ? (
             <p className="login-config-note">Firebase web app values still need to be added before sign-in can work.</p>
           ) : null}
@@ -218,13 +246,25 @@ function Login({ initialMode = 'login' }) {
                 </button>
               </div>
             ) : (
-              <button
-                className="login-secondary-link"
-                type="button"
-                onClick={() => setShowPassword((value) => !value)}
-              >
-                {showPassword ? 'Hide password' : 'Show password'}
-              </button>
+              <div className={`login-password-links${mode === 'login' ? ' is-login' : ''}`}>
+                <button
+                  className="login-secondary-link"
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                >
+                  {showPassword ? 'Hide password' : 'Show password'}
+                </button>
+                {mode === 'login' ? (
+                  <button
+                    className="login-secondary-link"
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={resetting || submitting || loading}
+                  >
+                    {resetting ? 'Sending...' : 'Forgot password'}
+                  </button>
+                ) : null}
+              </div>
             )}
           </div>
         </form>

@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { Link, useSearchParams } from 'react-router-dom'
 import CalendarEventBar from '../components/CalendarEventBar'
 import { useAuth } from '../context/AuthContext'
+import { firebaseDb } from '../firebase'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeTitle } from '../utils/homeProfile'
 import { defaultCalendarDate } from '../utils/calendar'
 import { getPageStateStorageKey, readPageState, writePageState } from '../utils/pageStateStorage'
+import { buildSavedPropertyId } from '../utils/propertyStorage'
 import './Page.css'
 import './RecoveryTracker.css'
 
@@ -47,6 +50,7 @@ const INTERIOR_DAMAGE_COLUMNS = ['Room', 'Damage Notes', 'Uploads']
 const EXTERIOR_DAMAGE_COLUMNS = ['Area', 'Damage Notes', 'Uploads']
 const INTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Kitchen', 'Ceiling stain and wall damage', 'Receipt, image, doc, none']
 const EXTERIOR_DAMAGE_PLACEHOLDER_ROW = ['Roof', 'Missing shingles and gutter damage', 'Receipt, image, doc, none']
+const CLAIM_STATUS_DOC_ID = 'claim-status'
 
 function createBlankRows(columns, count = 5) {
   return Array.from({ length: count }, () => Array(columns).fill(''))
@@ -59,6 +63,20 @@ function getDamagePlaceholderRow(scope) {
 function getSectionTabClassName(sectionId, activeSection) {
   const slug = sectionId.toLowerCase().replace(/\s+/g, '-')
   return `recovery-filter-tab recovery-filter-tab-${slug}${activeSection === sectionId ? ' active' : ''}`
+}
+
+function normalizeClaimSteps(steps) {
+  const stepMap = new Map(
+    Array.isArray(steps)
+      ? steps.map((step) => [step.label, step])
+      : [],
+  )
+
+  return CLAIM_STATUS_STEPS.map((label) => ({
+    label,
+    done: Boolean(stepMap.get(label)?.done),
+    note: stepMap.get(label)?.note || '',
+  }))
 }
 
 function RecoveryTracker() {
@@ -76,38 +94,66 @@ function RecoveryTracker() {
   const [exteriorDamageRows, setExteriorDamageRows] = useState(() => createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
   const [expenseRows, setExpenseRows] = useState(() => createBlankRows(EXPENSE_COLUMNS.length))
   const [timelineRows, setTimelineRows] = useState(() => createBlankRows(TIME_LOG_COLUMNS.length))
-  const [claimSteps, setClaimSteps] = useState(() => CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
+  const [claimSteps, setClaimSteps] = useState(() => normalizeClaimSteps())
   const homeTitle = getHomeTitle(activeHome)
   const hydratedRef = useRef(false)
+  const skipRemoteClaimWriteRef = useRef(false)
   const storageKey = getPageStateStorageKey('recovery', user?.uid, activeHome)
+  const propertyId = activeHome?.savedPropertyId || (activeHome ? buildSavedPropertyId(activeHome) : '')
 
   useEffect(() => {
+    let cancelled = false
     hydratedRef.current = false
 
-    if (!storageKey) {
-      setDamageScope('Interior')
-      setCalendarTitle('')
-      setCalendarDate(defaultCalendarDate(7))
-      setInteriorDamageRows(createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
-      setExteriorDamageRows(createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
-      setExpenseRows(createBlankRows(EXPENSE_COLUMNS.length))
-      setTimelineRows(createBlankRows(TIME_LOG_COLUMNS.length))
-      setClaimSteps(CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
+    const hydrate = async () => {
+      if (!storageKey) {
+        setDamageScope('Interior')
+        setCalendarTitle('')
+        setCalendarDate(defaultCalendarDate(7))
+        setInteriorDamageRows(createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
+        setExteriorDamageRows(createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
+        setExpenseRows(createBlankRows(EXPENSE_COLUMNS.length))
+        setTimelineRows(createBlankRows(TIME_LOG_COLUMNS.length))
+        setClaimSteps(normalizeClaimSteps())
+        hydratedRef.current = true
+        return
+      }
+
+      const storedState = readPageState(storageKey)
+
+      if (!cancelled) {
+        setDamageScope(storedState?.damageScope || 'Interior')
+        setCalendarTitle(storedState?.calendarTitle || '')
+        setCalendarDate(storedState?.calendarDate || defaultCalendarDate(7))
+        setInteriorDamageRows(Array.isArray(storedState?.interiorDamageRows) ? storedState.interiorDamageRows : createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
+        setExteriorDamageRows(Array.isArray(storedState?.exteriorDamageRows) ? storedState.exteriorDamageRows : createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
+        setExpenseRows(Array.isArray(storedState?.expenseRows) ? storedState.expenseRows : createBlankRows(EXPENSE_COLUMNS.length))
+        setTimelineRows(Array.isArray(storedState?.timelineRows) ? storedState.timelineRows : createBlankRows(TIME_LOG_COLUMNS.length))
+        setClaimSteps(normalizeClaimSteps(storedState?.claimSteps))
+      }
+
+      if (firebaseDb && isAuthenticated && user?.uid && propertyId) {
+        try {
+          const snapshot = await getDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', CLAIM_STATUS_DOC_ID))
+
+          if (!cancelled && snapshot.exists()) {
+            skipRemoteClaimWriteRef.current = true
+            setClaimSteps(normalizeClaimSteps(snapshot.data()?.claimSteps))
+          }
+        } catch (error) {
+          console.warn('Claim status sync is not ready yet.', error)
+        }
+      }
+
       hydratedRef.current = true
-      return
     }
 
-    const storedState = readPageState(storageKey)
-    setDamageScope(storedState?.damageScope || 'Interior')
-    setCalendarTitle(storedState?.calendarTitle || '')
-    setCalendarDate(storedState?.calendarDate || defaultCalendarDate(7))
-    setInteriorDamageRows(Array.isArray(storedState?.interiorDamageRows) ? storedState.interiorDamageRows : createBlankRows(INTERIOR_DAMAGE_COLUMNS.length))
-    setExteriorDamageRows(Array.isArray(storedState?.exteriorDamageRows) ? storedState.exteriorDamageRows : createBlankRows(EXTERIOR_DAMAGE_COLUMNS.length))
-    setExpenseRows(Array.isArray(storedState?.expenseRows) ? storedState.expenseRows : createBlankRows(EXPENSE_COLUMNS.length))
-    setTimelineRows(Array.isArray(storedState?.timelineRows) ? storedState.timelineRows : createBlankRows(TIME_LOG_COLUMNS.length))
-    setClaimSteps(Array.isArray(storedState?.claimSteps) ? storedState.claimSteps : CLAIM_STATUS_STEPS.map((label) => ({ label, done: false, note: '' })))
-    hydratedRef.current = true
-  }, [storageKey])
+    hydrate()
+
+    return () => {
+      cancelled = true
+    }
+  }, [isAuthenticated, propertyId, storageKey, user?.uid])
 
   useEffect(() => {
     if (!storageKey || !hydratedRef.current) {
@@ -135,6 +181,38 @@ function RecoveryTracker() {
     storageKey,
     timelineRows,
   ])
+
+  useEffect(() => {
+    if (!hydratedRef.current || !firebaseDb || !isAuthenticated || !user?.uid || !propertyId) {
+      return
+    }
+
+    if (skipRemoteClaimWriteRef.current) {
+      skipRemoteClaimWriteRef.current = false
+      return
+    }
+
+    const syncClaimSteps = async () => {
+      try {
+        await setDoc(
+          doc(firebaseDb, 'users', user.uid, 'properties', propertyId, 'recovery', CLAIM_STATUS_DOC_ID),
+          {
+            claimSteps: claimSteps.map((step) => ({
+              label: step.label,
+              done: step.done,
+              note: step.note,
+            })),
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        )
+      } catch (error) {
+        console.warn('Claim status save is not ready yet.', error)
+      }
+    }
+
+    syncClaimSteps()
+  }, [claimSteps, isAuthenticated, propertyId, user?.uid])
 
   const selectedSection = RECOVERY_SECTIONS.find((section) => section.id === activeSection) ?? RECOVERY_SECTIONS[0]
 
