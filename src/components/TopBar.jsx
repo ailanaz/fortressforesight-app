@@ -90,8 +90,22 @@ function TopBar() {
                   aria-expanded={desktopMenuOpen}
                   onClick={() => setDesktopMenuOpen((current) => !current)}
                 >
-                  <span className="topbar-home-title">Saved Properties</span>
-                  <span className="topbar-home-meta">{savedHomeCount} of {propertyLimit} saved.</span>
+                  <span className="topbar-plan-pill-copy">
+                    <span className="topbar-home-title">Saved Properties</span>
+                    <span className="topbar-home-meta">{savedHomeCount} of {propertyLimit} saved.</span>
+                  </span>
+                  <svg
+                    width="14"
+                    height="14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    className="topbar-plan-pill-icon"
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </button>
 
                 {desktopMenuOpen ? (

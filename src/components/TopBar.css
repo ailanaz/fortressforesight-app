@@ -70,9 +70,29 @@
 
 .topbar-plan-pill-button {
   appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   text-align: left;
   cursor: pointer;
   color: inherit;
+}
+
+.topbar-plan-pill-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topbar-plan-pill-icon {
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.topbar-plan-pill-button.is-open .topbar-plan-pill-icon {
+  transform: rotate(180deg);
 }
 
 .topbar-plan-menu-wrap {
