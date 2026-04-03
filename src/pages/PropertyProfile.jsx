@@ -304,7 +304,6 @@ function buildLocalHazards(property) {
         id: definition.id,
         title: definition.title,
         level,
-        statusLabel: getHazardStatus(level),
         copy: level === 'limited' ? definition.limitedCopy : definition.copy,
         resultValue: getHazardResultValue(definition.id, property, level),
         source: definition.source,
@@ -1217,9 +1216,6 @@ function LocalHazardConsiderations({ hazards, hasProperty }) {
           {hazards.map((hazard) => (
             <div key={hazard.id} className="local-hazard-item">
               <p className="local-hazard-title">{hazard.title}</p>
-              <p className={`local-hazard-relevance local-hazard-relevance-${hazard.level}`}>
-                {hazard.statusLabel}
-              </p>
               <p className="local-hazard-result">{hazard.resultValue}</p>
               <p className="local-hazard-copy">{hazard.copy}</p>
               {hazard.source ? (
