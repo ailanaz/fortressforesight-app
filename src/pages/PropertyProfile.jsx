@@ -1381,6 +1381,7 @@ function PropertyProfile() {
   const propertyInformationCard = orderedSummaryCards.find((card) => card.title === 'Property Information')
   const localHazards = buildLocalHazards(property)
   const propertyIsSaved = isHomeSaved(property)
+  const propertyCanRemove = Boolean(property?.savedPropertyId) || propertyIsSaved
 
   useEffect(() => {
     setAccountError('')
@@ -1434,7 +1435,7 @@ function PropertyProfile() {
     setAccountError('')
 
     try {
-      if (propertyIsSaved) {
+      if (propertyCanRemove) {
         await removeProperty(property)
       } else {
         const savedHome = await saveProperty(property)
@@ -1505,8 +1506,8 @@ function PropertyProfile() {
               onClick={handleSaveProperty}
             >
               {propertyActionStatus === 'working'
-                ? propertyIsSaved ? 'Removing...' : 'Saving...'
-                : propertyIsSaved ? 'Remove Saved' : 'Save Property'}
+                ? propertyCanRemove ? 'Removing...' : 'Saving...'
+                : propertyCanRemove ? 'Remove Saved' : 'Save Property'}
             </button>
           ) : (
             <Link className="btn-primary property-search-button property-save-button" to="/upgrade">
@@ -1533,7 +1534,7 @@ function PropertyProfile() {
                     key={propertyInformationCard.title}
                     title={propertyInformationCard.title}
                     rows={propertyInformationCard.rows}
-                    footer={isAuthenticated && propertyIsSaved ? (
+                    footer={isAuthenticated && propertyCanRemove ? (
                       <>
                         <button
                           className="summary-card-remove"
