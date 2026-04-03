@@ -3,12 +3,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useActiveHome } from '../context/HomeContext'
 import { getHomeLocation, getHomeTitle } from '../utils/homeProfile'
+import { readSavedHomes } from '../utils/savedHomesStorage'
 import './TopBar.css'
 
 function TopBar() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { isAuthenticated, propertyLimit } = useAuth()
+  const { isAuthenticated, propertyLimit, user } = useAuth()
   const { activeHome, savedHomes, savedHomesLoading, selectSavedHome } = useActiveHome()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [desktopMenuOpen, setDesktopMenuOpen] = useState(false)
@@ -19,7 +20,9 @@ function TopBar() {
   const showHomePill = activeHome && location.pathname !== '/home'
   const showPlanPill = location.pathname !== '/home'
   const showMobileSwitcher = location.pathname !== '/home'
-  const savedHomeCount = savedHomes.length
+  const fallbackSavedHomes = user?.uid ? readSavedHomes(user.uid) : []
+  const visibleSavedHomes = savedHomes.length ? savedHomes : fallbackSavedHomes
+  const savedHomeCount = visibleSavedHomes.length
 
   useEffect(() => {
     setMobileMenuOpen(false)
@@ -95,8 +98,8 @@ function TopBar() {
                   <div className="topbar-plan-menu">
                     {savedHomesLoading ? (
                       <div className="topbar-plan-menu-empty">Loading properties...</div>
-                    ) : savedHomes.length ? (
-                      savedHomes.map((home) => {
+                    ) : visibleSavedHomes.length ? (
+                      visibleSavedHomes.map((home) => {
                         const isCurrent = activeHome?.savedPropertyId === home.savedPropertyId
 
                         return (
@@ -176,8 +179,8 @@ function TopBar() {
                   <div className="topbar-mobile-saved-list">
                     {savedHomesLoading ? (
                       <div className="topbar-plan-menu-empty">Loading properties...</div>
-                    ) : savedHomes.length ? (
-                      savedHomes.map((home) => {
+                    ) : visibleSavedHomes.length ? (
+                      visibleSavedHomes.map((home) => {
                         const isCurrent = activeHome?.savedPropertyId === home.savedPropertyId
 
                         return (
