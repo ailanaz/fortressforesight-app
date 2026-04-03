@@ -1268,7 +1268,6 @@ function PropertyProfile() {
   const {
     activeHome,
     saveActiveHome,
-    clearActiveHome,
     saveProperty,
     removeProperty,
     isHomeSaved,
@@ -1437,20 +1436,6 @@ function PropertyProfile() {
     }
   }
 
-  const resetSearch = () => {
-    if (requestRef.current) {
-      requestRef.current.abort()
-      requestRef.current = null
-    }
-
-    clearActiveHome()
-    autoSearchRef.current = ''
-    setQuery('')
-    setProperty(null)
-    setStatus('idle')
-    setError('')
-  }
-
   const handleSaveProperty = async () => {
     if (!property) {
       return
@@ -1506,15 +1491,6 @@ function PropertyProfile() {
             </svg>
           </button>
         </div>
-        {property ? (
-          <button
-            className="btn-outline property-search-button"
-            type="button"
-            onClick={resetSearch}
-          >
-            Reset
-          </button>
-        ) : null}
         {property ? (
           isAuthenticated ? (
             <button
