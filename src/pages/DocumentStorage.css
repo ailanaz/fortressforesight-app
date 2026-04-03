@@ -111,6 +111,22 @@
   text-decoration: none;
 }
 
+.doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.doc-delete {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: #071f69;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .upload-single-btn,
 .upload-btn {
   cursor: pointer;

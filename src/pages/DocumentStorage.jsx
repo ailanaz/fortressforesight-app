@@ -43,6 +43,15 @@ function inferDocType(file) {
   return 'Document'
 }
 
+function resolveUploadType(activeType, file) {
+  if (BASE_DOC_TYPES.includes(activeType)) {
+    return activeType
+  }
+
+  const inferredType = inferDocType(file)
+  return inferredType === 'Document' ? 'Other' : inferredType
+}
+
 function DocumentStorage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { isAuthenticated, user } = useAuth()
@@ -96,7 +105,7 @@ function DocumentStorage() {
     const nextDocs = Array.from(files).map((file, index) => ({
       id: `${Date.now()}-${index}-${file.name}`,
       name: file.name,
-      type: inferDocType(file),
+      type: resolveUploadType(activeType, file),
       date: new Date().toISOString().slice(0, 10),
       size: formatFileSize(file.size),
       file,
@@ -104,6 +113,10 @@ function DocumentStorage() {
 
     if (!nextDocs.length) return
     setDocs((current) => [...nextDocs, ...current])
+  }
+
+  const handleDelete = (docId) => {
+    setDocs((current) => current.filter((doc) => doc.id !== docId))
   }
 
   const handleFileChange = (event) => {
@@ -216,27 +229,39 @@ function DocumentStorage() {
                     {activeType === 'Other' ? `${doc.type} - ${doc.date} - ${doc.size}` : `${doc.date} - ${doc.size}`}
                   </span>
                 </div>
-                {isAuthenticated ? (
-                  <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <circle cx="18" cy="5" r="3" />
-                      <circle cx="6" cy="12" r="3" />
-                      <circle cx="18" cy="19" r="3" />
-                      <path d="M8.6 13.5l6.8 4" />
-                      <path d="M15.4 6.5l-6.8 4" />
-                    </svg>
-                  </button>
-                ) : (
-                  <Link className="doc-action" aria-label={`Upgrade to share ${doc.name}`} to="/upgrade">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <circle cx="18" cy="5" r="3" />
-                      <circle cx="6" cy="12" r="3" />
-                      <circle cx="18" cy="19" r="3" />
-                      <path d="M8.6 13.5l6.8 4" />
-                      <path d="M15.4 6.5l-6.8 4" />
-                    </svg>
-                  </Link>
-                )}
+                <div className="doc-actions">
+                  {isAuthenticated ? (
+                    <>
+                      <button className="doc-action" aria-label={`Share ${doc.name}`} onClick={() => handleShare(doc)}>
+                        <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <circle cx="18" cy="5" r="3" />
+                          <circle cx="6" cy="12" r="3" />
+                          <circle cx="18" cy="19" r="3" />
+                          <path d="M8.6 13.5l6.8 4" />
+                          <path d="M15.4 6.5l-6.8 4" />
+                        </svg>
+                      </button>
+                      <button
+                        className="doc-delete"
+                        type="button"
+                        aria-label={`Delete ${doc.name}`}
+                        onClick={() => handleDelete(doc.id)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    <Link className="doc-action" aria-label={`Upgrade to share ${doc.name}`} to="/upgrade">
+                      <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <path d="M8.6 13.5l6.8 4" />
+                        <path d="M15.4 6.5l-6.8 4" />
+                      </svg>
+                    </Link>
+                  )}
+                </div>
               </div>
             ))
           )}
