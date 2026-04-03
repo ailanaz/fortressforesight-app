@@ -1537,7 +1537,7 @@ function PropertyProfile() {
                     footer={isAuthenticated && propertyCanRemove ? (
                       <>
                         <button
-                          className="summary-card-remove"
+                          className="btn-outline summary-card-remove"
                           type="button"
                           onClick={handleRemoveSavedProperty}
                         >
