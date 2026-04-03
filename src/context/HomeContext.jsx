@@ -43,6 +43,15 @@ export function HomeProvider({ children }) {
   const [savedHomes, setSavedHomes] = useState([])
   const [savedHomesLoading, setSavedHomesLoading] = useState(false)
 
+  const getEffectiveSavedHomes = () => {
+    if (!user?.uid) {
+      return savedHomes
+    }
+
+    const fallbackHomes = readSavedHomes(user.uid).sort(sortSavedHomes)
+    return savedHomes.length ? savedHomes : fallbackHomes
+  }
+
   useEffect(() => {
     if (loading) {
       return
@@ -127,7 +136,7 @@ export function HomeProvider({ children }) {
     }
 
     const nextId = home.savedPropertyId || buildSavedPropertyId(home)
-    return savedHomes.some((savedHome) => savedHome.savedPropertyId === nextId)
+    return getEffectiveSavedHomes().some((savedHome) => savedHome.savedPropertyId === nextId)
   }
 
   const saveProperty = async (home) => {
@@ -135,10 +144,11 @@ export function HomeProvider({ children }) {
       throw new Error('Sign in to save properties.')
     }
 
+    const currentSavedHomes = getEffectiveSavedHomes()
     const propertyId = buildSavedPropertyId(home)
-    const alreadySaved = savedHomes.some((savedHome) => savedHome.savedPropertyId === propertyId)
+    const alreadySaved = currentSavedHomes.some((savedHome) => savedHome.savedPropertyId === propertyId)
 
-    if (!alreadySaved && savedHomes.length >= propertyLimit) {
+    if (!alreadySaved && currentSavedHomes.length >= propertyLimit) {
       throw new Error(`You can save up to ${propertyLimit} properties on this plan.`)
     }
 
@@ -149,7 +159,7 @@ export function HomeProvider({ children }) {
       location: getHomeLocation(home),
     }
 
-    const nextHomes = [...savedHomes.filter((savedHomeItem) => savedHomeItem.savedPropertyId !== propertyId), savedHome].sort(sortSavedHomes)
+    const nextHomes = [...currentSavedHomes.filter((savedHomeItem) => savedHomeItem.savedPropertyId !== propertyId), savedHome].sort(sortSavedHomes)
 
     try {
       await setDoc(
@@ -181,9 +191,10 @@ export function HomeProvider({ children }) {
       throw new Error('Sign in to manage saved properties.')
     }
 
+    const currentSavedHomes = getEffectiveSavedHomes()
     const propertyId = typeof home === 'string' ? home : home.savedPropertyId || buildSavedPropertyId(home)
     const targetHome = typeof home === 'string'
-      ? savedHomes.find((savedHome) => savedHome.savedPropertyId === propertyId) || activeHome
+      ? currentSavedHomes.find((savedHome) => savedHome.savedPropertyId === propertyId) || activeHome
       : home
 
     clearPageStatesForProperty(user.uid, targetHome)
@@ -191,7 +202,7 @@ export function HomeProvider({ children }) {
     try {
       await deleteDoc(doc(firebaseDb, 'users', user.uid, 'properties', propertyId))
     } catch {
-      const nextHomes = savedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)
+      const nextHomes = currentSavedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)
       setSavedHomes(nextHomes)
       writeSavedHomes(user.uid, nextHomes)
     }
@@ -215,7 +226,7 @@ export function HomeProvider({ children }) {
       return nextHome
     })
 
-    const nextHomes = savedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)
+    const nextHomes = currentSavedHomes.filter((savedHome) => savedHome.savedPropertyId !== propertyId)
     setSavedHomes(nextHomes)
     writeSavedHomes(user.uid, nextHomes)
   }
