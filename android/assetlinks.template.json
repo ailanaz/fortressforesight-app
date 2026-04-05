@@ -5,7 +5,7 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.fortressforesight.app",
+      "package_name": "app.fortressforesight",
       "sha256_cert_fingerprints": [
         "REPLACE_WITH_PLAY_APP_SIGNING_SHA256"
       ]
