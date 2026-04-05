@@ -54,6 +54,10 @@ function UpgradePage() {
             Add <code>VITE_PLAY_APP_PACKAGE</code> or <code>VITE_PLAY_STORE_URL</code> when the Play app is ready.
           </p>
         ) : null}
+
+        <p className="upgrade-setup-note">
+          <a href="/privacy-policy.html" rel="noreferrer" target="_blank">Privacy Policy</a>
+        </p>
       </section>
     </div>
   )

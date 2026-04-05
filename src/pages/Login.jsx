@@ -196,6 +196,12 @@ function Login() {
             )}
           </div>
         </form>
+
+        <div className="login-legal-links">
+          <a href="/privacy-policy.html" rel="noreferrer" target="_blank">
+            Privacy Policy
+          </a>
+        </div>
       </div>
     </div>
   )
