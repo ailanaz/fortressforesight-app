@@ -1,0 +1,25 @@
+{
+  "packageId": "com.fortressforesight.app",
+  "host": "fortressforesight.app",
+  "name": "FortressForesight",
+  "launcherName": "FortressForesight",
+  "display": "standalone",
+  "themeColor": "#071f69",
+  "backgroundColor": "#ffffff",
+  "navigationColor": "#ffffff",
+  "startUrl": "/#/home",
+  "iconUrl": "https://fortressforesight.app/branding/logos/fortressforesight-logo-square-light.png",
+  "maskableIconUrl": "https://fortressforesight.app/branding/logos/fortressforesight-logo-square-light.png",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "fallbackType": "customtabs",
+  "enableNotifications": false,
+  "alphaDependencies": {
+    "enabled": true
+  },
+  "features": {
+    "playBilling": {
+      "enabled": true
+    }
+  }
+}

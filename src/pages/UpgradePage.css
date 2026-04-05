@@ -17,6 +17,31 @@
   line-height: 1.45;
 }
 
+.upgrade-note,
+.upgrade-setup-note {
+  margin: 16px 0 0;
+  color: var(--color-gray-500);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.upgrade-setup-note {
+  margin-top: 14px;
+}
+
 .upgrade-actions {
   margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.upgrade-store-link,
+.upgrade-signin-link {
+  text-align: center;
+}
+
+.upgrade-setup-note code {
+  color: #071f69;
+  font-family: inherit;
+  font-weight: 600;
 }

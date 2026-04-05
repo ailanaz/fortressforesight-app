@@ -63,6 +63,7 @@ Also includes **Emergency Contacts** and a **Login** flow scaffold.
 - FEMA flood map data/services
 - NOAA weather and storm data
 - Google Maps / geocoding
+- Google Play subscription billing through an Android wrapper app
 
 ## Getting Started
 
@@ -76,6 +77,11 @@ npm run dev
 Copy `.env.example` to `.env` and fill in the values you want to use locally.
 
 Never commit `.env`.
+
+Google Play upgrade configuration:
+
+- `VITE_PLAY_APP_PACKAGE`
+- `VITE_PLAY_STORE_URL`
 
 ## Deployment
 

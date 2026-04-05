@@ -1,13 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Login.css'
 
-function Login({ initialMode = 'login' }) {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const modeParam = searchParams.get('mode')
-  const resolvedMode = modeParam === 'signup' || modeParam === 'login' ? modeParam : initialMode
-  const [mode, setMode] = useState(resolvedMode)
+function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -16,18 +12,7 @@ function Login({ initialMode = 'login' }) {
   const [submitting, setSubmitting] = useState(false)
   const [resetting, setResetting] = useState(false)
   const navigate = useNavigate()
-  const { user, loading, isAuthenticated, signIn, signOut, signUp, resetPassword, deleteAccount, hasFirebaseConfig } = useAuth()
-
-  const changeMode = (nextMode) => {
-    setMode(nextMode)
-    setError('')
-    setNotice('')
-    setSearchParams((current) => {
-      const next = new URLSearchParams(current)
-      next.set('mode', nextMode)
-      return next
-    }, { replace: true })
-  }
+  const { user, loading, isAuthenticated, signIn, signOut, resetPassword, deleteAccount, hasFirebaseConfig } = useAuth()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -42,12 +27,7 @@ function Login({ initialMode = 'login' }) {
     setNotice('')
 
     try {
-      if (mode === 'login') {
-        await signIn(email.trim(), password)
-      } else {
-        await signUp(email.trim(), password)
-      }
-
+      await signIn(email.trim(), password)
       navigate('/search')
     } catch (authError) {
       setError(authError?.message || 'We could not access the account right now.')
@@ -95,18 +75,12 @@ function Login({ initialMode = 'login' }) {
         </p>
 
         <div className="login-tabs">
-          <button
-            className={`login-tab${mode === 'login' ? ' active' : ''}`}
-            onClick={() => changeMode('login')}
-          >
+          <button className="login-tab active" type="button">
             Sign In
           </button>
-          <button
-            className={`login-tab${mode === 'signup' ? ' active' : ''}`}
-            onClick={() => changeMode('signup')}
-          >
+          <Link className="login-tab login-tab-link" to="/upgrade">
             Create Account
-          </button>
+          </Link>
         </div>
 
         <form className="login-shell-form" onSubmit={handleSubmit}>
@@ -117,62 +91,22 @@ function Login({ initialMode = 'login' }) {
                 <p className="login-upgrade-copy">One moment while FortressForesight loads your account.</p>
               </div>
             ) : isAuthenticated ? (
-              <>
-                <div className="login-upgrade">
-                  <h2 className="login-upgrade-title">Account active</h2>
-                  <p className="login-upgrade-copy">
-                    Signed in as {user?.email || 'your account'}. Continue to the app or sign out here.
-                  </p>
-                </div>
-              </>
-            ) : mode === 'login' ? (
+              <div className="login-upgrade">
+                <h2 className="login-upgrade-title">Account active</h2>
+                <p className="login-upgrade-copy">
+                  Signed in as {user?.email || 'your account'}. Continue to the app or sign out here.
+                </p>
+              </div>
+            ) : (
               <>
                 <div className="login-upgrade">
                   <h2 className="login-upgrade-title">Welcome back</h2>
                   <p className="login-upgrade-copy">
-                    Sign in to access your saved properties, documents, and recovery
-                    workspace, and pick up where you left off.
+                    Sign in to access your saved properties, documents, and recovery workspace, and pick up where you left off.
                   </p>
                 </div>
 
                 <div className="login-form login-form-inline">
-                  <input
-                    className="login-input"
-                    type="email"
-                    placeholder="Email address"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
-                  />
-                  <input
-                    className="login-input"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="login-upgrade">
-                  <h2 className="login-upgrade-title">Upgrade to a Foresight Account</h2>
-                  <p className="login-upgrade-copy">
-                    A Foresight account is a paid option that lets you keep your
-                    properties, progress, notes, files, and recovery details saved in
-                    one place for when you need them.
-                  </p>
-                  <div className="login-upgrade-list">
-                    <div className="login-upgrade-item">Save up to 2 properties</div>
-                    <div className="login-upgrade-item">Save checklist progress and notes</div>
-                    <div className="login-upgrade-item">Set alerts with calendar events</div>
-                    <div className="login-upgrade-item">Upload documents and photos</div>
-                    <div className="login-upgrade-item">Track recovery and insurance claims</div>
-                  </div>
-                </div>
-
-                <div className="login-form">
                   <input
                     className="login-input"
                     type="email"
@@ -205,14 +139,10 @@ function Login({ initialMode = 'login' }) {
               {loading
                 ? 'Loading...'
                 : submitting
-                  ? mode === 'login'
-                    ? 'Signing In...'
-                    : 'Creating Account...'
+                  ? 'Signing In...'
                   : isAuthenticated
                     ? 'Open App'
-                    : mode === 'login'
-                      ? 'Sign In'
-                      : 'Upgrade to Paid'}
+                    : 'Sign In'}
             </button>
           </div>
 
@@ -246,7 +176,7 @@ function Login({ initialMode = 'login' }) {
                 </button>
               </div>
             ) : (
-              <div className={`login-password-links${mode === 'login' ? ' is-login' : ''}`}>
+              <div className="login-password-links is-login">
                 <button
                   className="login-secondary-link"
                   type="button"
@@ -254,16 +184,14 @@ function Login({ initialMode = 'login' }) {
                 >
                   {showPassword ? 'Hide password' : 'Show password'}
                 </button>
-                {mode === 'login' ? (
-                  <button
-                    className="login-secondary-link"
-                    type="button"
-                    onClick={handleForgotPassword}
-                    disabled={resetting || submitting || loading}
-                  >
-                    {resetting ? 'Sending...' : 'Forgot password'}
-                  </button>
-                ) : null}
+                <button
+                  className="login-secondary-link"
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={resetting}
+                >
+                  {resetting ? 'Sending...' : 'Forgot password'}
+                </button>
               </div>
             )}
           </div>

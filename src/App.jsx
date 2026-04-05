@@ -10,6 +10,7 @@ import RecoveryTracker from './pages/RecoveryTracker'
 import KnowledgeBase from './pages/KnowledgeBase'
 import EmergencyContacts from './pages/EmergencyContacts'
 import Login from './pages/Login'
+import UpgradePage from './pages/UpgradePage'
 import './App.css'
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/upgrade" element={<Login initialMode="signup" />} />
+            <Route path="/upgrade" element={<UpgradePage />} />
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/home" replace />} />
               <Route path="home" element={<HomePage />} />

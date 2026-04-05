@@ -122,6 +122,13 @@
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
+.login-tab-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .login-tab.active {
   color: var(--color-yellow);
   background: #071f69;
